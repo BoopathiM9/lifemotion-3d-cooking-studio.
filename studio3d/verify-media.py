@@ -37,6 +37,19 @@ sub = next(s for s in probe['streams'] if s['codec_type'] == 'subtitle')
 
 preview = '--preview' in sys.argv
 
+# Inspect every second, excluding subtitle and browser-chrome regions. Codec checks
+# alone accept a white video with valid audio and subtitles.
+pixels = run('ffmpeg', '-v', 'error', '-i', str(video), '-vf',
+             'fps=1,crop=iw:ih*0.7:0:ih*0.1,scale=64:32',
+             '-pix_fmt', 'rgb24', '-f', 'rawvideo', 'pipe:1')
+frame_bytes = 64 * 32 * 3
+assert pixels and len(pixels) % frame_bytes == 0, 'No complete visual samples'
+for index in range(len(pixels) // frame_bytes):
+    frame = pixels[index * frame_bytes:(index + 1) * frame_bytes]
+    colorful = sum(max(frame[i:i+3]) - min(frame[i:i+3]) > 18
+                   for i in range(0, frame_bytes, 3))
+    assert colorful / (64 * 32) > .02, f'Blank or missing kitchen at second {index}'
+
 # --------------------------------------------------
 # Video / audio / subtitle validation
 # --------------------------------------------------
@@ -272,6 +285,7 @@ report = {
     'fps': v['r_frame_rate'],
     'duration': probe['format']['duration'],
     'fullDecode': True,
+    'visualSamplesChecked': len(pixels) // frame_bytes,
     'audioCorrelations': correlations,
     'subtitleCues': len(cues),
     'sourceVoice': lesson['voice']

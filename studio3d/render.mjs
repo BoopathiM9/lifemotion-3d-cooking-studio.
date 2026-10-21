@@ -32,10 +32,7 @@ try{
    try{return await page.screenshot({type:'jpeg',quality:90});}
    catch(e){
     if(a===2){
-     try{
-      const dataUrl=await page.evaluate(()=>window.studio.renderer.domElement.toDataURL('image/jpeg',0.9));
-      return Buffer.from(dataUrl.split(',')[1],'base64');
-     }catch{throw e;}
+     throw e;
     }
     await new Promise(r=>setTimeout(r,60));
    }
@@ -45,7 +42,7 @@ try{
   const state=await page.evaluate(t=>window.setFrame(t),i/fps);if(!state.webgl||!state.perspective||state.triangles<1000)throw Error('Not a genuine perspective WebGL 3D render');
   if(plan?.recipe==='vegetable-sandwich'&&state.spreadHeight>.02)throw Error('Chutney layer is too thick');maxGrip=Math.max(maxGrip,state.gripError);if(state.handBottom<=1.615)throw Error('Hand intersects worktop');if(state.gripError>.025)throw Error('Hand cannot reach utensil: '+JSON.stringify(state));
   if(state.landed){const d=Math.hypot(state.food[0]-state.plate[0],state.food[2]-state.plate[2]);if(d+state.foodRadius>state.plateRadius-.04)throw Error('Food leaves plate');contained++;}
-  const buffer=await captureFrame();if(!encoder.stdin.write(buffer)){const result=await Promise.race([once(encoder.stdin,'drain').then(()=>({drained:true})),completed.then(([code])=>({code}))]);if(!result.drained)throw Error('FFmpeg encoder stopped before draining: '+result.code);}
+  const buffer=await captureFrame();await page.evaluate(()=>{if(window.studio.renderer.getContext().isContextLost())throw Error('WebGL context lost during capture');});if(!encoder.stdin.write(buffer)){const result=await Promise.race([once(encoder.stdin,'drain').then(()=>({drained:true})),completed.then(([code])=>({code}))]);if(!result.drained)throw Error('FFmpeg encoder stopped before draining: '+result.code);}
   if(i%24===0)console.log(`Rendering 3D ${i}/${frames} (${Math.round(i/frames*100)}%)`);
  }
  encoder.stdin.end();const [code]=await completed;if(code!==0)throw Error('FFmpeg failed: '+code);if(errors.length||requests.length)throw Error(JSON.stringify({errors,requests}));

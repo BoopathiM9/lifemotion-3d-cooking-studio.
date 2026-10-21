@@ -8,7 +8,7 @@ From `C:\life_motion-kids_project\lifemotion-kids-starter` run:
 npm.cmd run studio
 ```
 
-Open http://127.0.0.1:4173. Nothing is published. One generation runs at a time. The service listens only on loopback. Stop it with Ctrl+C.
+Open http://127.0.0.1:4173. Nothing is published. One generation runs at a time. The service listens only on loopback. Stop it with Ctrl+C. Starting it again reuses the same studio address and exits without opening a second portal. If another application occupies the selected port, startup stops with an error rather than silently switching ports. `LIFEMOTION_PORT` selects a different port explicitly.
 
 Enter exactly one supported recipe: masala dosa, vegetable sandwich, or pancakes. Choose Jenny or Aria English speech and landscape 16:9 or portrait 9:16. Generation creates cached sentence-level narration, a short 480p/12fps visual preview, then a complete 720p/24fps MP4. Progress, video preview, and MP4 download are available on the page. Unsupported recipes, conflicting selections, invalid voices, and invalid formats return explicit errors.
 
@@ -40,3 +40,9 @@ All outputs have unique directories under `output/studio3d/`. Website jobs are i
 `test.mjs` exercises prompt validation, all recipe actions at 24fps sample intervals, joint reach, plate containment after landing, support from the spatula, withdrawal at the spoken instruction, pancake clearance throughout the half-turn, cold-sandwich steam suppression, deterministic seeking, portrait scene loading, browser errors, and the unsupported-recipe website UI. `e2e.mjs` submits a real dosa prompt through the website in portrait format and waits for sentence narration, a preview, a full render, stream validation, download headers, and HTTP range serving.
 
 Each renderer fails on browser/resource errors, unreachable utensil targets or food leaving the plate after landing. Before completion, both preview and final MP4s must pass independent stream checks, full decoding, narration comparison, subtitle text/timing checks and sentence-duration checks. Reusing a job directory containing an MP4 or partial MP4 is rejected to preserve earlier work; generate a new job instead. `verify-media.py <video> <audio-assets-directory>` independently validates streams, durations, full decoding, decoded voice correlation and embedded subtitle content. Inspect the accompanying frames before accepting visual quality; automated geometry checks alone cannot establish artistic polish. Current motions are lightweight procedural approximations rather than physical fluid/cloth simulation or phoneme-level facial animation.
+
+## Rendering regression checks
+
+Run `npm run test:render` after installing Playwright Chromium. This checks timestamp-independent scene state for biryani, dosa, sandwiches and pancakes, and verifies that a lost WebGL context stops rendering. Media verification also samples the kitchen region every second and rejects blank output, even when the audio, subtitles and MP4 streams are valid. Failed browser screenshots stop the render rather than producing a canvas-only video without subtitles.
+
+Run `npm run test:startup` to check duplicate startup, occupied ports and invalid port settings.

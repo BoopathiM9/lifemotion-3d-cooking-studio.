@@ -109,7 +109,7 @@ export function animateAction(params) {
         ingredientMesh.visible = true;
         if (p < 0.7) {
           // Follow utensil / pouring motion
-          ingredientMesh.position.copy(tip).y -= 0.12;
+          ingredientMesh.position.copy(tip).sub(food.position).y -= 0.12;
           ingredientMesh.scale.setScalar(1.0);
         } else {
           // Settle into cookware and merge into dish
@@ -118,8 +118,8 @@ export function animateAction(params) {
             tip,
             vec(COOKING.x, COOKING.y + 0.08, COOKING.z),
             settleProgress
-          );
-          food.scale.setScalar(Math.min(1.0, food.scale.x + 0.05));
+          ).sub(food.position);
+          food.scale.setScalar(1.0);
         }
       }
       break;

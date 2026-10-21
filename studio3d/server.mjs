@@ -24,6 +24,7 @@ export async function createStudioServer(){
  }catch(e){job.status='failed';job.message=e.message;}finally{busy=false;await persist(job);}}
  staticServer.on('request',async(req,res)=>{const url=new URL(req.url,'http://localhost');const json=(status,value)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(value));};try{
   if(req.method==='GET'&&url.pathname==='/'){res.writeHead(200,{'Content-Type':'text/html'});res.end(await readFile(join(root,'studio3d/index.html')));return;}
+  if(req.method==='GET'&&url.pathname==='/api/health'){json(200,{application:'lifemotion-studio',ready:true});return;}
   if(req.method==='GET'&&url.pathname==='/api/recipes'){json(200,{recipes:Object.entries(recipes).map(([id,r])=>({id,name:r.name})),voices,formats:['16:9','9:16'],busy});return;}
   if(req.method==='GET'&&url.pathname.startsWith('/api/jobs/')){const job=jobs.get(url.pathname.split('/').at(-1));json(job?200:404,job||{error:'Job not found'});return;}
   if(req.method==='POST'&&url.pathname==='/api/generate'){
@@ -49,23 +50,26 @@ export async function createStudioServer(){
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){
   const server=await createStudioServer();
-  const startPort=Number(process.env.LIFEMOTION_PORT||4173);
-  function listenOnPort(p, attempts=5){
-    const onError=(err)=>{
-      if(err.code==='EADDRINUSE'&&attempts>0){
-        console.warn(`Port ${p} is in use, trying http://127.0.0.1:${p+1}...`);
-        server.removeListener('error', onError);
-        listenOnPort(p+1, attempts-1);
-      }else{
-        console.error(`Failed to start server: ${err.message}`);
-        process.exit(1);
-      }
-    };
-    server.once('error', onError);
-    server.listen(p,'127.0.0.1',()=>{
-      server.removeListener('error', onError);
-      console.log(`LifeMotion 3D Cooking Studio: http://127.0.0.1:${p}`);
+  const port=Number(process.env.LIFEMOTION_PORT||4173);
+  if(!Number.isInteger(port)||port<1||port>65535){
+    console.error('LIFEMOTION_PORT must be an integer from 1 to 65535.');
+    process.exitCode=1;
+  }else{
+    const address=`http://127.0.0.1:${port}`;
+    server.once('error',async err=>{
+      if(err.code==='EADDRINUSE'){
+        try{
+          const response=await fetch(address+'/api/health',{signal:AbortSignal.timeout(2000)});
+          const health=await response.json();
+          if(response.ok&&health.application==='lifemotion-studio'&&health.ready===true){
+            console.log(`LifeMotion is already running. Open ${address}`);
+            return;
+          }
+        }catch{}
+        console.error(`Port ${port} is already in use. Stop the existing server, then run npm run studio again.`);
+      }else console.error(`Failed to start server: ${err.message}`);
+      process.exitCode=1;
     });
+    server.listen(port,'127.0.0.1',()=>console.log(`LifeMotion 3D Cooking Studio: ${address}`));
   }
-  listenOnPort(startPort);
 }

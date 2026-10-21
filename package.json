@@ -11,6 +11,8 @@
     "3d:render": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/render.mjs --full",
     "3d:test": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/test.mjs",
     "test:unit": "node studio3d/unit-tests.mjs",
+    "test:render": "node studio3d/render-regression.mjs",
+    "test:startup": "node --test studio3d/startup-test.mjs",
     "test": "node studio3d/unit-tests.mjs"
   },
   "dependencies": {

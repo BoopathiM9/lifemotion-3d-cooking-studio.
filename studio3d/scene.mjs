@@ -50,6 +50,12 @@ renderer.outputColorSpace = T.SRGBColorSpace;
 renderer.toneMapping = T.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.15;
 document.body.prepend(renderer.domElement);
+let contextLost = false;
+renderer.domElement.addEventListener('webglcontextlost', event => {
+  event.preventDefault();
+  contextLost = true;
+  window.studioReady = false;
+});
 
 const camera = new T.PerspectiveCamera(40, W / H, 0.1, 60);
 camera.position.set(5.7, 4.5, 8.2);
@@ -399,6 +405,19 @@ function actionAt(t) {
 }
 
 function frame(t, draw = true) {
+  if (contextLost || renderer.getContext().isContextLost()) {
+    throw new Error('WebGL context lost; refusing to render a blank frame');
+  }
+  // Each frame must depend on its timestamp, never the previous frame.
+  food.position.copy(PAN).y = 1.852;
+  food.rotation.set(0, 0, 0);
+  food.scale.set(1, 1, 1);
+  ingredientMeshes.forEach(ingredient => {
+    ingredient.position.set(0, 0, 0);
+    ingredient.rotation.set(0, 0, 0);
+    ingredient.scale.set(1, 1, 1);
+    transitionIngredientState(ingredient, 'raw', 0);
+  });
   const act = actionAt(t);
   const p = speechProgress(act, t);
   const actionName = act.action || 'cook';
@@ -437,10 +456,10 @@ function frame(t, draw = true) {
   });
 
   // Legacy foldHinge continuous angle support for tests
-  if (act.key === 'fold') {
+  if (plan.recipeId === 'masala-dosa' && act.key === 'fold') {
     foldHinge.visible = true;
     foldHinge.rotation.x = Math.PI * smooth((p - 0.2) / 0.65);
-  } else if (act.key === 'serve') {
+  } else if (plan.recipeId === 'masala-dosa' && act.key === 'serve') {
     foldHinge.visible = true;
     foldHinge.rotation.x = Math.PI;
   } else {
