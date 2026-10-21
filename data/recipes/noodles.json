@@ -1,0 +1,23 @@
+{
+  "title": "Stir-Fried Noodles",
+  "recipeId": "noodles",
+  "genericVisualization": false,
+  "primaryEquipment": "wok",
+  "utensil": "spatula",
+  "isColdDish": false,
+  "equipment": ["wok", "bowl", "spatula", "plate"],
+  "ingredients": [
+    { "id": "noodles", "name": "Noodles", "category": "noodle", "state": "cooked", "color": "#f3e1a8" },
+    { "id": "vegetables", "name": "Julienne Veggies", "category": "vegetable", "state": "sliced", "color": "#27ae60" },
+    { "id": "sauce", "name": "Soy Sauce", "category": "liquid", "state": "liquid", "color": "#3e2723" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "wok", "text": "Hello, little chefs! I'm Chef Maya. Let's make slurpy stir-fried noodles!" },
+    { "key": "safe", "action": "show", "target": "wok", "text": "Always ask a grown-up to help around the sizzling wok and warm stove." },
+    { "key": "ingredients", "action": "show", "ingredient": "noodles", "target": "bowl", "text": "We have soft bouncy noodles, crunchy julienne vegetables, and rich stir-fry sauce." },
+    { "key": "add_veggies", "action": "add", "ingredient": "vegetables", "source": "bowl", "target": "wok", "text": "Tumble the crisp vegetables into our warm wok and saute quickly." },
+    { "key": "add_noodles", "action": "add", "ingredient": "noodles", "source": "bowl", "target": "wok", "text": "Slide our long noodles into the wok and drizzle our delicious sauce on top." },
+    { "key": "toss_noodles", "action": "mix", "ingredient": "noodles", "target": "wok", "text": "Toss and lift the noodles gently with the spatula so every strand is seasoned." },
+    { "key": "serve", "action": "serve", "source": "wok", "target": "plate", "text": "Swirl the hot stir-fried noodles onto our plate. Time to slurp and enjoy!" }
+  ]
+}

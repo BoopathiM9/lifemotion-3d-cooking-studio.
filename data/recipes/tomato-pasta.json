@@ -1,0 +1,25 @@
+{
+  "title": "Tomato Pasta",
+  "recipeId": "tomato-pasta",
+  "genericVisualization": false,
+  "primaryEquipment": "pot",
+  "utensil": "spoon",
+  "isColdDish": false,
+  "equipment": ["pot", "bowl", "spoon", "plate"],
+  "ingredients": [
+    { "id": "pasta", "name": "Pasta", "category": "pasta", "state": "uncooked", "color": "#eed07b" },
+    { "id": "tomato_sauce", "name": "Tomato Sauce", "category": "liquid", "state": "sauce-coated", "color": "#c0392b" },
+    { "id": "herbs", "name": "Basil Herbs", "category": "herb", "state": "chopped", "color": "#27ae60" },
+    { "id": "cheese", "name": "Parmesan Cheese", "category": "cheese", "state": "sliced", "color": "#f9e79f" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "pot", "text": "Hello, little chefs! I'm Chef Maya. Let's cook a warm, delicious bowl of tomato pasta!" },
+    { "key": "safe", "action": "show", "target": "pot", "text": "Wash your hands first. Remember boiling water and bubbling pots must only be touched by a grown-up." },
+    { "key": "ingredients", "action": "show", "ingredient": "pasta", "target": "bowl", "text": "Here is our pasta, rich red tomato sauce, fragrant basil leaves, and grated cheese." },
+    { "key": "cook_pasta", "action": "boil", "ingredient": "pasta", "source": "bowl", "target": "pot", "text": "Carefully add the pasta into boiling water and cook until it is soft and tender." },
+    { "key": "add_sauce", "action": "pour", "ingredient": "tomato_sauce", "source": "bowl", "target": "pot", "text": "Pour our warm red tomato sauce gently into the pot with the cooked pasta." },
+    { "key": "mix_pasta", "action": "mix", "ingredient": "tomato_sauce", "target": "pot", "text": "Stir everything smoothly with our spoon until every piece of pasta is coated in sauce." },
+    { "key": "sprinkle_cheese", "action": "sprinkle", "ingredient": "cheese", "source": "bowl", "target": "pot", "text": "Sprinkle freshly grated cheese and sweet basil leaves right on top." },
+    { "key": "serve", "action": "serve", "source": "pot", "target": "plate", "text": "Twirl the saucy tomato pasta gently onto our serving plate. Mangia, little chefs!" }
+  ]
+}

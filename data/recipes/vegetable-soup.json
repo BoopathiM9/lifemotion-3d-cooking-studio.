@@ -1,0 +1,23 @@
+{
+  "title": "Garden Vegetable Soup",
+  "recipeId": "vegetable-soup",
+  "genericVisualization": false,
+  "primaryEquipment": "pot",
+  "utensil": "ladle",
+  "isColdDish": false,
+  "equipment": ["pot", "bowl", "ladle", "plate"],
+  "ingredients": [
+    { "id": "vegetables", "name": "Garden Veggies", "category": "vegetable", "state": "chopped", "color": "#e67e22" },
+    { "id": "broth", "name": "Vegetable Broth", "category": "liquid", "state": "liquid", "color": "#f1c40f" },
+    { "id": "herbs", "name": "Fresh Parsley", "category": "herb", "state": "chopped", "color": "#27ae60" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "pot", "text": "Hello, little chefs! I'm Chef Maya. Let's simmer a comforting pot of garden vegetable soup!" },
+    { "key": "safe", "action": "show", "target": "pot", "text": "Wash your hands thoroughly. Stoves and boiling soup are very hot, so an adult must handle the heat." },
+    { "key": "ingredients", "action": "show", "ingredient": "vegetables", "target": "bowl", "text": "We have bright chopped carrots, green peas, clear vegetable broth, and fragrant fresh herbs." },
+    { "key": "add_veggies", "action": "add", "ingredient": "vegetables", "source": "bowl", "target": "pot", "text": "Carefully add the chopped vegetables into our deep soup pot." },
+    { "key": "pour_broth", "action": "pour", "ingredient": "broth", "source": "bowl", "target": "pot", "text": "Pour in our warm golden broth so the sweet vegetables are gently submerged." },
+    { "key": "simmer", "action": "simmer", "ingredient": "broth", "target": "pot", "text": "Let the soup simmer gently and stir slowly as the kitchen fills with cozy warmth." },
+    { "key": "serve", "action": "serve", "source": "pot", "target": "plate", "text": "Ladle the steamy vegetable soup into a warm serving bowl. So wholesome and comforting!" }
+  ]
+}

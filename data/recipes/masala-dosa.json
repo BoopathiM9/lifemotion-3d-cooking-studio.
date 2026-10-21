@@ -1,0 +1,26 @@
+{
+  "title": "Masala Dosa",
+  "recipeId": "masala-dosa",
+  "genericVisualization": false,
+  "primaryEquipment": "pan",
+  "utensil": "spatula",
+  "isColdDish": false,
+  "equipment": ["pan", "bowl", "ladle", "spatula", "plate"],
+  "ingredients": [
+    { "id": "batter", "name": "Dosa Batter", "category": "batter", "state": "liquid", "color": "#fff0ce" },
+    { "id": "filling", "name": "Potato Masala", "category": "vegetable", "state": "cooked", "color": "#e5b945" },
+    { "id": "oil", "name": "Cooking Oil", "category": "liquid", "state": "liquid", "color": "#e0c055" },
+    { "id": "chutney", "name": "Coconut Chutney", "category": "liquid", "state": "sauce-coated", "color": "#b5c887" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "pan", "text": "Hello, little chefs! I'm Chef Maya. Let's make a crispy golden masala dosa!" },
+    { "key": "safe", "action": "show", "target": "pan", "text": "Wash your hands first. Always ask a grown-up to help with the hot stove and utensils." },
+    { "key": "ingredients", "action": "show", "ingredient": "batter", "target": "bowl", "text": "We have our smooth dosa batter, warm potato filling, and fresh coconut chutney ready." },
+    { "key": "pour", "action": "pour", "ingredient": "batter", "source": "bowl", "target": "pan", "text": "Our grown-up warms the pan. Gently pour a ladle of batter right into the middle." },
+    { "key": "spread", "action": "spread", "ingredient": "batter", "target": "pan", "text": "Use the bottom of the ladle. Spread the batter outwards in smooth, gentle spirals." },
+    { "key": "cook", "action": "cook", "ingredient": "oil", "target": "pan", "text": "Drizzle a little oil around the edges and watch the dosa turn crispy and golden." },
+    { "key": "fill", "action": "add", "ingredient": "filling", "source": "bowl", "target": "pan", "text": "Spoon the delicious potato masala onto one half of our golden dosa." },
+    { "key": "fold", "action": "flip", "ingredient": "batter", "target": "pan", "text": "Slide the spatula underneath and gently fold the crispy half over the yummy filling." },
+    { "key": "serve", "action": "serve", "source": "pan", "target": "plate", "text": "Slide our warm masala dosa onto the plate. Great cooking, little chefs!" }
+  ]
+}

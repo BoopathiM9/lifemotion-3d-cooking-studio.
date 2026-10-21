@@ -1,0 +1,174 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Maya | A Little Dosa Magic</title>
+<style>
+*{box-sizing:border-box}body{margin:0;width:1280px;height:720px;overflow:hidden;background:#f7ebda;font-family:Arial,sans-serif}svg{position:absolute;inset:0;width:1280px;height:720px}
+#caption{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);width:max-content;max-width:1060px;text-align:center;color:#fffdf5;font-size:28px;line-height:1.35;font-weight:600;text-shadow:0 2px 4px #182923,1px 0 2px #182923,-1px 0 2px #182923;padding:10px 18px;border-radius:12px;background:rgba(29,43,38,.55)}#caption:empty{display:none}
+#filmTitle{position:absolute;right:120px;top:58px;color:#6f493e;text-align:center;font-family:Georgia,serif;pointer-events:none;font-size:48px;font-weight:bold;line-height:1.05;text-shadow:0 2px #fff9eb}#filmTitle span{display:block;font-size:23px;font-weight:normal;font-style:italic;margin-top:12px;color:#8d6952}
+</style>
+<svg id="stage" viewBox="0 0 1280 720"><defs><linearGradient id="wall" x2="0" y2="1"><stop stop-color="#fffaf0"/><stop offset="1" stop-color="#e2eeea"/></linearGradient><linearGradient id="gold" x2="0" y2="1"><stop stop-color="#f8d577"/><stop offset="1" stop-color="#ce8737"/></linearGradient><pattern id="tiles" width="80" height="55" patternUnits="userSpaceOnUse"><rect width="80" height="55" fill="none" stroke="#ffffff" stroke-width="2"/></pattern>
+<!-- Original Chef Maya: shaded vector illustration, no external character assets. -->
+<radialGradient id="skin" cx=".35" cy=".24" r=".85"><stop stop-color="#ffe8ce"/><stop offset=".6" stop-color="#efbb98"/><stop offset="1" stop-color="#d29478"/></radialGradient>
+<linearGradient id="hair" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#986849"/><stop offset=".42" stop-color="#674331"/><stop offset="1" stop-color="#493129"/></linearGradient>
+<linearGradient id="hairLight" x2="1" y2="1"><stop stop-color="#c08e60"/><stop offset="1" stop-color="#795039"/></linearGradient>
+<linearGradient id="jacket" x2="1" y2=".7"><stop stop-color="#fffefa"/><stop offset=".5" stop-color="#f2f1ed"/><stop offset="1" stop-color="#b6c8ca"/></linearGradient>
+<linearGradient id="apron" x2="1" y2=".6"><stop stop-color="#edb19a"/><stop offset=".55" stop-color="#cf8d79"/><stop offset="1" stop-color="#ab705e"/></linearGradient>
+<linearGradient id="iris" x2=".2" y2="1"><stop stop-color="#172d47"/><stop offset=".48" stop-color="#278e94"/><stop offset="1" stop-color="#8de0c4"/></linearGradient>
+<linearGradient id="hatShade" x2=".9" y2=".7"><stop stop-color="#fffefa"/><stop offset=".5" stop-color="#f9faf6"/><stop offset="1" stop-color="#ccd9d8"/></linearGradient>
+<radialGradient id="blush"><stop stop-color="#ec968e" stop-opacity=".65"/><stop offset="1" stop-color="#ec968e" stop-opacity="0"/></radialGradient>
+
+<linearGradient id="wood" x2="0" y2="1"><stop stop-color="#e7c9a6"/><stop offset="1" stop-color="#c89f7e"/></linearGradient>
+<linearGradient id="stone" x2="0" y2="1"><stop stop-color="#fffaf0"/><stop offset="1" stop-color="#e0d9c7"/></linearGradient>
+<linearGradient id="sky" x2="0" y2="1"><stop stop-color="#bce2e6"/><stop offset="1" stop-color="#eff8e5"/></linearGradient>
+<linearGradient id="cabinet" x2="1" y2="1"><stop stop-color="#8db9ab"/><stop offset="1" stop-color="#588d80"/></linearGradient>
+<radialGradient id="sunlight"><stop stop-color="#fff9d5" stop-opacity=".7"/><stop offset="1" stop-color="#fff9d5" stop-opacity="0"/></radialGradient>
+<pattern id="backsplash" width="104" height="48" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="100" height="44" rx="7" fill="#f7faf4" stroke="#d6e2da" stroke-width="1.5"/></pattern>
+</defs>
+<!-- Soft, spacious set. Objects are staged behind the character and action. -->
+<rect x="-200" y="-200" width="1800" height="1100" fill="url(#wall)"/>
+<ellipse cx="1080" cy="260" rx="480" ry="350" fill="url(#sunlight)"/>
+<path d="M0 345H1280V505H0Z" fill="#e3ece2"/><path d="M0 345H1280M0 425H1280" stroke="#f5f7ee" stroke-width="3"/>
+<rect x="1004" y="96" width="206" height="261" rx="68" fill="#91b1a4" opacity=".14"/>
+<rect x="995" y="87" width="206" height="261" rx="68" fill="#fffdf4"/>
+<path d="M1009 163Q1009 101 1098 101Q1187 101 1187 163V333H1009Z" fill="url(#sky)"/>
+<circle cx="1141" cy="157" r="28" fill="#ffe4a1"/>
+<path d="M1009 290Q1058 247 1106 282Q1150 244 1187 274V333H1009Z" fill="#bed5aa"/><path d="M1009 319Q1072 285 1126 310Q1164 292 1187 311V333H1009Z" fill="#a1bf96"/>
+<path d="M1098 101V334M1009 226H1187" stroke="#fffdf4" stroke-width="9"/>
+<rect x="980" y="340" width="237" height="14" rx="7" fill="url(#stone)"/>
+<path d="M999 351L895 498H1170L1212 351Z" fill="#fff4cc" opacity=".13"/>
+<rect x="600" y="174" width="242" height="14" rx="7" fill="#728775" opacity=".12"/><rect x="595" y="167" width="242" height="13" rx="5" fill="url(#wood)"/>
+<rect x="619" y="120" width="39" height="47" rx="9" fill="#eac5a1"/><rect x="617" y="115" width="43" height="9" rx="4" fill="#bb9571"/>
+<rect x="675" y="129" width="35" height="38" rx="8" fill="#d2dfbe"/><rect x="673" y="124" width="39" height="8" rx="4" fill="#bb9571"/>
+<path d="M775 150Q741 124 753 110Q774 115 775 150M775 150Q804 124 797 110Q775 117 775 150M775 144Q762 109 777 101Q790 115 775 144" fill="#8aae7f"/>
+<path d="M755 145H797L791 168H761Z" fill="#dba48c"/>
+<rect x="73" y="236" width="87" height="111" rx="8" fill="#b1bfa8" opacity=".12"/><rect x="67" y="230" width="87" height="111" rx="8" fill="#dabd93"/><rect x="74" y="237" width="73" height="97" rx="5" fill="#fffaeb"/>
+<path d="M112 312V267M112 290Q88 287 94 269Q110 269 112 290M112 277Q132 274 128 256Q111 257 112 277" fill="#a2bd8a" stroke="#91a97d" stroke-width="2"/>
+<rect y="504" width="1280" height="280" fill="url(#wood)"/>
+<rect y="498" width="1280" height="24" rx="6" fill="url(#stone)"/><path d="M0 502H1280" stroke="#fffdf6" stroke-width="3"/><path d="M0 524H1280" stroke="#b99679" stroke-opacity=".25" stroke-width="5"/>
+<path d="M400 535V720M875 535V720" stroke="#b18f71" stroke-width="2" opacity=".2"/>
+<ellipse cx="758" cy="507" rx="274" ry="18" fill="#685848" opacity=".12"/>
+<rect x="491" y="459" width="540" height="56" rx="17" fill="#526866"/><circle id="stoveLight" cx="1003" cy="490" r="5" fill="#e89970"/><ellipse cx="755" cy="442" rx="209" ry="66" fill="#202e31"/><rect x="925" y="443" width="182" height="20" rx="10" fill="#263a3b"/><ellipse cx="755" cy="429" rx="197" ry="54" fill="#39494a"/>
+<g id="plateArea"><ellipse cx="1100" cy="560" rx="163" ry="44" fill="#78664f" opacity=".14"/>
+<ellipse id="plate" cx="1100" cy="551" rx="162" ry="45" fill="#fffdf2" stroke="#77a5a0" stroke-width="5"/>
+<ellipse id="plateInner" cx="1100" cy="551" rx="144" ry="36" fill="none" stroke="#d7e7de" stroke-width="2"/>
+<g id="chutney"><ellipse cx="1215" cy="531" rx="19" ry="12" fill="#fcfaf0" stroke="#b5cfc1" stroke-width="2"/><ellipse cx="1215" cy="530" rx="15" ry="8" fill="#b5c887"/><circle cx="1212" cy="528" r="2" fill="#799564"/><circle cx="1220" cy="532" r="1.8" fill="#799564"/></g></g>
+<g id="cookingFoodLayer"><g id="food"><ellipse id="dosa" cx="755" cy="427" rx="1" ry="1" fill="#fff1d1" stroke="#dfb875" stroke-width="2"/><g id="rings" fill="none" stroke="#c88e43" stroke-width="2" opacity=".5"></g><g id="crumbs" fill="#b48142" opacity=".22"><ellipse cx="620" cy="405" rx="2" ry="1.3"/><ellipse cx="667" cy="418" rx="3" ry="1.3"/><ellipse cx="714" cy="431" rx="4" ry="1.3"/><ellipse cx="761" cy="405" rx="2" ry="1.3"/><ellipse cx="808" cy="418" rx="3" ry="1.3"/><ellipse cx="855" cy="431" rx="4" ry="1.3"/><ellipse cx="642" cy="405" rx="2" ry="1.3"/><ellipse cx="689" cy="418" rx="3" ry="1.3"/><ellipse cx="736" cy="431" rx="4" ry="1.3"/><ellipse cx="783" cy="405" rx="2" ry="1.3"/><ellipse cx="830" cy="418" rx="3" ry="1.3"/><ellipse cx="877" cy="431" rx="4" ry="1.3"/><ellipse cx="664" cy="405" rx="2" ry="1.3"/><ellipse cx="711" cy="418" rx="3" ry="1.3"/><ellipse cx="758" cy="431" rx="4" ry="1.3"/><ellipse cx="805" cy="405" rx="2" ry="1.3"/><ellipse cx="852" cy="418" rx="3" ry="1.3"/><ellipse cx="639" cy="431" rx="4" ry="1.3"/><ellipse cx="686" cy="405" rx="2" ry="1.3"/><ellipse cx="733" cy="418" rx="3" ry="1.3"/><ellipse cx="780" cy="431" rx="4" ry="1.3"/><ellipse cx="827" cy="405" rx="2" ry="1.3"/><ellipse cx="874" cy="418" rx="3" ry="1.3"/><ellipse cx="661" cy="431" rx="4" ry="1.3"/><ellipse cx="708" cy="405" rx="2" ry="1.3"/><ellipse cx="755" cy="418" rx="3" ry="1.3"/><ellipse cx="802" cy="431" rx="4" ry="1.3"/><ellipse cx="849" cy="405" rx="2" ry="1.3"/><ellipse cx="636" cy="418" rx="3" ry="1.3"/><ellipse cx="683" cy="431" rx="4" ry="1.3"/></g><g id="filling"><ellipse cx="693" cy="423" rx="56" ry="18" fill="#eebc45"/><g fill="#ffe080"><circle cx="674" cy="418" r="12"/><circle cx="702" cy="414" r="13"/><circle cx="719" cy="427" r="10"/></g><g fill="#668544"><circle cx="683" cy="419" r="4"/><circle cx="714" cy="418" r="3"/></g></g><path id="folded" d="M605 427C705 376.333 805 376.333 905 427C805 444.333 705 444.333 605 427Z" fill="url(#gold)" stroke="#b77c39" stroke-width="3"/></g>
+</g><g id="steam" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"><path d="M698 372Q680 350 700 328T700 285M755 366Q738 344 758 322T758 279M811 372Q793 350 813 328T813 285"/></g>
+<g id="bowls"><g id="oilBottle"><rect x="684" y="532" width="20" height="38" rx="6" fill="#e5c66f" stroke="#e9ddb4" stroke-width="2"/><rect x="688" y="522" width="12" height="14" rx="3" fill="#7b9d7f"/><path d="M689 540V558" stroke="#fff4c9" stroke-width="3" stroke-linecap="round"/></g><ellipse cx="458" cy="536" rx="54" ry="18" fill="#fff4d8"/><path d="M404 536Q414 591 458 582Q502 581 512 536" fill="#e48d6b"/><ellipse cx="458" cy="536" rx="49" ry="13" fill="#fff1d3"/><ellipse cx="595" cy="559" rx="45" ry="17" fill="#e7b84c"/><path d="M550 559Q559 593 595 591Q633 591 640 559" fill="#78a09a"/></g>
+<g id="chef">
+<!-- Tailored jacket, curved seams and dimensional apron. -->
+<path d="M137 350Q174 329 213 325H272Q311 332 337 355L355 504H119Z" fill="url(#jacket)" stroke="#8da5aa" stroke-width="2.5"/>
+<path d="M147 366L131 497H162L178 356M320 365L342 499H317L302 352" fill="#8aa6ae" opacity=".16"/>
+<path d="M205 330L190 366L171 504H309L287 365L272 330" fill="url(#apron)" stroke="#245b5a" stroke-width="2"/>
+<path d="M208 335L199 380M273 335L283 380" stroke="#a1d6c6" stroke-width="8"/><path d="M202 379Q241 392 283 379L294 503H186Z" fill="url(#apron)"/>
+<path d="M209 420Q242 427 276 420L271 461Q242 478 213 461Z" fill="#e4a38a" stroke="#f5cbb3" stroke-width="2"/>
+<path d="M218 430V456M267 430L264 457" stroke="#f6d6bf" stroke-width="2" opacity=".6"/>
+<path d="M222 303H262L268 335Q242 353 216 335Z" fill="url(#skin)"/><path d="M221 305Q242 324 264 307L262 322Q242 337 220 322Z" fill="#b16c5c" opacity=".36"/>
+<path d="M211 326L241 343L219 360L201 338M270 326L242 343L264 361L282 339" fill="url(#jacket)" stroke="#a8bfc0" stroke-width="1.7"/>
+<path d="M224 335L241 341L258 334L252 351H232Z" fill="#e8996f"/><path d="M237 347L228 378L243 370L254 382L249 348" fill="#db805f"/>
+<g id="faceRig">
+<!-- Original round-faced Maya: soft chestnut bob and a little petal-shaped fringe. -->
+<path d="M152 232Q144 165 192 151Q252 125 302 163Q338 192 326 265L313 305Q289 326 241 323Q189 328 161 304Z" fill="url(#hair)"/>
+<ellipse cx="164" cy="263" rx="15" ry="20" fill="url(#skin)"/><ellipse cx="320" cy="263" rx="15" ry="20" fill="url(#skin)"/>
+<path d="M169 225Q172 178 242 177Q312 179 316 230L317 265Q316 307 283 322Q244 341 206 323Q169 309 167 270Z" fill="url(#skin)" stroke="#c58f75" stroke-width="1.5"/>
+<path d="M307 225Q325 277 300 305Q280 326 244 333Q293 335 312 299Q327 266 316 230Z" fill="#bf816a" opacity=".12"/>
+<ellipse cx="192" cy="283" rx="23" ry="16" fill="url(#blush)"/><ellipse cx="294" cy="283" rx="23" ry="16" fill="url(#blush)"/>
+<g id="eyes">
+<ellipse cx="208" cy="249" rx="24" ry="29" fill="#fffdf7"/><ellipse cx="278" cy="249" rx="24" ry="29" fill="#fffdf7"/>
+<g id="gaze"><ellipse cx="211" cy="250" rx="16" ry="24" fill="url(#iris)"/><ellipse cx="275" cy="250" rx="16" ry="24" fill="url(#iris)"/>
+<ellipse cx="212" cy="248" rx="8" ry="16" fill="#263b38"/><ellipse cx="276" cy="248" rx="8" ry="16" fill="#263b38"/>
+<path d="M201 264Q212 275 221 262M265 264Q276 275 285 262" fill="none" stroke="#b5e0bb" stroke-width="3"/>
+<g fill="#fff"><ellipse cx="205" cy="239" rx="6" ry="8"/><ellipse cx="269" cy="239" rx="6" ry="8"/><circle cx="218" cy="256" r="3"/><circle cx="282" cy="256" r="3"/></g></g>
+<path d="M184 244Q189 219 209 221Q227 222 231 242M255 242Q260 220 279 221Q298 221 302 244" fill="none" stroke="#694536" stroke-width="3.5" stroke-linecap="round"/>
+<path d="M187 238L182 233M299 238L304 233" stroke="#694536" stroke-width="3" stroke-linecap="round"/>
+</g>
+<path id="brows" d="M187 212Q205 203 223 212M261 212Q280 203 297 212" fill="none" stroke="#80573e" stroke-width="4" stroke-linecap="round"/>
+<path d="M240 267Q232 278 245 279" fill="none" stroke="#c58a72" stroke-width="2.4" stroke-linecap="round"/><ellipse cx="239" cy="270" rx="5" ry="3" fill="#ffead3"/>
+<g id="mouth" transform="translate(243 301)"><ellipse id="mouthHole" rx="18" ry="3" fill="#793e42"/><ellipse id="tongue" cy="4" rx="9" ry="3" fill="#efa0a1"/><path id="smile" d="M-20 -2Q0 20 20 -2" fill="#fff5df" stroke="#af6b61" stroke-width="2.5" stroke-linecap="round"/></g>
+<path d="M171 250Q151 193 183 176Q217 149 263 163Q310 160 320 201L317 247Q303 239 298 209Q274 237 248 225Q271 211 271 193Q241 226 211 222Q228 212 234 191Q201 225 180 221L180 256Z" fill="url(#hair)"/>
+<path d="M180 202Q194 177 228 179Q209 197 192 202M243 179Q264 168 282 180Q277 201 260 208" fill="url(#hairLight)" opacity=".7"/>
+<path d="M182 191Q199 178 215 178M250 177Q264 171 278 177" fill="none" stroke="#d6a272" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+<!-- Big soft white toque, gently curved brim. -->
+<path d="M169 179Q146 166 156 143Q143 119 171 109Q181 83 211 98Q240 69 267 96Q300 82 314 111Q342 120 328 146Q340 171 311 180Z" fill="url(#hatShade)" stroke="#c3cec8" stroke-width="2"/>
+<path d="M174 123Q163 144 179 160M210 110Q200 135 211 158M268 109Q280 135 269 158M310 125Q316 144 303 161" fill="none" stroke="#dce4dd" stroke-width="3" stroke-linecap="round"/>
+<path d="M177 115Q189 98 206 108M224 101Q242 87 259 103M277 106Q294 99 306 118" fill="none" stroke="#fffefa" stroke-width="5" stroke-linecap="round"/>
+<path d="M169 165Q243 154 317 165L310 194Q242 183 176 194Z" fill="url(#hatShade)" stroke="#c3cec8" stroke-width="2"/>
+<path d="M179 173Q244 164 306 173" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+</g>
+<path id="leftArm" d="M139 365Q91 397 123 457" fill="none" stroke="url(#jacket)" stroke-width="31" stroke-linecap="round"/><circle id="leftHand" cx="123" cy="457" r="15" fill="url(#skin)"/>
+<path id="arm" fill="none" stroke="url(#jacket)" stroke-width="30" stroke-linecap="round"/><circle id="hand" r="15" fill="url(#skin)"/>
+<g id="tool"><path id="handle" stroke="#ae7858" stroke-width="9" stroke-linecap="round"/><ellipse id="ladle" rx="28" ry="12" fill="#bdcaca" stroke="#829b9b" stroke-width="3"/><path id="spatula" d="M-30 -9H29V12H-30Z" fill="#bac9c7" stroke="#829b9b" stroke-width="2"/></g>
+<ellipse id="scoop" rx="22" ry="9" fill="#edbf5c"/><path id="stream" fill="none" stroke="#fff0d1" stroke-width="12" stroke-linecap="round"/><circle id="oil" r="5" fill="#f3d56f"/>
+</g><g id="servingFoodLayer"></g></svg>
+<div id="filmTitle">A little dosa magic<span>with MAYA</span></div><div id="caption"></div>
+<script src="../output/cooking-lesson/lesson-data.js"></script><script>
+const $=id=>document.getElementById(id), clamp=v=>Math.max(0,Math.min(1,v)), mix=(a,b,p)=>a+(b-a)*clamp(p);
+const attr=(id,key,value)=>$(id).setAttribute(key,value), show=(id,on)=>attr(id,'opacity',on?1:0);
+for(let i=1;i<6;i++) $('rings').innerHTML+=`<ellipse cx="755" cy="427" rx="${i*27}" ry="${i*7.7}"/>`;
+window.setFrame=function(t){
+ const data=window.LESSON;if(!data)throw Error('Run narration first');
+ const s=data.steps.find(s=>t>=s.start&&t<s.end)||data.steps.at(-1), k=s.key,p=clamp((t-s.start)/(s.speechEnd-s.start)), idx=data.steps.indexOf(s);
+ $('caption').textContent=data.captions.find(c=>t>=c.start&&t<c.end)?.text||''; $('filmTitle').style.opacity=t<.5?clamp(t/.5):clamp((5-t)/1.2);
+ const amp=data.envelope[Math.floor(t/.02)]||0, word=data.words.find(w=>t>=w.start&&t<w.end), rounded=word&&/[ou]/i.test(word.text), speaking=amp>.045;
+ attr('mouthHole','rx',speaking?(rounded?11:19):18);attr('mouthHole','ry',speaking?3+amp*13:2);show('tongue',speaking&&amp>.3);show('smile',!speaking);
+ attr('faceRig','transform',`translate(0 ${Math.sin(t*2)*1.6}) rotate(${Math.sin(t*1.25)*2.3} 242 318)`);
+ attr('brows','transform',`translate(0 ${-Math.abs(Math.sin(t*2.1))*(speaking?2.5:1)})`);
+ const blink=1-Math.sin(clamp((t%4.3)/.2)*Math.PI)*.96; const eyescale=(k==='serve'&&p>.7)?.8:blink; attr('eyes','transform',`translate(0 ${249*(1-eyescale)}) scale(1 ${eyescale})`); attr('gaze','transform',`translate(${idx>=3&&idx<8?3:Math.sin(t*.8)} 0)`);
+ const ease=v=>{v=clamp(v);return v*v*(3-2*v)};
+ // World-space anchors are independent of the chef's local shift and camera.
+ const plateAnchor={x:1095,y:554},foodAnchor={x:755,y:414.5};
+ const serveStep=data.steps.find(v=>v.key==='serve'),serveElapsed=t-serveStep.start;
+ const transfer=ease((serveElapsed-.12)/1.88),withdraw=ease((serveElapsed-2.1)/1.15);
+ const foodX=mix(foodAnchor.x,plateAnchor.x,transfer),foodY=mix(foodAnchor.y,plateAnchor.y,transfer)-Math.sin(transfer*Math.PI)*38;
+ const foodScale=mix(1,.82,transfer);
+ function pose(step,q,time){
+  const duration=data.steps.find(v=>v.key===step).speechEnd-data.steps.find(v=>v.key===step).start,e=q*duration;
+  let x=440,y=381,shift=60,tool='ladle';
+  if(step==='pour'){const z=ease((e-3.35)/1.8);x=mix(458,755,z);y=mix(530,353,z)-Math.sin(z*Math.PI)*35;shift=mix(60,280,ease(e/2));}
+  if(step==='spread'){const z=ease((e-2.5)/(duration-2.5)),a=z*Math.PI*6,r=16+120*z;x=755+Math.cos(a)*r;y=427+Math.sin(a)*r*.28;shift=280;}
+  if(step==='cook'){const z=clamp(e/2.1),a=z*6.28;x=755+Math.cos(a)*178;y=402+Math.sin(a)*48;const rest=ease((e-2.2)/.8);x=mix(x,840,rest);y=mix(y,355,rest);shift=280;}
+  if(step==='fill'){const z=ease(e/2.15);x=mix(595,693,z);y=mix(550,403,z)-Math.sin(z*Math.PI)*55;const rest=ease((e-2.4)/1);x=mix(x,830,rest);y=mix(y,350,rest);shift=280;}
+  if(step==='fold'){tool='spatula';const insert=ease(e/1.9),lift=ease((e-3.35)/1.25),fold=ease((e-4.75)/1.15);x=mix(845,835,insert);y=mix(355,423,insert);x=mix(x,755,fold);y-=Math.sin(lift*Math.PI*.5)*25*(1-fold);shift=280;}
+  if(step==='serve'){
+   const z=ease((e-.12)/1.88),w=ease((e-2.1)/1.15);tool='spatula';
+   x=mix(755,plateAnchor.x,z);y=mix(414.5,plateAnchor.y,z)-Math.sin(z*Math.PI)*38+mix(12.5,10.25,z);
+   x=mix(x,942,w);y=mix(y,475,w);shift=mix(280,460,z);
+  }
+  if(['welcome','safe','ingredients'].includes(step)){x+=Math.sin(time*1.8)*9;y+=Math.sin(time*2.2)*8;}
+  return {x,y,shift,tool};
+ }
+ let current=pose(k,p,t);
+ if(idx>0&&k!=='serve'&&t-s.start<.65){const prev=data.steps[idx-1],last=pose(prev.key,1,prev.speechEnd),blend=ease((t-s.start)/.65);for(const key of ['x','y','shift'])current[key]=mix(last[key],current[key],blend);}
+ let {x,y,shift,tool}=current;
+ attr('chef','transform',`translate(${shift} 0)`);x-=shift;
+ const hx=x-82,hy=y-38,ex=324+(hx-324)*.48,ey=Math.max(369,hy+38);
+ attr('arm','d',`M324 359Q${ex-20} ${ey} ${ex} ${ey}Q${ex+30} ${ey} ${hx} ${hy}`);
+ attr('hand','cx',hx);attr('hand','cy',hy);
+ attr('handle','d',`M${hx} ${hy}L${x} ${y}`);attr('ladle','cx',x);attr('ladle','cy',y);attr('spatula','transform',`translate(${x} ${y}) rotate(${k==='fold'?-Math.sin(clamp((t-s.start-3.35)/2.55)*Math.PI)*16:0})`);show('ladle',tool==='ladle');show('spatula',tool==='spatula');
+ const wave=k==='welcome'?Math.sin(clamp(p*1.8)*Math.PI)*72:0,lx=123-Math.sin(t*5)*wave*.15,ly=457-wave;
+ attr('leftArm','d',`M139 365Q${82-wave*.2} ${398-wave} ${lx} ${ly}`);attr('leftHand','cx',lx);attr('leftHand','cy',ly);
+ const elapsed=t-s.start;
+ show('scoop',k==='fill'&&elapsed>=.1&&elapsed<2.2);attr('scoop','cx',x);attr('scoop','cy',y-5);
+ // Slow reframing follows the action, with subtitles fixed in screen space.
+ const focus=idx<3?{x:0,y:0,w:1280}:idx===8?{x:270,y:30,w:1040}:{x:190,y:35,w:1100};
+ const previousFocus=idx<=3?{x:0,y:0,w:1280}:idx===8?{x:190,y:35,w:1100}:focus;
+ const blend=ease((t-s.start)/1.5),cx=mix(previousFocus.x,focus.x,blend),cy=mix(previousFocus.y,focus.y,blend),cw=mix(previousFocus.w,focus.w,blend);
+ attr('stage','viewBox',`${Math.min(cx,1280-cw)} ${cy} ${cw} ${cw*9/16}`);
+ const pouring=k==='pour'&&elapsed>=5.25&&elapsed<6.4;show('stream',pouring);attr('stream','d',`M${x} ${y+5}Q${x+5} 390 ${755-shift} 427`);
+ const growth=k==='pour'?ease((elapsed-5.25)/1.15)*.25:k==='spread'?mix(.25,1,ease((elapsed-2.5)/(s.speechEnd-s.start-2.5))):idx>4?1:0;
+ const folding=k==='fold'?ease((elapsed-4.75)/1.15):idx>7?1:0;
+ const foodParent=k==='serve'?$('servingFoodLayer'):$('cookingFoodLayer');if($('food').parentNode!==foodParent)foodParent.appendChild($('food'));
+ show('crumbs',idx>=5&&folding===0);show('food',growth>0);attr('dosa','rx',170*growth);attr('dosa','ry',48*growth);attr('dosa','fill',idx>=5?`rgb(${Math.round(mix(255,235,k==='cook'?p:1))},${Math.round(mix(239,185,k==='cook'?p:1))},${Math.round(mix(209,91,k==='cook'?p:1))})`:'#fff0d1');
+ attr('rings','transform',`translate(${755*(1-growth)} ${427*(1-growth)}) scale(${growth})`);
+ show('filling',(k==='fill'&&elapsed>=2.2)||k==='fold'&&folding<.8);attr('filling','opacity',k==='fill'?ease((elapsed-2.1)/.25):k==='fold'?1-folding:0);
+ show('dosa',folding===0);show('rings',idx>=4&&folding===0);show('folded',folding>0||k==='serve');
+ // Morph the flat dosa into its folded silhouette instead of swapping poses.
+ const left=mix(585,605,folding),right=mix(925,905,folding),top=mix(363,376.333,folding),bottom=mix(491,444.333,folding);
+ attr('folded','d',`M${left} 427C${mix(585,705,folding)} ${top} ${mix(925,805,folding)} ${top} ${right} 427C${mix(925,805,folding)} ${bottom} ${mix(585,705,folding)} ${bottom} ${left} 427Z`);
+ attr('folded','transform','');
+ attr('food','transform',k==='serve'?`translate(${foodX} ${foodY}) scale(${foodScale}) translate(${-foodAnchor.x} ${-foodAnchor.y})`:'');
+ show('steam',idx>=5&&idx<=7);attr('steam','transform',`translate(0 ${-(t*18%35)})`);attr('steam','opacity',idx>=5&&idx<=7?.22+Math.sin(t*3)**2*.25:0);
+ show('oil',k==='cook'&&elapsed<2.1);attr('oil','cx',x);attr('oil','cy',y+18+(t*18%7));
+ attr('stoveLight','fill',idx<3||k==='serve'&&elapsed>=3.2?'#a7b1a2':'#e89970');
+ window.frameState={key:k,caption:$('caption').textContent,mouth:amp,tool,x,y,shift,foodX:k==='serve'?foodX:755,foodY:k==='serve'?foodY:414.5,foodScale:k==='serve'?foodScale:1,transfer:k==='serve'?transfer:0,withdraw:k==='serve'?withdraw:0,folding};
+};if(window.LESSON)window.setFrame(0);
+</script></html>
+

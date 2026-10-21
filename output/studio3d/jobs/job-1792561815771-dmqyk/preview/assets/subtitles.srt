@@ -1,0 +1,23 @@
+1
+00:00:00,104 --> 00:00:01,595
+Scoop up the batter
+
+2
+00:00:02,636 --> 00:00:04,226
+Gently pour it into the middle
+
+3
+00:00:04,226 --> 00:00:05,459
+of the warm pan
+
+4
+00:00:06,512 --> 00:00:08,873
+Spread the batter in gentle circles
+
+5
+00:00:09,908 --> 00:00:11,294
+Start in the middle and move
+
+6
+00:00:11,294 --> 00:00:12,228
+outwards

@@ -1,0 +1,25 @@
+{
+  "title": "Vegetable Fried Rice",
+  "recipeId": "vegetable-fried-rice",
+  "genericVisualization": false,
+  "primaryEquipment": "wok",
+  "utensil": "spatula",
+  "isColdDish": false,
+  "equipment": ["wok", "bowl", "spatula", "plate"],
+  "ingredients": [
+    { "id": "rice", "name": "Steamed Rice", "category": "grain", "state": "cooked", "color": "#f8f7eb" },
+    { "id": "vegetables", "name": "Mixed Veggies", "category": "vegetable", "state": "chopped", "color": "#6aa84f" },
+    { "id": "carrot", "name": "Carrot Dice", "category": "vegetable", "state": "diced", "color": "#e67e22" },
+    { "id": "sauce", "name": "Seasoning Sauce", "category": "liquid", "state": "liquid", "color": "#4a2c17" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "wok", "text": "Hello, little chefs! I'm Chef Maya. Today we're making crunchy vegetable fried rice!" },
+    { "key": "safe", "action": "show", "target": "wok", "text": "Tie your hair and clean your hands. Ask our grown-up chef to help cook with the hot wok." },
+    { "key": "ingredients", "action": "show", "ingredient": "vegetables", "target": "bowl", "text": "We have soft cooked rice, diced carrots, green peas, and savory seasoning sauce." },
+    { "key": "add_veggies", "action": "add", "ingredient": "vegetables", "source": "bowl", "target": "wok", "text": "Tip the colourful crunchy vegetables right into the sizzling hot wok." },
+    { "key": "stir_veggies", "action": "stir", "ingredient": "vegetables", "target": "wok", "text": "Stir-fry quickly with our spatula so the vegetables stay bright, sweet, and crisp." },
+    { "key": "add_rice", "action": "add", "ingredient": "rice", "source": "bowl", "target": "wok", "text": "Tumble in our fluffy steamed rice and drizzle a splash of savory sauce." },
+    { "key": "toss_all", "action": "mix", "ingredient": "rice", "target": "wok", "text": "Toss and mix everything together until every grain of rice is golden and fragrant." },
+    { "key": "serve", "action": "serve", "source": "wok", "target": "plate", "text": "Dish our warm vegetable fried rice out onto a big plate. Bon appetit, little chefs!" }
+  ]
+}

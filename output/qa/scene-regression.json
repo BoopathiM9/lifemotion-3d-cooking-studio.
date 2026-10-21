@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "inlineJavaScriptSyntax": true,
+  "requiredElements": 21,
+  "checkedFrames": 1882,
+  "serveFrames": 267,
+  "landedFrames": 219,
+  "maxPlateEllipseValue": 0.9579957998876562,
+  "plateLimit": 1,
+  "maxWristJumpPixels": 28.127987418022173,
+  "allNarrationWordsCaptioned": true,
+  "failedRequests": [],
+  "browserErrors": [],
+  "consoleErrors": [],
+  "screenshots": 28,
+  "transferNote": "Food travels above the counter on its spatula, then is fully contained inside the plate from 2.0 seconds into serving onward."
+}

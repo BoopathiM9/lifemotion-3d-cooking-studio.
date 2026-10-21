@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "finalVideo": "C:\\life_motion-kids_project\\lifemotion-kids-starter\\output\\lifemotion-final-tested.mp4",
+  "bytes": 4803738,
+  "duration": "78.416667",
+  "fullDecodePassed": true,
+  "audioVideoDurationDifferenceSeconds": 0.014667000000002872,
+  "voiceCorrelationWindows": [
+    {
+      "seconds": 3,
+      "correlation": 0.999957
+    },
+    {
+      "seconds": 20,
+      "correlation": 0.999974
+    },
+    {
+      "seconds": 40,
+      "correlation": 0.999995
+    },
+    {
+      "seconds": 55,
+      "correlation": 0.999992
+    },
+    {
+      "seconds": 75,
+      "correlation": 0.999986
+    }
+  ],
+  "subtitleCuesPreserved": 26,
+  "sourcePeakDbFS": -0.62,
+  "clippedSourceSamples": 0,
+  "originalAssetsPreserved": {
+    "narration.wav": true,
+    "subtitles.srt": true,
+    "lesson.json": true,
+    "lesson-data.js": true,
+    "lifemotion-kids-cooking-final.mp4": true
+  }
+}

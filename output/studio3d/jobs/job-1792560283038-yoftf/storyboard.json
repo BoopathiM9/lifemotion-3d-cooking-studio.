@@ -1,0 +1,76 @@
+{
+  "recipe": "pancakes",
+  "title": "Pancakes",
+  "voice": "en-US-JennyNeural",
+  "format": "16:9",
+  "prompt": "Make a cheerful 3D cartoon cooking video where MAYA makes pancakes in simple English.",
+  "actions": [
+    {
+      "key": "welcome",
+      "text": "Hello, little chefs! I'm MAYA. Let's make fluffy pancakes.",
+      "sentences": [
+        "Hello, little chefs!",
+        "I'm MAYA.",
+        "Let's make fluffy pancakes."
+      ]
+    },
+    {
+      "key": "safe",
+      "text": "Wash your hands. Ask a grown-up to use the hot stove.",
+      "sentences": [
+        "Wash your hands.",
+        "Ask a grown-up to use the hot stove."
+      ]
+    },
+    {
+      "key": "ingredients",
+      "text": "We need prepared pancake batter, a little oil, and some fruit.",
+      "sentences": [
+        "We need prepared pancake batter, a little oil, and some fruit."
+      ]
+    },
+    {
+      "key": "pour",
+      "text": "Scoop up the pancake batter. Pour it gently into the warm pan.",
+      "sentences": [
+        "Scoop up the pancake batter.",
+        "Pour it gently into the warm pan."
+      ]
+    },
+    {
+      "key": "cook",
+      "text": "Let the pancake cook. Watch the edges turn golden.",
+      "sentences": [
+        "Let the pancake cook.",
+        "Watch the edges turn golden."
+      ]
+    },
+    {
+      "key": "flip",
+      "text": "Slide the spatula under the pancake. Lift and flip it carefully.",
+      "sentences": [
+        "Slide the spatula under the pancake.",
+        "Lift and flip it carefully."
+      ]
+    },
+    {
+      "key": "stack",
+      "text": "Add another cooked pancake. Make a little stack.",
+      "sentences": [
+        "Add another cooked pancake.",
+        "Make a little stack."
+      ]
+    },
+    {
+      "key": "serve",
+      "text": "Lift the pancakes onto our plate. Pull the spatula away and turn off the stove. Let them cool before tasting. Delicious!",
+      "sentences": [
+        "Lift the pancakes onto our plate.",
+        "Pull the spatula away and turn off the stove.",
+        "Let them cool before tasting.",
+        "Delicious!"
+      ]
+    }
+  ],
+  "limitations": "Recipe templates control ingredients and actions. Prompts do not synthesize arbitrary recipes or custom scenes."
+}

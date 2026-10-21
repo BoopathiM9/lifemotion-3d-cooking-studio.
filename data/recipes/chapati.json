@@ -1,0 +1,24 @@
+{
+  "title": "Soft Chapati",
+  "recipeId": "chapati",
+  "genericVisualization": false,
+  "primaryEquipment": "pan",
+  "utensil": "spatula",
+  "isColdDish": false,
+  "equipment": ["board", "pan", "bowl", "rolling pin", "spatula", "plate"],
+  "ingredients": [
+    { "id": "dough", "name": "Wheat Dough", "category": "dough", "state": "raw", "color": "#d9b68c" },
+    { "id": "flour", "name": "Dry Flour", "category": "grain", "state": "powder", "color": "#f8f5eb" },
+    { "id": "ghee", "name": "Warm Ghee", "category": "liquid", "state": "liquid", "color": "#e0b040" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "board", "text": "Hello, little chefs! I'm Chef Maya. Let's make warm, soft puffed chapatis!" },
+    { "key": "safe", "action": "show", "target": "board", "text": "Wash your hands clean. A grown-up will cook the hot tawa while we help roll the dough!" },
+    { "key": "ingredients", "action": "show", "ingredient": "dough", "target": "board", "text": "We need soft whole wheat dough, a pinch of dry flour, and golden warm ghee." },
+    { "key": "knead", "action": "knead", "ingredient": "dough", "source": "bowl", "target": "board", "text": "Pinch a smooth round ball of dough and dust it lightly with dry flour." },
+    { "key": "roll", "action": "roll", "ingredient": "dough", "target": "board", "text": "Roll the rolling pin gently back and forth until the dough becomes a thin circle." },
+    { "key": "cook_tava", "action": "place", "ingredient": "dough", "source": "board", "target": "pan", "text": "Gently place our flat chapati onto the hot tawa and watch tiny bubbles puff up!" },
+    { "key": "flip", "action": "flip", "ingredient": "dough", "source": "pan", "target": "pan", "text": "Flip the chapati with our spatula and press softly until it puffs up like a balloon!" },
+    { "key": "serve", "action": "serve", "source": "pan", "target": "plate", "text": "Brush with a touch of ghee and serve warm on the plate. Beautiful cooking!" }
+  ]
+}

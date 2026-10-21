@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "mutedNarrationRejected": true,
+  "fixture": "C:\\life_motion-kids_project\\lifemotion-kids-starter\\output\\studio3d\\tests\\media-negative-20261021-105019\\intentionally-muted-preview.mp4",
+  "expectedFailure": "AssertionError: 0"
+}

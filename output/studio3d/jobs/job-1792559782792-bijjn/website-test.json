@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "job": {
+    "id": "job-1792559782792-bijjn",
+    "recipe": "masala-dosa",
+    "title": "Masala dosa",
+    "format": "9:16",
+    "voice": "en-US-JennyNeural",
+    "status": "complete",
+    "progress": 100,
+    "message": "Your verified 3D video is ready.",
+    "previewUrl": "/media/job-1792559782792-bijjn/preview",
+    "videoUrl": "/media/job-1792559782792-bijjn/final"
+  },
+  "output": "C:\\life_motion-kids_project\\lifemotion-kids-starter\\output\\studio3d\\jobs\\job-1792559782792-bijjn\\final\\maya-3d-complete.mp4",
+  "sentenceSegments": 20,
+  "duration": 65.016,
+  "format": "9:16",
+  "previewFirst": true,
+  "mediaVerification": true,
+  "rangeRequests": true,
+  "downloadHeaders": true,
+  "browserErrors": []
+}

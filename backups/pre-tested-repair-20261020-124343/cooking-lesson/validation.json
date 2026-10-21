@@ -1,0 +1,83 @@
+{
+  "passed": true,
+  "frames": 1882,
+  "fps": 24,
+  "duration": 78.40200000000002,
+  "voice": "en-US-JennyNeural",
+  "steps": [
+    {
+      "key": "welcome",
+      "caption": "make a crispy masala dosa together",
+      "mouth": 1,
+      "tool": "ladle",
+      "x": 379.1521806122388,
+      "y": 374.5780097515365
+    },
+    {
+      "key": "safe",
+      "caption": "to use the hot stove and utensils",
+      "mouth": 0.0002,
+      "tool": "ladle",
+      "x": 385.44996406178603,
+      "y": 381.7737761402165
+    },
+    {
+      "key": "ingredients",
+      "caption": "a little oil and chutney Everything is",
+      "mouth": 0.0007,
+      "tool": "ladle",
+      "x": 375.9586008606506,
+      "y": 382.74675464848616
+    },
+    {
+      "key": "pour",
+      "caption": "Scoop up the batter then gently pour",
+      "mouth": 1,
+      "tool": "ladle",
+      "x": 475,
+      "y": 353
+    },
+    {
+      "key": "spread",
+      "caption": "in gentle circles from the middle outwards",
+      "mouth": 0.1411,
+      "tool": "ladle",
+      "x": 572.1884654002021,
+      "y": 418.15803493655096
+    },
+    {
+      "key": "cook",
+      "caption": "look golden and lift easily",
+      "mouth": 0.0268,
+      "tool": "ladle",
+      "x": 370.0762944017523,
+      "y": 363.22568249118
+    },
+    {
+      "key": "fill",
+      "caption": "side Leave room around the edge so",
+      "mouth": 0.1301,
+      "tool": "ladle",
+      "x": 415,
+      "y": 391
+    },
+    {
+      "key": "fold",
+      "caption": "Lift it gently and fold it over",
+      "mouth": 1,
+      "tool": "spatula",
+      "x": 467.62,
+      "y": 372.41155635519095
+    },
+    {
+      "key": "serve",
+      "caption": "tasting Great cooking little chefs",
+      "mouth": 0.0007,
+      "tool": "spatula",
+      "x": 600,
+      "y": 537
+    }
+  ],
+  "browserErrors": [],
+  "output": "C:\\life_motion-kids_project\\lifemotion-kids-starter\\output\\cooking-lesson\\lifemotion-kids-cooking-final.mp4"
+}

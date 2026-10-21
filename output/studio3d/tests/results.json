@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "sentenceActionTiming": true,
+  "promptValidation": true,
+  "unsupportedRecipeUI": true,
+  "recipeCount": 3,
+  "results": [
+    {
+      "recipe": "masala-dosa",
+      "frames": 648,
+      "maxGripError": 0,
+      "contained": true,
+      "deterministic": true
+    },
+    {
+      "recipe": "vegetable-sandwich",
+      "frames": 576,
+      "maxGripError": 0,
+      "contained": true,
+      "deterministic": true
+    },
+    {
+      "recipe": "pancakes",
+      "frames": 576,
+      "maxGripError": 0,
+      "contained": true,
+      "deterministic": true
+    }
+  ],
+  "portraitSceneLoaded": true,
+  "browserErrors": [],
+  "failedRequests": []
+}

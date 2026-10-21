@@ -1,0 +1,24 @@
+{
+  "title": "Fluffy Pancakes",
+  "recipeId": "pancakes",
+  "genericVisualization": false,
+  "primaryEquipment": "pan",
+  "utensil": "spatula",
+  "isColdDish": false,
+  "equipment": ["pan", "bowl", "ladle", "spatula", "plate"],
+  "ingredients": [
+    { "id": "pancake_batter", "name": "Pancake Batter", "category": "batter", "state": "liquid", "color": "#f8edd2" },
+    { "id": "butter", "name": "Butter", "category": "liquid", "state": "melted", "color": "#f5d46e" },
+    { "id": "berries", "name": "Fresh Berries", "category": "fruit", "state": "whole", "color": "#b84555" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "pan", "text": "Hello, little chefs! I'm Chef Maya. Let's make sweet and fluffy pancakes!" },
+    { "key": "safe", "action": "show", "target": "pan", "text": "Wash your hands and tie your apron. A grown-up should always operate the warm stove." },
+    { "key": "ingredients", "action": "show", "ingredient": "pancake_batter", "target": "bowl", "text": "We need creamy pancake batter, a touch of butter, and sweet fresh berries." },
+    { "key": "pour", "action": "pour", "ingredient": "pancake_batter", "source": "bowl", "target": "pan", "text": "Scoop up the batter and pour a round pancake into the middle of the pan." },
+    { "key": "cook", "action": "cook", "target": "pan", "text": "Let tiny bubbles form on top as the pancake rises and cooks to golden perfection." },
+    { "key": "flip", "action": "flip", "source": "pan", "target": "pan", "text": "Slide our spatula carefully underneath and flip the pancake over to cook the other side!" },
+    { "key": "stack", "action": "layer", "target": "pan", "text": "Cook one more golden pancake and stack them together high and fluffy." },
+    { "key": "serve", "action": "serve", "source": "pan", "target": "plate", "text": "Lift our fluffy pancakes onto the plate and top with fresh berries. Delicious!" }
+  ]
+}

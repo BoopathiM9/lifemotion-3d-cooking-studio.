@@ -1,0 +1,402 @@
+{
+  "passed": true,
+  "errors": [],
+  "snapshots": [
+    {
+      "name": "ingredients-0.65.png",
+      "t": 18.8172,
+      "state": {
+        "key": "ingredients",
+        "p": 0.6499999999999999,
+        "time": 18.8172,
+        "foldAngle": 3.141592653589793,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          -0.5000000000000001,
+          2.38,
+          0
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.41,
+        "gripError": 0,
+        "meshes": 110,
+        "triangles": 28324,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "pick-0.65.png",
+      "t": 24.4842,
+      "state": {
+        "key": "pour",
+        "p": 0.6500000000000004,
+        "time": 24.4842,
+        "foldAngle": 3.141592653589793,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          -0.31211249999999885,
+          2.12730195725651,
+          0.4105974999999997
+        ],
+        "tool": [
+          -0.3121124999999988,
+          2.10980195725651,
+          0.4105974999999997
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.1398019572565103,
+        "gripError": 0,
+        "meshes": 112,
+        "triangles": 29136,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "spread-0.65.png",
+      "t": 30.437399999999997,
+      "state": {
+        "key": "spread",
+        "p": 0.65,
+        "time": 30.437399999999997,
+        "foldAngle": 3.141592653589793,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          0.04947961799571743,
+          1.9900000000000004,
+          -0.05052038200428283
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.0200000000000005,
+        "gripError": 0,
+        "meshes": 113,
+        "triangles": 29148,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "layer-0.1.png",
+      "t": 33.416399999999996,
+      "state": {
+        "key": "fill",
+        "p": 0.1000000000000001,
+        "time": 33.416399999999996,
+        "foldAngle": 3.141592653589793,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          -0.3776967930029147,
+          2.133797151011335,
+          0.5956559766763845
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.163797151011335,
+        "gripError": 0,
+        "meshes": 117,
+        "triangles": 30720,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "layer-0.4.png",
+      "t": 35.6016,
+      "state": {
+        "key": "fill",
+        "p": 0.4000000000000004,
+        "time": 35.6016,
+        "foldAngle": 3.141592653589793,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          -0.6120991253644287,
+          2.0514138165063125,
+          0.7069970845481036
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.0814138165063127,
+        "gripError": 0,
+        "meshes": 117,
+        "triangles": 30048,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "layer-0.7.png",
+      "t": 37.78679999999999,
+      "state": {
+        "key": "fill",
+        "p": 0.6999999999999997,
+        "time": 37.78679999999999,
+        "foldAngle": 3.141592653589793,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          -0.7835276967930039,
+          1.9474127412461952,
+          0.7884256559766768
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 1.9774127412461953,
+        "gripError": 0,
+        "meshes": 120,
+        "triangles": 31104,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "layer-0.97.png",
+      "t": 39.753479999999996,
+      "state": {
+        "key": "fill",
+        "p": 0.9700000000000003,
+        "time": 39.753479999999996,
+        "foldAngle": 3.141592653589793,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          -0.5908000000000052,
+          2.073961013096858,
+          0.6968800000000026
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.1039610130968582,
+        "gripError": 0,
+        "meshes": 120,
+        "triangles": 30432,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "close-0.05.png",
+      "t": 40.465799999999994,
+      "state": {
+        "key": "fold",
+        "p": 0.05000000000000006,
+        "time": 40.465799999999994,
+        "foldAngle": 0,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          0.36,
+          2.33949875,
+          0.25
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.3694987500000004,
+        "gripError": 0,
+        "meshes": 120,
+        "triangles": 31192,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "close-0.5.png",
+      "t": 43.28999999999999,
+      "state": {
+        "key": "fold",
+        "p": 0.49999999999999944,
+        "time": 43.28999999999999,
+        "foldAngle": 1.3899080834270685,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          0.36,
+          2.1695,
+          0.25
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.1995000000000005,
+        "gripError": 0,
+        "meshes": 119,
+        "triangles": 30392,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "close-0.97.png",
+      "t": 46.23972,
+      "state": {
+        "key": "fold",
+        "p": 0.9700000000000002,
+        "time": 46.23972,
+        "foldAngle": 3.141592653589793,
+        "landed": false,
+        "withdraw": 0,
+        "food": [
+          0.35,
+          1.852,
+          0.25
+        ],
+        "tool": [
+          0.36,
+          1.9979128700000002,
+          0.25
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.76,
+        "plateRadius": 1.04,
+        "handBottom": 2.02791287,
+        "gripError": 0,
+        "meshes": 119,
+        "triangles": 30392,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    },
+    {
+      "name": "serve-0.65.png",
+      "t": 52.302,
+      "state": {
+        "key": "serve",
+        "p": 0.6499999999999999,
+        "time": 52.302,
+        "foldAngle": 3.141592653589793,
+        "landed": true,
+        "withdraw": 0.04660146297361691,
+        "food": [
+          2.29,
+          1.68,
+          0.83
+        ],
+        "tool": [
+          2.232214185912715,
+          1.6638735925043149,
+          0.8090293416618723
+        ],
+        "plate": [
+          2.47,
+          1.65,
+          0.69
+        ],
+        "foodRadius": 0.6688000000000001,
+        "plateRadius": 1.04,
+        "handBottom": 1.693873592504315,
+        "gripError": 0,
+        "meshes": 118,
+        "triangles": 28884,
+        "perspective": true,
+        "webgl": true,
+        "threeRevision": "180"
+      }
+    }
+  ]
+}

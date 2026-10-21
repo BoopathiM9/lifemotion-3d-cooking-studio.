@@ -1,0 +1,25 @@
+{
+  "title": "Rainbow Salad",
+  "recipeId": "salad",
+  "genericVisualization": false,
+  "primaryEquipment": "bowl",
+  "utensil": "spoon",
+  "isColdDish": true,
+  "equipment": ["bowl", "spoon", "plate"],
+  "ingredients": [
+    { "id": "greens", "name": "Crisp Lettuce", "category": "vegetable", "state": "chopped", "color": "#4caf50" },
+    { "id": "cherry_tomatoes", "name": "Cherry Tomatoes", "category": "vegetable", "state": "sliced", "color": "#e53935" },
+    { "id": "corn", "name": "Sweet Corn", "category": "vegetable", "state": "whole", "color": "#fbc02d" },
+    { "id": "dressing", "name": "Lemon Dressing", "category": "liquid", "state": "liquid", "color": "#c0ca33" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "bowl", "text": "Hello, little chefs! I'm Chef Maya. Let's toss a crunchy, colorful rainbow salad!" },
+    { "key": "safe", "action": "show", "target": "bowl", "text": "Wash your hands clean and rinse every crisp leaf thoroughly under cool water." },
+    { "key": "ingredients", "action": "show", "ingredient": "greens", "target": "bowl", "text": "Look at our crisp green lettuce, sweet yellow corn, red cherry tomatoes, and tangy dressing." },
+    { "key": "add_greens", "action": "add", "ingredient": "greens", "source": "bowl", "target": "bowl", "text": "Fill our large mixing bowl with fresh, torn salad greens." },
+    { "key": "add_toppings", "action": "add", "ingredient": "cherry_tomatoes", "source": "bowl", "target": "bowl", "text": "Tumble in juicy cherry tomatoes and sweet golden corn kernels." },
+    { "key": "drizzle_dressing", "action": "pour", "ingredient": "dressing", "source": "bowl", "target": "bowl", "text": "Drizzle our bright sunny lemon dressing over all the vegetables." },
+    { "key": "toss_salad", "action": "mix", "ingredient": "dressing", "target": "bowl", "text": "Toss gently with our salad spoons until every leaf is shiny and coated." },
+    { "key": "serve", "action": "serve", "source": "bowl", "target": "plate", "text": "Spoon the crisp rainbow salad onto our plate. Crisp, cool, and super healthy!" }
+  ]
+}

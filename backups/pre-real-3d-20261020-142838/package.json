@@ -1,0 +1,13 @@
+{
+  "name": "lifemotion-ai-kids",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "video": "node animation/render.mjs",
+    "verify": "node animation/verify.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.56.0"
+  }
+}

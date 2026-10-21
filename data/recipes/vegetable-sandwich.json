@@ -1,0 +1,25 @@
+{
+  "title": "Vegetable Sandwich",
+  "recipeId": "vegetable-sandwich",
+  "genericVisualization": false,
+  "primaryEquipment": "board",
+  "utensil": "knife",
+  "isColdDish": true,
+  "equipment": ["board", "bowl", "knife", "spatula", "plate"],
+  "ingredients": [
+    { "id": "bread", "name": "Soft Bread", "category": "bread", "state": "sliced", "color": "#f1d8a5" },
+    { "id": "chutney", "name": "Green Chutney", "category": "liquid", "state": "sauce-coated", "color": "#76a855" },
+    { "id": "cucumber", "name": "Cucumber Slices", "category": "vegetable", "state": "sliced", "color": "#9bc177" },
+    { "id": "tomato", "name": "Tomato Slices", "category": "vegetable", "state": "sliced", "color": "#d9534f" }
+  ],
+  "steps": [
+    { "key": "welcome", "action": "show", "target": "board", "text": "Hello, little chefs! I'm Chef Maya. Let's build a crunchy, colourful vegetable sandwich!" },
+    { "key": "safe", "action": "show", "target": "board", "text": "Wash your hands and crunchy veggies thoroughly. Ask a grown-up to help slice the vegetables." },
+    { "key": "ingredients", "action": "show", "ingredient": "bread", "target": "board", "text": "We have soft bread slices, fresh cucumber, juicy red tomato, and tangy mint spread." },
+    { "key": "pick", "action": "place", "ingredient": "bread", "source": "bowl", "target": "board", "text": "Place two slices of soft fresh bread neatly onto our clean cutting board." },
+    { "key": "spread", "action": "spread", "ingredient": "chutney", "target": "board", "text": "Smooth a thin layer of bright green spread right across the bread." },
+    { "key": "layer", "action": "layer", "ingredient": "tomato", "source": "bowl", "target": "board", "text": "Layer cool sliced cucumber and juicy red tomato slices on top." },
+    { "key": "close", "action": "cover", "ingredient": "bread", "target": "board", "text": "Place the second slice of bread on top and press down gently to complete our sandwich." },
+    { "key": "serve", "action": "serve", "source": "board", "target": "plate", "text": "Transfer the healthy vegetable sandwich onto our serving plate. Fantastic job!" }
+  ]
+}

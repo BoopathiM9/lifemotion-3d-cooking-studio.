@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><style>
+*{box-sizing:border-box}body{margin:0;background:#ffefd4;font-family:Arial,sans-serif}svg{display:block}#title{font:bold 48px Arial;fill:#623e31}.label{font:bold 36px Arial;fill:#5b382a}
+</style></head><body><svg id="art" width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+<rect width="1280" height="720" fill="#fff0cf"/><rect x="0" y="530" width="1280" height="190" fill="#dfb887"/><rect x="75" y="85" width="1130" height="425" rx="50" fill="#f7d9a7"/>
+<text id="title" x="640" y="95" text-anchor="middle">LifeMotion AI Kids</text>
+<!-- friendly adult chef -->
+<circle cx="255" cy="245" r="92" fill="#e6a16d"/><ellipse cx="255" cy="155" rx="115" ry="35" fill="white"/><rect x="175" y="84" width="160" height="75" rx="35" fill="white"/>
+<circle cx="225" cy="240" r="9" fill="#29201e"/><circle cx="288" cy="240" r="9" fill="#29201e"/><path d="M225 278 Q255 305 290 278" fill="none" stroke="#7a382f" stroke-width="8" stroke-linecap="round"/>
+<rect x="174" y="345" width="170" height="185" rx="35" fill="#fff9f2"/><path d="M218 348 V527 M300 348 V527" stroke="#d15d47" stroke-width="24"/>
+<!-- cooking tawa -->
+<ellipse cx="795" cy="493" rx="345" ry="92" fill="#4b3d39"/><ellipse cx="795" cy="472" rx="325" ry="80" fill="#2e3035"/>
+<rect x="1080" y="455" width="160" height="28" rx="14" fill="#33363b"/>
+<!-- animated batter -->
+<ellipse id="dosa" cx="795" cy="463" rx="1" ry="1" fill="#f6e9cb" stroke="#e5a84f" stroke-width="8"/>
+<path id="pour" d="M635 258 Q665 315 710 415" fill="none" stroke="#fff8e7" stroke-width="30" stroke-linecap="round"/>
+<ellipse id="ladle" cx="615" cy="247" rx="80" ry="28" fill="#b9c7c8" stroke="#748d95" stroke-width="7"/><path id="handle" d="M550 246 L440 202" stroke="#829ba0" stroke-width="16" stroke-linecap="round"/>
+<g id="steam" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"><path d="M700 390 Q680 360 700 330 Q720 300 700 270"/><path d="M805 385 Q785 355 805 325 Q825 295 805 265"/><path d="M900 390 Q880 360 900 330 Q920 300 900 270"/></g>
+<text id="caption" class="label" x="640" y="655" text-anchor="middle">Pouring dosa batter!</text>
+</svg><script>
+window.setFrame=(t)=>{
+  const dosa=document.querySelector('#dosa'),pour=document.querySelector('#pour'),ladle=document.querySelector('#ladle'),handle=document.querySelector('#handle'),steam=document.querySelector('#steam'),caption=document.querySelector('#caption');
+  // 0-2 sec: batter falls; 2-5 sec: dosa expands; 5-8 sec: turns golden and steams
+  const spread=Math.min(1,Math.max(0,(t-1.8)/3));
+  dosa.setAttribute('rx',Math.max(1,spread*295));dosa.setAttribute('ry',Math.max(1,spread*67));
+  dosa.setAttribute('fill',t>5?'#f5bc62':'#f6e9cb');
+  const pouring=t<2;pour.style.opacity=pouring?'1':'0';ladle.style.opacity=pouring?'1':'0';handle.style.opacity=pouring?'1':'0';
+  steam.style.opacity=t>4.5?String(0.35+0.35*Math.sin(t*5)**2):'0';
+  steam.setAttribute('transform',`translate(0,${Math.sin(t*3)*-12})`);
+  caption.textContent=t<2?'Pour the batter!':t<5?'Spread it into a circle!':'Cook until golden — with an adult!';
+};window.setFrame(0);
+</script></body></html>

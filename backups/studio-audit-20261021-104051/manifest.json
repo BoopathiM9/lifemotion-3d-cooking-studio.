@@ -1,0 +1,118 @@
+﻿[
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\package-lock.json",
+        "Hash":  "5167D4EF967EBB237A37322055DF0423D8D2AE71C9C08BFD0D151962209CD037"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\package.json",
+        "Hash":  "6D4B7D9142E59A44C6A6BC12CCBEB31FC5024DDA0284C8955A33763E799AE5B6"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\README.md",
+        "Hash":  "317B2D5A6440B0657E883DBE1EEE33667002CD9829107C8E1455695A09C553E3"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\animation\\narrate.py",
+        "Hash":  "F48871B11AC00D765D65E884F9D446D1DAB9CAB325DC9C77A66E1421D1E3FF6A"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\animation\\qa-media.py",
+        "Hash":  "0EAC17552F6EF0526078D76FD9035DF33F9C2B74FD32003A5607DF92BB14E49A"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\animation\\qa.mjs",
+        "Hash":  "157ABE61B318CA633FBA1A9B3E5D9C953A276A2C4687A392E7E027F45C91A3A0"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\animation\\render.mjs",
+        "Hash":  "94B8AB0D1CA69F26C5A7D9FC3A004794DC1FD4A66ACDE39CB47751CD895A5A46"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\animation\\reproduce.mjs",
+        "Hash":  "EE38BBDABF5934D74F8B4698F180EF69D580AF2D15B5BBEF86D4AE0971647C40"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\animation\\scene.html",
+        "Hash":  "30E9321C2F35599CCDCF339B699C4D0E496BF64FE4AC4BBD2560C5A32DACAEB6"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\animation\\verify.mjs",
+        "Hash":  "2373BA37D66A236AB86E79B4BABD392D458A6F63F9BC206F61DB43EFDC33733C"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\e2e.mjs",
+        "Hash":  "2095B08C2CCD7F927937FE4751787A8324A065DEA7F63C925FB1E22A814D092F"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\host.mjs",
+        "Hash":  "022E0B8C3177467554975820A5EB71AE2806A7548D06AC60D2984C693C538A90"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\index.html",
+        "Hash":  "1A3335526FAC59D8B4356CEBE92F60248F12F98C130160A87D53A0DCCF05CBAF"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\narrate.py",
+        "Hash":  "6BFCB5E4546B155436F8802082A88BE64D601AA48A9FB5BE0DFB07CBE84BC506"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\playback-test.mjs",
+        "Hash":  "3EACBF893FE8C3CD4E5F6939FE9010B6830B84AE33E73ABA5BBF03A9059523E7"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\README.md",
+        "Hash":  "E03DA5A95EF1401E3157D0580BD54330ACE12B09307AB9BD0623FF9FDDC1FD55"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\recipes.mjs",
+        "Hash":  "666201070A774797FDB602D1ECEAB7C0E4DF325FA30D3FD676F9DED02D831B15"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\render.mjs",
+        "Hash":  "2CF350087A251DC2DAC8395F6C728FEC548873826C08CABDAE0ED2654D43D853"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\scene.html",
+        "Hash":  "C29BB8C8B6AD058E52A3EDCA8BA378A46356408D1B258993DB68D1ADCF161698"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\scene.mjs",
+        "Hash":  "D34C1839A87C0D5C460C5FF1940F1AA906B4A180570147CB4EB3889023CDB59F"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\server.mjs",
+        "Hash":  "60B3833972FAE2B5EA627821027178CED43C4F667D38FB9B6077906E5E705DE2"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\test.mjs",
+        "Hash":  "CB63461BEC66A68763F35A4ECBBA86D5F6F16E8989CE33E46C274EBE44B81495"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\studio3d\\verify-media.py",
+        "Hash":  "10B2420BD1ADE93E3DB53D8BA66C941C60BA06A7E33A1A428BA2A3E85D3CA76F"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\videos\\lifemotion-3d-final-tested.mp4",
+        "Hash":  "6ADE3E11DB9992992B76A9DBF5832AC6ADF14BC08C631EEC34F78ABC761579B4"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\videos\\lifemotion-3d-preview-480p.mp4",
+        "Hash":  "D6BDDF44E54BBD47CA56F24EB7FCDAC9A509D734788D2A819165B255BFD99940"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\videos\\lifemotion-final-tested.mp4",
+        "Hash":  "D3DD2E5772B7526C00A5DA6FE564AF5BC332090EE6D8DB29444D0A7243B85997"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\videos\\masala-dosa-with-voice.mp4",
+        "Hash":  "EB0E4D7A875F07D8ACF916DD3B3EA5646686F1A79E15F3809E0FCCC3AC91BA48"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\videos\\masala-dosa.mp4",
+        "Hash":  "B115ED3B0A69868762800743CD8D0DFCDF23517EB968901A98FAFC69332747A5"
+    },
+    {
+        "Path":  "C:\\life_motion-kids_project\\lifemotion-kids-starter\\backups\\studio-audit-20261021-104051\\videos\\maya-vegetable-sandwich-3d.mp4",
+        "Hash":  "39CA8E044C727FF4D4BE2ED47A5D334D7A54FBABFD886D1D3B05BFD8F7305DAB"
+    }
+]

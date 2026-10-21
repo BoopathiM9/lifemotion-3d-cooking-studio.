@@ -1,0 +1,75 @@
+{
+  "recipe": "vegetable-sandwich",
+  "title": "Vegetable sandwich",
+  "voice": "en-US-JennyNeural",
+  "format": "16:9",
+  "prompt": "Create a cute 3D cartoon cooking video where MAYA teaches children how to make vegetable sandwiches. Use simple English, synchronized subtitles, cheerful narration, and realistic cooking movements.",
+  "actions": [
+    {
+      "key": "welcome",
+      "text": "Hello, little chefs! I'm MAYA. Let's make a colourful vegetable sandwich.",
+      "sentences": [
+        "Hello, little chefs!",
+        "I'm MAYA.",
+        "Let's make a colourful vegetable sandwich."
+      ]
+    },
+    {
+      "key": "safe",
+      "text": "Wash your hands and vegetables. Ask a grown-up to slice the vegetables.",
+      "sentences": [
+        "Wash your hands and vegetables.",
+        "Ask a grown-up to slice the vegetables."
+      ]
+    },
+    {
+      "key": "ingredients",
+      "text": "We need bread, chutney, lettuce, sliced tomato, and cucumber.",
+      "sentences": [
+        "We need bread, chutney, lettuce, sliced tomato, and cucumber."
+      ]
+    },
+    {
+      "key": "pick",
+      "text": "Pick up a slice of bread. Put it on our clean chopping board.",
+      "sentences": [
+        "Pick up a slice of bread.",
+        "Put it on our clean chopping board."
+      ]
+    },
+    {
+      "key": "spread",
+      "text": "Spread a little chutney over the bread. Move gently in circles.",
+      "sentences": [
+        "Spread a little chutney over the bread.",
+        "Move gently in circles."
+      ]
+    },
+    {
+      "key": "layer",
+      "text": "Add lettuce, tomato, and cucumber. Stack the vegetables neatly on the bread.",
+      "sentences": [
+        "Add lettuce, tomato, and cucumber.",
+        "Stack the vegetables neatly on the bread."
+      ]
+    },
+    {
+      "key": "close",
+      "text": "Place the second slice of bread on top. Press it down very gently.",
+      "sentences": [
+        "Place the second slice of bread on top.",
+        "Press it down very gently."
+      ]
+    },
+    {
+      "key": "serve",
+      "text": "Lift the sandwich onto our plate. Pull the spatula away. Our colourful sandwich is ready!",
+      "sentences": [
+        "Lift the sandwich onto our plate.",
+        "Pull the spatula away.",
+        "Our colourful sandwich is ready!"
+      ]
+    }
+  ],
+  "limitations": "Recipe templates control ingredients and actions. Prompts do not synthesize arbitrary recipes or custom scenes."
+}

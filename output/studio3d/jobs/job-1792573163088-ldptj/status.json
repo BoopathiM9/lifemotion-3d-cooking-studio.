@@ -1,0 +1,12 @@
+{
+  "id": "job-1792573163088-ldptj",
+  "recipe": "a-chicken-biriyani",
+  "title": "A Chicken Biriyani",
+  "format": "16:9",
+  "voice": "en-US-JennyNeural",
+  "status": "complete",
+  "progress": 100,
+  "message": "Your verified 3D video is ready.",
+  "previewUrl": "/media/job-1792573163088-ldptj/preview",
+  "videoUrl": "/media/job-1792573163088-ldptj/final"
+}

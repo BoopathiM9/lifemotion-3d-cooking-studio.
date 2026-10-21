@@ -1,0 +1,22 @@
+{
+  "globalAudioCorrelation": 0.9999588483413984,
+  "audioGainRatio": 0.9988743721328169,
+  "subtitleTimingChecked": true,
+  "sentenceDurationsChecked": 18,
+  "preview": false,
+  "passed": true,
+  "video": "C:\\life_motion-kids_project\\lifemotion-kids-starter\\output\\studio3d\\jobs\\job-1792573163088-ldptj\\final\\maya-3d-complete.mp4",
+  "width": 1280,
+  "height": 720,
+  "fps": "24/1",
+  "duration": "71.880000",
+  "fullDecode": true,
+  "audioCorrelations": [
+    0.9999795943006048,
+    0.9999825238462237,
+    0.9998337944721803,
+    0.999982894235731
+  ],
+  "subtitleCues": 30,
+  "sourceVoice": "en-US-JennyNeural"
+}
