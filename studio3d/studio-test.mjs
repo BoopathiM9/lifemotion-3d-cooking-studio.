@@ -48,7 +48,8 @@ test('the website works on desktop and mobile, exposes recipe commands, and keep
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url);await page.waitForFunction(()=>document.querySelectorAll('.recipe-chip').length===4);
-  assert.equal(await page.locator('#setupPanel').count(),0);assert.equal(await page.locator('#generate').isDisabled(),false);
+  assert.equal(await page.locator('#setupPanel').count(),0);assert.equal(await page.locator('#generate').isDisabled(),true);
+  await page.locator('#prompt').fill('Teach children how to make chicken biriyani step by step in simple English.');assert.equal(await page.locator('#generate').isDisabled(),false);
   await page.locator('#prompt').fill('Teach children how to make chicken biriyani step by step in simple English.');
   await page.locator('#previewPlan').click();await page.waitForFunction(()=>!document.getElementById('planPanel').hidden);
   assert.equal(await page.locator('#planTitle').innerText(),'Chicken Biryani');assert.equal(await page.locator('#planSteps li').count(),9);
@@ -67,7 +68,7 @@ test('a healthy studio displays the redesigned desktop and mobile layouts',async
  const browser=await chromium.launch(browserLaunchOptions());
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1100}});
-  await page.goto(url);await page.waitForFunction(()=>!document.getElementById('generate').disabled);
+  await page.goto(url);await page.locator('#prompt').fill('Teach children how to make chicken biryani step by step in simple English.');await page.waitForFunction(()=>!document.getElementById('generate').disabled);
   assert.equal(await page.locator('#setupPanel').count(),0);
   assert.equal(await page.locator('.recipe-chip').count(),4);
   assert.equal(await page.locator('#films').count(),0);
