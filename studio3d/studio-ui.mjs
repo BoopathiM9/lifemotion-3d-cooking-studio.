@@ -15,7 +15,7 @@ const save=id=>{try{id?sessionStorage.setItem('mayaJob',id):sessionStorage.remov
 function updateButton(){
  $('generate').disabled=creating||remoteBusy||!$('prompt').value.trim();
  $('generateText').textContent=creating?'Generating video…':remoteBusy?'Generation in progress':'Generate video';
- $('formHint').textContent=creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Please wait for it to finish.':'Type any recipe idea. Maya prepares the steps, English narration, and subtitles.';
+ $('formHint').textContent=creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Please wait for it to finish.':'Type any recipe idea. Maya prepares the steps, narration, and subtitles.';
 }
 function count(){ $('charCount').textContent=`${$('prompt').value.length} / 2000`;updateButton();}
 function errorMessage(message){$('progressArea').hidden=false;$('progressArea').classList.add('error');$('status').textContent=message;$('stages').hidden=true;$('progress').hidden=true;}
@@ -81,7 +81,7 @@ $('previewPlan').addEventListener('click',async()=>{
  if(!$('form').reportValidity())return;
  $('previewPlan').disabled=true;
  try{
-  const plan=await request('/api/plan',post(options()));$('planTitle').textContent=plan.title;$('planType').textContent=plan.source==='gemini'?'AI recipe plan':plan.source==='free recipe lookup'?'Recipe lookup':plan.generic?'Basic recipe plan':'Guided recipe';$('planNote').textContent=plan.limitations||`${plan.ingredients.join(', ')}. Narrated in simple English.`;$('planSteps').replaceChildren(...plan.steps.map(step=>node('li',step.text)));$('planPanel').hidden=false;
+  const plan=await request('/api/plan',post(options()));$('planTitle').textContent=plan.title;$('planType').textContent=plan.source==='gemini'?'AI recipe plan':plan.source==='free recipe lookup'?'Recipe lookup':plan.source==='Tamil AI narration'?'Tamil AI narration':plan.generic?'Basic recipe plan':'Guided recipe';$('planNote').textContent=plan.limitations||`${plan.ingredients.join(', ')}. Ready for narration.`;$('planSteps').replaceChildren(...plan.steps.map(step=>node('li',step.text)));$('planPanel').hidden=false;
  }catch(error){errorMessage(error.message);}
  finally{$('previewPlan').disabled=false;}
 });

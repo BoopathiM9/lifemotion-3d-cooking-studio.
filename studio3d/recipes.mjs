@@ -22,7 +22,8 @@ const DATA_DIR = join(ROOT, 'data', 'recipes');
 
 export const voices = [
   'en-US-JennyNeural',
-  'en-US-AriaNeural'
+  'en-US-AriaNeural',
+  'ta-IN-PallaviNeural'
 ];
 
 /**
@@ -114,7 +115,7 @@ export function storyboard({
   format = '16:9'
 } = {}) {
   if (!voices.includes(voice)) {
-    throw new Error('Choose an available English voice: en-US-JennyNeural or en-US-AriaNeural.');
+    throw new Error('Choose an available narration voice.');
   }
   if (!['16:9', '9:16'].includes(format)) {
     throw new Error('Choose 16:9 or 9:16.');

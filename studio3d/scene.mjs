@@ -34,8 +34,8 @@ let plan = (config.plan && config.plan.actions && config.plan.actions.length > 0
   : DEFAULT_PLAN;
 
 const scene = new T.Scene();
-scene.background = new T.Color('#f5eddf');
-scene.fog = new T.Fog('#f5eddf', 15, 30);
+scene.background = new T.Color('#fbfcff');
+scene.fog = new T.Fog('#fbfcff', 15, 30);
 
 const renderer = new T.WebGLRenderer({
   antialias: true,
@@ -61,10 +61,10 @@ const camera = new T.PerspectiveCamera(40, W / H, 0.1, 60);
 camera.position.set(5.7, 4.5, 8.2);
 camera.lookAt(0, 2, 0);
 
-scene.add(new T.AmbientLight('#ffeed7', 0.55));
-scene.add(new T.HemisphereLight('#f9fcff', '#a69b83', 1.95));
+scene.add(new T.AmbientLight('#ffffff', 0.8));
+scene.add(new T.HemisphereLight('#ffffff', '#c8d9e5', 2.1));
 
-const sun = new T.DirectionalLight('#fff1d2', 3.6);
+const sun = new T.DirectionalLight('#ffffff', 3.9);
 sun.position.set(-3, 7, 5);
 sun.castShadow = true;
 sun.shadow.mapSize.set(512, 512);
@@ -81,9 +81,9 @@ stoveGlow.position.set(0, 2.25, 0.05);
 scene.add(stoveGlow);
 
 const mat = (color, roughness = 0.65) => new T.MeshStandardMaterial({ color, roughness, metalness: 0 });
-const skin = mat('#efb58f');
-const hair = mat('#694431');
-const hairLight = mat('#8c6042');
+const skin = mat('#f2b895');
+const hair = mat('#4a2a25');
+const hairLight = mat('#704336');
 const white = mat('#fffcf1');
 const peach = mat('#df9b86');
 const mint = mat('#8bb5a4');
@@ -132,10 +132,10 @@ const smooth = v => {
 const lerp = T.MathUtils.lerp;
 
 // Kitchen Set Construction
-box(scene, mat('#eadfcc'), 0, -0.12, 0, 16, 0.2, 13);
-box(scene, mat('#f3ecdd'), 0, 3, -2.4, 13, 6, 0.15);
-const tile = mat('#d9e9df', 0.42);
-const grout = mat('#fbf7ed', 0.85);
+box(scene, mat('#edf2f6'), 0, -0.12, 0, 16, 0.2, 13);
+box(scene, mat('#ffffff'), 0, 3, -2.4, 13, 6, 0.15);
+const tile = mat('#f7fbff', 0.35);
+const grout = mat('#ffffff', 0.85);
 for (let row = 0; row < 3; row++) {
   for (let column = -4; column <= 4; column++) {
     box(scene, tile, column * 0.72 + (row % 2 ? 0.36 : 0), 2.1 + row * 0.44, -2.29, 0.67, 0.39, 0.022);
@@ -144,11 +144,11 @@ for (let row = 0; row < 3; row++) {
 box(scene, grout, 0, 3.53, -2.25, 3.05, 0.08, 0.12);
 box(scene, mat('#d7c3a6', 0.32), 0, 3.79, -2.12, 1.55, 0.22, 0.28);
 box(scene, mat('#8e9a91', 0.25), 0, 3.58, -2.04, 1.05, 0.06, 0.18);
-box(scene, cream, 0, 1.52, 0.1, 8.4, 0.19, 2.7);
-box(scene, wood, 0, 0.75, 0.15, 8.25, 1.45, 2.5);
+box(scene, mat('#ffffff'), 0, 1.52, 0.1, 8.4, 0.19, 2.7);
+box(scene, mat('#e7eef5'), 0, 0.75, 0.15, 8.25, 1.45, 2.5);
 
 for (const x of [-3, -1, 1, 3]) {
-  box(scene, mint, x, 0.79, 1.416, 1.89, 1.16, 0.06);
+  box(scene, mat('#c9e8e2'), x, 0.79, 1.416, 1.89, 1.16, 0.06);
   box(scene, gold, x, 1.15, 1.47, 0.46, 0.045, 0.045);
 }
 for (const x of [1.3, 2.8]) {
@@ -253,6 +253,7 @@ ball(chef, peach, 0, 2.62, 0.19, 0.2, 0.07, 0.13);
 
 const head = new T.Group();
 head.position.set(0, 3.28, 0);
+head.scale.setScalar(1.12);
 chef.add(head);
 
 ball(head, hair, 0, 0.03, -0.09, 0.66, 0.68, 0.49);

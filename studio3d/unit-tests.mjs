@@ -136,7 +136,7 @@ console.log('✔ User instructions parsing passed.');
 // 9. Input Validation & Error Handling
 console.log('Testing Input Validation...');
 assert.throws(() => storyboard({ prompt: '' }), /Enter a recipe prompt/);
-assert.throws(() => storyboard({ prompt: 'Make dosa', voice: 'unsupported-voice' }), /Choose an available English voice/);
+assert.throws(() => storyboard({ prompt: 'Make dosa', voice: 'unsupported-voice' }), /Choose an available narration voice/);
 assert.throws(() => storyboard({ prompt: 'Make dosa', format: '4:3' }), /Choose 16:9 or 9:16/);
 console.log('✔ Input validation passed.');
 

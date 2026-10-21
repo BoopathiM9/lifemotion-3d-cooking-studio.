@@ -27,6 +27,31 @@ export async function analyzeWithGemini(prompt) {
   }
 }
 
+export async function translateActionsToTamil(actions) {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key || !Array.isArray(actions) || !actions.length) return null;
+  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+  const instruction = [
+    'Translate every cooking lesson line below into natural, child-friendly Tamil.',
+    'Keep each line short. Preserve safety guidance. Return only a JSON array of strings in exactly the same order.',
+    JSON.stringify(actions.map(action => action.text))
+  ].join('\n');
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: instruction }] }], generationConfig: { temperature: 0.2, maxOutputTokens: 1200 } }),
+      signal: AbortSignal.timeout(12000)
+    });
+    if (!response.ok) return null;
+    const text = (await response.json()).candidates?.[0]?.content?.parts?.map(part => part.text || '').join('').trim().replace(/^```json\s*|\s*```$/g, '');
+    const translated = JSON.parse(text);
+    return Array.isArray(translated) && translated.length === actions.length && translated.every(line => typeof line === 'string' && line.trim()) ? translated : null;
+  } catch {
+    return null;
+  }
+}
+
 function recipeName(prompt) {
   return String(prompt)
     .replace(/teach\s+(children|kids|me)\s+(how\s+)?to\s+make/ig, '')
