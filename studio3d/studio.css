@@ -3,3 +3,4 @@
 @media(max-width:640px){.topbar{height:64px;padding:0 16px;gap:12px}.topbar nav{display:none}.status-button{margin-left:auto}.status-button #toolStatus{display:none}main{padding:28px 14px 50px}.page-heading{margin-bottom:20px}.page-heading h1{font-size:32px}.feature-list{gap:5px}.panel,.content-section{padding:18px;border-radius:13px}.field-grid,.form-actions{grid-template-columns:1fr}.recipe-grid{grid-template-columns:repeat(2,1fr)}.recipe-card{min-height:132px}.section-heading{align-items:flex-start}.stages{grid-template-columns:1fr 1fr}.output-row{align-items:flex-start;flex-direction:column}footer{align-items:flex-start;flex-direction:column;padding:24px 16px 36px}}
 [hidden]{display:none!important}
 .stages{display:none}
+.header-label{margin-left:auto;color:var(--muted);font-size:12px;font-weight:600}

@@ -42,15 +42,13 @@ test('recipe preview accepts the exact biriyani prompt; missing tools block gene
  }finally{await new Promise(resolve=>server.close(resolve));}
 });
 
-test('the website works on desktop and mobile, exposes recipe commands, and guides missing setup',async()=>{
+test('the website works on desktop and mobile, exposes recipe commands, and keeps setup details out of the product page',async()=>{
  const server=await createStudioServer({runtimeInspector:()=>missing}),url=await listen(server);
  const browser=await chromium.launch(browserLaunchOptions());
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(url);await page.waitForFunction(()=>document.getElementById('toolStatus').textContent==='Setup needed');
-  assert.equal(await page.locator('#setupPanel').isVisible(),false);assert.equal(await page.locator('#generate').isDisabled(),false);
-  await page.locator('#setupToggle').click();assert.equal(await page.locator('#setupPanel').isVisible(),true);
-  assert.match(await page.locator('#setupChecks').innerText(),/winget install/);
+  await page.goto(url);await page.waitForFunction(()=>document.querySelectorAll('.recipe-chip').length===4);
+  assert.equal(await page.locator('#setupPanel').count(),0);assert.equal(await page.locator('#generate').isDisabled(),false);
   await page.locator('#prompt').fill('Teach children how to make chicken biriyani step by step in simple English.');
   await page.locator('#previewPlan').click();await page.waitForFunction(()=>!document.getElementById('planPanel').hidden);
   assert.equal(await page.locator('#planTitle').innerText(),'Chicken Biryani');assert.equal(await page.locator('#planSteps li').count(),9);
@@ -70,8 +68,8 @@ test('a healthy studio displays the redesigned desktop and mobile layouts',async
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1100}});
   await page.goto(url);await page.waitForFunction(()=>!document.getElementById('generate').disabled);
-  assert.equal(await page.locator('#setupPanel').isVisible(),false);
-  assert.equal(await page.locator('.recipe-card').count(),10);
+  assert.equal(await page.locator('#setupPanel').count(),0);
+  assert.equal(await page.locator('.recipe-chip').count(),4);
   assert.equal(await page.locator('h1').count(),1);
   const images=await page.locator('img').evaluateAll(images=>images.every(i=>i.complete&&i.naturalWidth>0));assert.ok(images,'The kitchen image must load');
   const out=join(root,'output/studio3d/ui-review');await mkdir(out,{recursive:true});

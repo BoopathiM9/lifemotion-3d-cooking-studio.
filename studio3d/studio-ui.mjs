@@ -15,7 +15,7 @@ const save=id=>{try{id?sessionStorage.setItem('mayaJob',id):sessionStorage.remov
 function updateButton(){
  $('generate').disabled=creating||remoteBusy||!$('prompt').value.trim();
  $('generateText').textContent=creating?'Generating video…':remoteBusy?'Generation in progress':'Generate video';
- $('formHint').textContent=!setupReady?'Local setup is required before the first export. Select “Setup needed” for instructions.':creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Recent exports will update when it finishes.':'Includes English narration and timed subtitles.';
+ $('formHint').textContent=creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Recent videos will update when it finishes.':'English narration and subtitles are included.';
 }
 function count(){ $('charCount').textContent=`${$('prompt').value.length} / 2000`;updateButton();}
 function errorMessage(message){$('progressArea').hidden=false;$('progressArea').classList.add('error');$('status').textContent=message;$('stages').hidden=true;$('progress').hidden=true;}
@@ -24,22 +24,11 @@ async function copyText(text,button){
 }
 function renderSetup(setup){
  setupReady=setup.ready;
- $('toolStatus').textContent=setupReady?'Tools ready':'Setup needed';
- $('setupToggle').classList.toggle('ready',setupReady);$('setupToggle').classList.toggle('needs-setup',!setupReady);
- $('setupSummary').textContent=setupReady?'All required tools are available. You can generate videos.':'Some required tools are missing. Run the commands below from the project terminal.';
- $('setupChecks').replaceChildren();
- for(const check of setup.checks){
-  const item=node('li');item.append(node('strong',`${check.ok?'✓':'!'} ${check.label}`,check.ok?'check-ok':'check-bad'),node('p',check.message));
-  if(!check.ok&&check.fix){const command=node('div',undefined,'setup-command'),copy=node('button','Copy','copy-button');copy.type='button';copy.addEventListener('click',()=>copyText(check.fix,copy));command.append(node('code',check.fix),copy);item.append(command);}
-  $('setupChecks').append(item);
- }
  updateButton();
 }
 async function checkSetup(refresh=false){
- $('checkSetup').disabled=true;
  try{renderSetup(await request('/api/setup'+(refresh?'?refresh=1':'')));}
- catch{setupReady=false;$('toolStatus').textContent='Studio offline';$('setupSummary').textContent='Cannot reach the studio. Keep its terminal open, restart it if necessary, then check again.';updateButton();}
- finally{$('checkSetup').disabled=false;}
+ catch{setupReady=false;updateButton();}
 }
 function chooseRecipe(recipe){
  if(creating)return;
@@ -50,11 +39,9 @@ function chooseRecipe(recipe){
 function renderRecipes(recipes){
  recipeList=recipes;const priority=['chicken-biryani','vegetable-fried-rice','pancakes','masala-dosa'];
  const ordered=[...priority.map(id=>recipes.find(r=>r.id===id)).filter(Boolean),...recipes.filter(r=>!priority.includes(r.id))];
- $('recipeCount').textContent=`${recipes.length} guided recipes`;$('quickRecipes').replaceChildren();$('recipeGrid').replaceChildren();
+ $('quickRecipes').replaceChildren();
  for(const recipe of ordered){
-  const card=node('button',undefined,'recipe-card');card.type='button';card.setAttribute('aria-label',`Use ${recipe.name} recipe`);
-  card.append(node('span',icons[recipe.id]||'🍽','recipe-art'),node('span','','recipe-arrow arrow'),node('strong',recipe.name),node('small','Guided step-by-step template'));card.addEventListener('click',()=>chooseRecipe(recipe));$('recipeGrid').append(card);
-  if(priority.includes(recipe.id)){const button=node('button',recipe.name.replace('Vegetable ','Veg '),'recipe-chip');button.type='button';button.dataset.recipe=recipe.id;button.addEventListener('click',()=>chooseRecipe(recipe));$('quickRecipes').append(button);}
+  if(priority.includes(recipe.id)){const button=node('button',recipe.name.replace('Vegetable ','Veg '),'recipe-chip');button.type='button';button.dataset.recipe=recipe.id;button.setAttribute('aria-label',`Use ${recipe.name} recipe`);button.addEventListener('click',()=>chooseRecipe(recipe));$('quickRecipes').append(button);}
  }
 }
 function restoreControls(job){
@@ -105,8 +92,6 @@ async function loadFilms(){
  }catch{$('filmList').replaceChildren(node('p','Your film library is unavailable. Check the studio connection and refresh.','empty-library'));}
 }
 $('prompt').addEventListener('input',()=>{count();$('planPanel').hidden=true;});
-$('setupToggle').addEventListener('click',()=>{$('setupPanel').hidden=!$('setupPanel').hidden;if(!$('setupPanel').hidden)$('setupPanel').scrollIntoView({behavior:'smooth',block:'start'});});
-$('checkSetup').addEventListener('click',()=>checkSetup(true));
 $('refreshFilms').addEventListener('click',loadFilms);
 $('previewPlan').addEventListener('click',async()=>{
  if(!$('form').reportValidity())return;
@@ -118,7 +103,7 @@ $('previewPlan').addEventListener('click',async()=>{
 });
 $('form').addEventListener('submit',async event=>{
  event.preventDefault();if(creating||remoteBusy)return;
- if(!setupReady){$('setupPanel').hidden=false;return;}
+ if(!setupReady){errorMessage('Video creation is not ready on this computer yet. Please install the required video tools, then restart LifeMotion.');return;}
  creating=true;updateButton();clearTimeout(pollTimer);
  try{
   const job=await request('/api/generate',post(options()));current=job.id;save(current);
@@ -127,7 +112,7 @@ $('form').addEventListener('submit',async event=>{
  }catch(error){creating=false;if(error.body?.setup)renderSetup(error.body.setup);if(error.status===409){remoteBusy=true;void loadFilms();}errorMessage(error.message);updateButton();}
 });
 count();
-await Promise.allSettled([checkSetup(),loadFilms(),request('/api/recipes').then(data=>renderRecipes(data.recipes)).catch(()=>{$('recipeCount').textContent='Recipe book unavailable';})]);
+await Promise.allSettled([checkSetup(),loadFilms(),request('/api/recipes').then(data=>renderRecipes(data.recipes))]);
 try{current??=sessionStorage.getItem('mayaJob');}catch{}
 if(current&&!creating){
  try{const job=await request('/api/jobs/'+encodeURIComponent(current));restoreControls(job);creating=true;updateButton();void poll();}
