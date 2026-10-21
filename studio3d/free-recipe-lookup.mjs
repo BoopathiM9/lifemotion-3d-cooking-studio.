@@ -1,7 +1,7 @@
 const API = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
 
 async function geminiText(instruction, maxOutputTokens) {
-  const key = process.env.GEMINI_API_KEY;
+  const key = process.env.GEMINI_API_KEY?.trim();
   if (!key) return null;
   const models = [...new Set([process.env.GEMINI_MODEL, 'gemini-2.5-flash-lite', 'gemini-2.5-flash'].filter(Boolean))];
   for (const model of models) {
@@ -34,7 +34,7 @@ export async function analyzeWithGemini(prompt) {
 }
 
 export async function translateActionsToTamil(actions) {
-  if (!process.env.GEMINI_API_KEY || !Array.isArray(actions) || !actions.length) return null;
+  if (!process.env.GEMINI_API_KEY?.trim() || !Array.isArray(actions) || !actions.length) return null;
   const instruction = [
     'Translate every cooking lesson line below into natural, child-friendly Tamil.',
     'Keep each line short. Preserve safety guidance. Return only a JSON array of strings in exactly the same order.',
@@ -45,6 +45,24 @@ export async function translateActionsToTamil(actions) {
     if (!text) return null;
     const translated = JSON.parse(text);
     return Array.isArray(translated) && translated.length === actions.length && translated.every(line => typeof line === 'string' && line.trim()) ? translated : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function translateActionsWithFreeService(actions) {
+  if (!Array.isArray(actions) || !actions.length) return null;
+  try {
+    const translated = [];
+    for (const action of actions) {
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(action.text.slice(0, 450))}&langpair=en|ta`;
+      const response = await fetch(url, { headers: { 'User-Agent': 'LifeMotion-Cooking-Studio/1.0' }, signal: AbortSignal.timeout(8000) });
+      if (!response.ok) return null;
+      const text = (await response.json()).responseData?.translatedText?.trim();
+      if (!text || text.toLowerCase() === action.text.trim().toLowerCase()) return null;
+      translated.push(text);
+    }
+    return translated.length === actions.length ? translated : null;
   } catch {
     return null;
   }
