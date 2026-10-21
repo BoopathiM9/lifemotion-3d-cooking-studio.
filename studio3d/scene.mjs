@@ -76,6 +76,9 @@ scene.add(sun);
 const rim = new T.DirectionalLight('#d5edee', 1.1);
 rim.position.set(4, 4, -3);
 scene.add(rim);
+const stoveGlow = new T.PointLight('#ffb85c', 0.35, 5, 2);
+stoveGlow.position.set(0, 2.25, 0.05);
+scene.add(stoveGlow);
 
 const mat = (color, roughness = 0.65) => new T.MeshStandardMaterial({ color, roughness, metalness: 0 });
 const skin = mat('#efb58f');
@@ -473,13 +476,18 @@ function frame(t, draw = true) {
   const serveCam = vec(5.3, 3.7, 6.3);
   const look = vec(0, 2.3, 0);
 
-  camera.position.copy(act.key === 'welcome' || act.key === 'safe' ? startCam : act.key === 'serve' ? serveCam : cookCam);
+  const cameraTarget = act.key === 'welcome' || act.key === 'safe' ? startCam : act.key === 'serve' ? serveCam : cookCam;
+  const transition = smooth(Math.min(1, Math.max(0, p * 1.35)));
+  camera.position.copy(startCam).lerp(cameraTarget, transition);
+  camera.position.x += Math.sin(t * 0.45) * 0.08;
+  camera.position.y += Math.cos(t * 0.35) * 0.025;
   if (act.key === 'serve') look.set(0.7, 2.35, 0.1);
   if (W < H) {
     const focus = act.key === 'serve' ? 1.45 : 0.7;
     camera.position.set(focus + 2, 4.7, act.key === 'serve' ? 10.7 : 15);
     look.set(focus, 2.3, 0.1);
   }
+  stoveGlow.intensity = ['cook', 'boil', 'simmer', 'fry', 'saute'].includes(actionName) ? 0.8 + Math.sin(t * 5) * 0.12 : 0.3;
   camera.lookAt(look);
   camera.updateMatrixWorld();
   scene.updateMatrixWorld(true);

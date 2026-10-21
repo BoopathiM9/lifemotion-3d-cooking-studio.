@@ -6,6 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {createStaticServer,root} from './host.mjs';
 import {recipes,voices,storyboard} from './recipes.mjs';
 import {inspectRuntime,publicRuntime,generationFailure} from './runtime.mjs';
+import {analyzeWithGemini,enrichWithFreeRecipe} from './free-recipe-lookup.mjs';
 
 export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
  const jobs=new Map();let busy=false,cachedRuntime,runtimeTime=0;
@@ -59,7 +60,7 @@ export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
    if(req.method==='POST'&&['/api/plan','/api/generate'].includes(url.pathname)){
     if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`){json(403,{error:'Use the local studio page to create videos.'});return;}
     let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>8192){json(413,{error:'Your recipe is too long. Use up to 2000 characters.'});return;}}
-    let plan;try{plan=storyboard(JSON.parse(body));}catch(error){json(400,{error:error instanceof SyntaxError?'The recipe request could not be read. Please try again.':error.message});return;}
+    let input,plan;try{input=JSON.parse(body);plan=storyboard(input);if(url.pathname==='/api/generate'&&plan.genericVisualization){const enriched=await analyzeWithGemini(input.prompt)||await enrichWithFreeRecipe(input.prompt);if(enriched)plan=storyboard({...input,prompt:enriched});}}catch(error){json(400,{error:error instanceof SyntaxError?'The recipe request could not be read. Please try again.':error.message});return;}
     if(url.pathname==='/api/plan'){json(200,{title:plan.title,recipe:plan.recipe,generic:plan.genericVisualization,limitations:plan.genericVisualization?'This is a generic cooking animation. For accurate steps, use a guided recipe or supply your own detailed instructions.':null,steps:plan.actions.map(a=>({key:a.key,text:a.text,action:a.action})),ingredients:plan.ingredients.map(i=>i.name)});return;}
     if(busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
     const runtime=setup();

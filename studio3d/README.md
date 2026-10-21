@@ -2,6 +2,17 @@
 
 A local website that turns recipe instructions into a procedural 3D cooking lesson with Chef Maya, English narration, subtitles and an MP4 download. Rendering runs on your CPU; a cloud GPU or paid API key is not required.
 
+### Optional free recipe analysis
+
+The studio works without an AI key. For unfamiliar recipes, it uses the free public TheMealDB lookup when possible and otherwise uses its local planner. You can optionally enable Gemini's free tier for richer analysis of unfamiliar recipe prompts. Create a free key in Google AI Studio, then set it only in the terminal where you start LifeMotion:
+
+```powershell
+$env:GEMINI_API_KEY="your-key-here"
+npm.cmd run studio
+```
+
+The key is never written into the project or committed to Git. Use **Preview steps** to review any AI-generated recipe before creating a video.
+
 ## Windows: first-time setup
 
 Install Node.js 20+ and Git, clone this repository, and open PowerShell in the project folder. Run:
