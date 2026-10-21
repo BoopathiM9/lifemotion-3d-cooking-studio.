@@ -1,9 +1,26 @@
 const API = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
 
-export async function analyzeWithGemini(prompt) {
+async function geminiText(instruction, maxOutputTokens) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return null;
-  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+  const models = [...new Set([process.env.GEMINI_MODEL, 'gemini-2.5-flash-lite', 'gemini-2.5-flash'].filter(Boolean))];
+  for (const model of models) {
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: instruction }] }], generationConfig: { temperature: 0.25, maxOutputTokens } }),
+        signal: AbortSignal.timeout(12000)
+      });
+      if (!response.ok) continue;
+      const text = (await response.json()).candidates?.[0]?.content?.parts?.map(part => part.text || '').join('\n').trim();
+      if (text) return text;
+    } catch {}
+  }
+  return null;
+}
+
+export async function analyzeWithGemini(prompt) {
   const instruction = [
     'Turn this cooking request into a short, accurate recipe lesson for children.',
     'Use simple English, list ingredients, then give 6 to 10 short steps.',
@@ -12,39 +29,20 @@ export async function analyzeWithGemini(prompt) {
     'Reply as plain text only.',
     `Request: ${String(prompt).slice(0, 1200)}`
   ].join('\n');
-  try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: instruction }] }], generationConfig: { temperature: 0.35, maxOutputTokens: 1000 } }),
-      signal: AbortSignal.timeout(12000)
-    });
-    if (!response.ok) return null;
-    const text = (await response.json()).candidates?.[0]?.content?.parts?.map(part => part.text || '').join('\n').trim();
-    return text && text.length >= 80 ? text.slice(0, 2000) : null;
-  } catch {
-    return null;
-  }
+  const text = await geminiText(instruction, 1000);
+  return text && text.length >= 80 ? text.slice(0, 2000) : null;
 }
 
 export async function translateActionsToTamil(actions) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key || !Array.isArray(actions) || !actions.length) return null;
-  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+  if (!process.env.GEMINI_API_KEY || !Array.isArray(actions) || !actions.length) return null;
   const instruction = [
     'Translate every cooking lesson line below into natural, child-friendly Tamil.',
     'Keep each line short. Preserve safety guidance. Return only a JSON array of strings in exactly the same order.',
     JSON.stringify(actions.map(action => action.text))
   ].join('\n');
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents: [{ parts: [{ text: instruction }] }], generationConfig: { temperature: 0.2, maxOutputTokens: 1200 } }),
-      signal: AbortSignal.timeout(12000)
-    });
-    if (!response.ok) return null;
-    const text = (await response.json()).candidates?.[0]?.content?.parts?.map(part => part.text || '').join('').trim().replace(/^```json\s*|\s*```$/g, '');
+    const text = (await geminiText(instruction, 1200))?.replace(/^```json\s*|\s*```$/g, '');
+    if (!text) return null;
     const translated = JSON.parse(text);
     return Array.isArray(translated) && translated.length === actions.length && translated.every(line => typeof line === 'string' && line.trim()) ? translated : null;
   } catch {
