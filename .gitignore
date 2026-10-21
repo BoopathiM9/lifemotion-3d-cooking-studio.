@@ -1,4 +1,9 @@
 node_modules/
-output/*.mp4
+output/
+backups/
+*.zip
+*.log
 .env
 .venv/
+.DS_Store
+Thumbs.db
