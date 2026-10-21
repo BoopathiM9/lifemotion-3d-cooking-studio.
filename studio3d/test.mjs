@@ -14,7 +14,7 @@ const server=await createStudioServer(),url=await listen(server),browser=await c
 const errors=[],failed=[],results=[];
 try{
  const ui=await browser.newPage({viewport:{width:1200,height:860}});ui.on('pageerror',e=>errors.push(e.message));await ui.goto(url);await ui.screenshot({path:join(out,'studio-ui.png')});
- await ui.waitForFunction(()=>document.getElementById('toolStatus').textContent==='Tools ready');await ui.locator('#prompt').fill('');assert.equal(await ui.locator('#generate').isDisabled(),true);await ui.locator('#prompt').fill('Make vegetable fried rice');assert.equal(await ui.locator('#generate').isDisabled(),false);await ui.locator('#previewPlan').click();await ui.waitForFunction(()=>document.getElementById('planTitle').textContent==='Vegetable Fried Rice');
+ await ui.waitForFunction(()=>document.querySelectorAll('.recipe-chip').length===4);await ui.locator('#prompt').fill('');assert.equal(await ui.locator('#generate').isDisabled(),true);await ui.locator('#prompt').fill('Make vegetable fried rice');assert.equal(await ui.locator('#generate').isDisabled(),false);await ui.locator('#previewPlan').click();await ui.waitForFunction(()=>document.getElementById('planTitle').textContent==='Vegetable Fried Rice');
  const response=await fetch(url+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:''})});assert.equal(response.status,400);
  const catalogue=await fetch(url+'/api/recipes').then(r=>r.json());assert.ok(catalogue.recipes.length>=3);
  for(const recipe of ['masala-dosa','vegetable-sandwich','pancakes']){const r=recipes[recipe];

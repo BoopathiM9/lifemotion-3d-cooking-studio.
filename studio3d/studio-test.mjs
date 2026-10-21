@@ -70,6 +70,7 @@ test('a healthy studio displays the redesigned desktop and mobile layouts',async
   await page.goto(url);await page.waitForFunction(()=>!document.getElementById('generate').disabled);
   assert.equal(await page.locator('#setupPanel').count(),0);
   assert.equal(await page.locator('.recipe-chip').count(),4);
+  assert.equal(await page.locator('#films').count(),0);
   assert.equal(await page.locator('h1').count(),1);
   const images=await page.locator('img').evaluateAll(images=>images.every(i=>i.complete&&i.naturalWidth>0));assert.ok(images,'The kitchen image must load');
   const out=join(root,'output/studio3d/ui-review');await mkdir(out,{recursive:true});

@@ -489,6 +489,13 @@ function frame(t, draw = true) {
   if (subtitleEl && lesson.captions) {
     subtitleEl.textContent = lesson.captions.find(c => t >= c.start && t < c.end)?.text || '';
   }
+  const stepName = document.getElementById('step-name');
+  if (stepName) {
+    const actions = plan.actions || [];
+    const stepNumber = Math.max(1, actions.findIndex(item => item.key === act.key) + 1);
+    const friendlyAction = actionName === 'serve' ? 'Great job — it is ready!' : `${actionName[0].toUpperCase()}${actionName.slice(1)} together`;
+    stepName.textContent = actionName === 'serve' ? friendlyAction : `Step ${stepNumber}: ${friendlyAction}`;
+  }
 
   if (draw) renderer.render(scene, camera);
 
