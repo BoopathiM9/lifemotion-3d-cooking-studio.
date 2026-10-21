@@ -319,7 +319,7 @@ for (const side of [-1, 1]) {
   const lower = mesh(new T.CylinderGeometry(0.1, 0.115, 1, 10), white, group);
   const elbow = ball(group, white, 0, 0, 0, 0.12);
   const hand = ball(group, skin, 0, 0, 0, 0.12, 0.13, 0.11);
-  armRig.push({ side, upper, lower, elbow, hand });
+  armRig.push({ side, group, upper, lower, elbow, hand });
 }
 
 function segment(object, a, b) {
@@ -356,6 +356,26 @@ function solveArm(rig, target) {
 const utensilType = plan.utensil || 'spoon';
 const tool = createUtensil(utensilType);
 scene.add(tool);
+
+// Premium illustrated Maya host. The transparent character matches the studio
+// artwork while the procedural food and cookware continue animating in 3D.
+let illustratedMaya = null;
+const mayaSize = W < H ? { width: 2.65, height: 3.98, y: 3.1 } : { width: 2.85, height: 4.28, y: 3.25 };
+try {
+  const mayaTexture = await new T.TextureLoader().loadAsync('/studio3d/assets/maya-character.png');
+  mayaTexture.colorSpace = T.SRGBColorSpace;
+  const mayaMaterial = new T.SpriteMaterial({ map: mayaTexture, transparent: true, alphaTest: 0.03, depthWrite: false });
+  illustratedMaya = new T.Sprite(mayaMaterial);
+  illustratedMaya.position.set(-1.25, mayaSize.y, -0.48);
+  illustratedMaya.scale.set(mayaSize.width, mayaSize.height, 1);
+  illustratedMaya.renderOrder = 2;
+  scene.add(illustratedMaya);
+  chef.visible = false;
+  armRig.forEach(rig => { rig.group.visible = false; });
+  tool.visible = false;
+} catch {
+  illustratedMaya = null;
+}
 
 // Main Food Entity
 const food = new T.Group();
@@ -460,6 +480,14 @@ function frame(t, draw = true) {
   const actionName = act.action || 'cook';
   const amp = lesson.envelope?.[Math.floor(t / 0.02)] || 0;
 
+  if (illustratedMaya) {
+    const serving = actionName === 'serve' || actionName === 'plate';
+    illustratedMaya.position.x = serving ? -0.95 : -1.25;
+    illustratedMaya.position.y = mayaSize.y + Math.sin(t * 2.1) * 0.035 + amp * 0.045;
+    illustratedMaya.scale.set(mayaSize.width + amp * 0.025, mayaSize.height + amp * 0.04, 1);
+    illustratedMaya.material.rotation = Math.sin(t * 1.25) * 0.012;
+  }
+
   // Head and eye animation
   head.rotation.z = Math.sin(t * 1.5) * 0.035;
   head.rotation.y = act.key === 'serve' ? 0.05 : 0.12;
@@ -518,7 +546,7 @@ function frame(t, draw = true) {
   if (act.key === 'serve') look.set(0.7, 2.35, 0.1);
   if (W < H) {
     const focus = act.key === 'serve' ? 1.45 : 0.7;
-    camera.position.set(focus + 2, 4.7, act.key === 'serve' ? 10.7 : 15);
+    camera.position.set(focus + 1.1, 4.45, act.key === 'serve' ? 8.3 : 9.2);
     look.set(focus, 2.3, 0.1);
   }
   stoveGlow.intensity = ['cook', 'boil', 'simmer', 'fry', 'saute'].includes(actionName) ? 0.8 + Math.sin(t * 5) * 0.12 : 0.3;
