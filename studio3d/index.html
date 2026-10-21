@@ -1,30 +1,143 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f7f6f1"><meta name="description" content="Turn a recipe into a narrated 3D cooking lesson with Chef Maya. Choose a recipe, preview the steps, and create your film.">
-<title>LifeMotion — Little recipes, big stories</title><link rel="icon" href="data:,">
-<link rel="stylesheet" href="/studio3d/studio.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create clear, narrated 3D cooking lessons from a recipe.">
+  <title>LifeMotion Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/studio3d/studio.css">
 </head>
 <body>
-<header class="topbar"><a class="brand" href="#create" aria-label="LifeMotion home"><span class="brand-mark">✳</span><span>LifeMotion<span class="brand-caption">THE COOKING STUDIO</span></span></a><nav aria-label="Main navigation"><a class="active" href="#create">Create a film</a><a href="#recipes">Recipe book</a><a href="#films">My films</a></nav><button class="tool-pill" id="setupToggle" type="button" aria-controls="setupPanel"><span class="status-dot"></span><span id="toolStatus">Checking tools</span><span class="arrow" aria-hidden="true"></span></button></header>
-<main>
-<section class="intro" id="create"><div><p class="eyebrow"><span class="tiny-line"></span>A LITTLE IMAGINATION. A LOT OF FLAVOR.</p><h1>Good food.<br><span>Great little stories.</span></h1><p class="intro-copy">Turn a recipe into a joyful 3D cooking lesson.<br>Chef Maya brings the steps to life, one sentence at a time.</p></div><div class="intro-note"><span class="note-spark">✧</span><p>Made for curious minds<br>and little kitchen helpers.</p><span class="note-caption">English narration · Animated lessons · MP4</span></div></section>
-<section class="setup-panel" id="setupPanel" hidden aria-labelledby="setupHeading"><div class="section-heading"><div><p class="eyebrow">LET’S GET YOU READY</p><h2 id="setupHeading">Your studio tools</h2></div><button class="button secondary small" id="checkSetup" type="button">Check again ↻</button></div><p id="setupSummary">Checking your laptop’s tools…</p><ul id="setupChecks" class="setup-checks"></ul><p class="fine-print">After installing a missing tool, close the studio terminal and open a new one. Start the studio again, then check here. New narration also needs an internet connection.</p></section>
-<section class="workspace" aria-label="Create a cooking film">
-<article class="card recipe-editor"><div class="card-heading"><div><p class="eyebrow">01 / THE RECIPE</p><h2>What’s cooking?</h2></div><span class="tag">Your director’s chair</span></div>
-<form id="form"><label for="prompt">Tell Maya what you’d like to make</label><div class="prompt-wrap"><textarea id="prompt" name="prompt" maxlength="2000" rows="4" required placeholder="Teach children how to make chicken biryani step by step in simple English.">Teach children how to make chicken biriyani step by step in simple English.</textarea><div class="prompt-footer"><span>Simple English works best</span><span id="charCount">0 / 2000</span></div></div>
-<div class="quick-label">A little inspiration</div><div class="quick-recipes" id="quickRecipes"></div>
-<div class="settings-grid"><div><label for="voice">Maya’s voice</label><select id="voice" name="voice"><option value="en-US-JennyNeural">Jenny · Warm &amp; friendly</option><option value="en-US-AriaNeural">Aria · Bright &amp; cheerful</option></select></div><div><label for="format">Your canvas</label><select id="format" name="format"><option value="16:9">▰ Landscape · 16:9</option><option value="9:16">▯ Portrait · 9:16</option></select></div></div>
-<div class="editor-actions"><button class="button primary" id="generate" type="submit" disabled><span id="generateText">Create my cooking film</span><span class="arrow" aria-hidden="true"></span></button><button class="button secondary" id="previewPlan" type="button">Preview steps</button></div><p class="form-hint" id="formHint">Checking your studio tools…</p>
-</form><div class="plan-panel" id="planPanel" hidden><div class="plan-heading"><h3 id="planTitle">Your recipe steps</h3><span class="tag" id="planType"></span></div><p id="planNote" class="fine-print"></p><ol id="planSteps"></ol></div>
-<div class="job-progress" id="progressArea" hidden><div class="progress-heading"><span id="status" role="status" aria-live="polite">Preparing your film</span><span id="progressText">0%</span></div><progress id="progress" max="100" value="0" aria-label="Film generation progress"></progress><ol class="stages" id="stages"><li data-stage="narration">Voice</li><li data-stage="preview">Preview</li><li data-stage="rendering">Animation</li><li data-stage="complete">Ready</li></ol></div>
-</article>
-<article class="card screening-room"><div class="card-heading"><div><p class="eyebrow">02 / THE MAGIC</p><h2>Your little cinema</h2></div><span class="tag warm" id="filmBadge">A story in the making</span></div><div class="screen"><div id="placeholder"><img src="/studio3d/assets/maya-kitchen.jpg" alt="Chef Maya in her pastel 3D kitchen" width="960" height="540"><div class="screen-overlay"><span class="screen-label">MEET YOUR CHEF</span><h3>A pinch of wonder.<br>A kitchen full of possibilities.</h3><p>Maya’s ready when you are.</p></div></div><video id="video" controls playsinline preload="metadata" hidden aria-label="Your cooking film"></video></div><div class="screen-bottom"><div><span class="small-icon" aria-hidden="true">✧</span><div><strong id="filmTitle">Your recipe, brought to life</strong><p id="filmDescription">Narrated steps. A 3D kitchen. A film to keep.</p></div></div><a id="download" class="button primary small" hidden download>Download MP4 ↓</a></div><div class="render-note"><span aria-hidden="true">◷</span><p>Good stories take a little time. Rendering can take several minutes on your laptop. You can watch the short preview while the full film finishes.</p></div></article>
-</section>
-<section class="recipe-book" id="recipes"><div class="section-heading"><div><p class="eyebrow">THE RECIPE BOOK</p><h2>A delicious place to start.</h2><p>Choose a guided recipe. We’ll write the prompt for you.</p></div><span class="tag" id="recipeCount">Loading recipes</span></div><div class="recipe-grid" id="recipeGrid"></div><div class="recipe-advice"><span aria-hidden="true">✎</span><p><strong>Have your own recipe?</strong> Paste the ingredients and detailed cooking instructions above, then preview the steps. Dishes outside the recipe book use a generic animation; check the plan before creating.</p></div></section>
-<section id="films" class="film-library"><div class="section-heading"><div><p class="eyebrow">MADE IN YOUR KITCHEN</p><h2>Your recent films.</h2></div><button class="text-button" id="refreshFilms" type="button">Refresh ↻</button></div><div id="filmList" class="film-list"><p class="empty-library">Your finished films will live here. Let’s make the first one.</p></div></section>
-<section class="how-it-works" id="workflow"><div><span>01</span><h3>Pick your recipe</h3><p>A favorite dish or your own instructions.</p></div><div><span>02</span><h3>Make it yours</h3><p>Choose a voice and a canvas. Check the steps.</p></div><div><span>03</span><h3>Let Maya cook</h3><p>We animate the kitchen and add English narration.</p></div><div><span>04</span><h3>Keep the magic</h3><p>Watch your film and download the MP4.</p></div></section>
-<footer><a class="brand" href="#create"><span class="brand-mark small-mark">✳</span>LifeMotion</a><p>Little lessons. Lasting memories.</p><span>Made locally, with a little wonder.</span></footer>
-</main><script type="module" src="/studio3d/studio-ui.mjs"></script>
-</body></html>
+  <header class="topbar">
+    <a class="brand" href="#create" aria-label="LifeMotion Studio home">
+      <span class="brand-mark" aria-hidden="true">L</span>
+      <span><strong>LifeMotion</strong><small>Cooking Studio</small></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#create">Create</a>
+      <a href="#recipes">Recipes</a>
+      <a href="#films">My videos</a>
+    </nav>
+    <button id="setupToggle" class="status-button" type="button" aria-controls="setupPanel">
+      <span class="status-dot" aria-hidden="true"></span><span id="toolStatus">Checking setup</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="page-heading" id="create">
+      <div>
+        <span class="eyebrow">3D cooking video creator</span>
+        <h1>What would you like to cook?</h1>
+        <p>Describe the lesson in plain English. LifeMotion turns your request into a narrated 3D cooking video.</p>
+      </div>
+      <div class="feature-list" aria-label="Video features">
+        <span>3D animation</span><span>Voice narration</span><span>Timed subtitles</span>
+      </div>
+    </section>
+
+    <section id="setupPanel" class="setup-panel" aria-labelledby="setupHeading" hidden>
+      <div>
+        <span class="eyebrow">Local setup</span>
+        <h2 id="setupHeading">Finish setting up this computer</h2>
+        <p id="setupSummary">Checking the tools required to generate videos.</p>
+      </div>
+      <ul id="setupChecks" class="setup-checks"></ul>
+      <button id="checkSetup" class="secondary-button" type="button">Check again</button>
+    </section>
+
+    <section class="workspace" aria-label="Video creator">
+      <article class="panel form-panel">
+        <div class="panel-heading">
+          <div><span class="step-label">Your request</span><h2>Describe your cooking lesson</h2></div>
+          <span class="panel-tag">Draft</span>
+        </div>
+
+        <form id="form">
+          <label for="prompt">Recipe instructions</label>
+          <div class="textarea-wrap">
+            <textarea id="prompt" name="prompt" maxlength="2000" required placeholder="Example: Teach children how to make chicken biryani step by step in simple English.">Teach children how to make chicken biryani step by step in simple English.</textarea>
+            <span id="charCount">0 / 2,000</span>
+          </div>
+
+          <div class="field-note">Start with a template</div>
+          <div id="quickRecipes" class="quick-recipes" aria-label="Popular recipe templates"></div>
+
+          <div class="field-grid">
+            <div>
+              <label for="voice">Narration voice</label>
+              <select id="voice" name="voice">
+                <option value="en-US-JennyNeural">Jenny · Warm and friendly</option>
+                <option value="en-US-AriaNeural">Aria · Bright and cheerful</option>
+              </select>
+            </div>
+            <div>
+              <label for="format">Video format</label>
+              <select id="format" name="format">
+                <option value="16:9">Landscape · 16:9</option>
+                <option value="9:16">Portrait · 9:16</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button id="generate" class="primary-button" type="submit"><span id="generateText">Generate video</span><span aria-hidden="true">→</span></button>
+            <button id="previewPlan" class="secondary-button" type="button">Review steps</button>
+          </div>
+          <p id="formHint" class="form-hint">Generation is available after the local tools pass the setup check.</p>
+        </form>
+
+        <section id="planPanel" class="plan-panel" aria-labelledby="planTitle" hidden>
+          <div class="subheading-row"><div><span class="step-label">Recipe plan</span><h3 id="planTitle">Video steps</h3></div><span id="planType" class="panel-tag"></span></div>
+          <p id="planNote"></p>
+          <ol id="planSteps"></ol>
+        </section>
+
+        <section id="progressArea" class="progress-area" aria-live="polite" hidden>
+          <div class="progress-copy"><strong id="status">Preparing your video</strong><span id="progressText">0%</span></div>
+          <progress id="progress" value="0" max="100">0%</progress>
+          <ol id="stages" class="stages">
+            <li data-stage="recipe">Prepare recipe</li><li data-stage="narration">Record narration</li><li data-stage="render">Render animation</li><li data-stage="export">Export video</li>
+          </ol>
+        </section>
+      </article>
+
+      <article class="panel preview-panel">
+        <div class="panel-heading">
+          <div><span class="step-label">Result</span><h2>Video preview</h2></div>
+          <span id="filmBadge" class="panel-tag">Waiting</span>
+        </div>
+        <div class="preview-stage">
+          <div id="placeholder" class="placeholder">
+            <img src="/studio3d/assets/maya-kitchen.jpg" alt="Maya, the 3D cooking guide, standing in a kitchen">
+            <div class="play-indicator" aria-hidden="true">▶</div>
+            <h3>Your video will appear here</h3>
+            <p>Enter a recipe, review the steps, then generate your cooking lesson.</p>
+          </div>
+          <video id="video" controls playsinline hidden></video>
+        </div>
+        <div class="output-row">
+          <div><span class="step-label">Output</span><h3 id="filmTitle">No video generated</h3><p id="filmDescription">MP4 video with narration and subtitles</p></div>
+          <a id="download" class="secondary-button" href="#" download hidden>Download video</a>
+        </div>
+        <p class="render-note">Rendering can take several minutes. You can keep this page open while the video is created.</p>
+      </article>
+    </section>
+
+    <section class="content-section recipe-book" id="recipes">
+      <div class="section-heading"><div><span class="eyebrow">Recipe templates</span><h2>Choose a guided recipe</h2><p>Use a tested prompt, then edit it to suit your audience.</p></div><span id="recipeCount" class="count-badge">0 recipes</span></div>
+      <div id="recipeGrid" class="recipe-grid"></div>
+    </section>
+
+    <section id="films" class="content-section film-library">
+      <div class="section-heading"><div><span class="eyebrow">Recent exports</span><h2>Your videos</h2><p>Open or download videos generated on this computer.</p></div><button id="refreshFilms" class="secondary-button" type="button">Refresh</button></div>
+      <div id="filmList" class="film-list"></div>
+    </section>
+  </main>
+
+  <footer><div class="brand footer-brand"><span class="brand-mark" aria-hidden="true">L</span><span><strong>LifeMotion</strong><small>Cooking Studio</small></span></div><p>Turn everyday recipes into easy-to-follow 3D cooking lessons.</p></footer>
+  <script type="module" src="/studio3d/studio-ui.mjs"></script>
+</body>
+</html>

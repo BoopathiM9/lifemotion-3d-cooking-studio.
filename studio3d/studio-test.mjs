@@ -48,7 +48,8 @@ test('the website works on desktop and mobile, exposes recipe commands, and guid
  try{
   const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url);await page.waitForFunction(()=>document.getElementById('toolStatus').textContent==='Setup needed');
-  assert.equal(await page.locator('#setupPanel').isVisible(),true);assert.equal(await page.locator('#generate').isDisabled(),true);
+  assert.equal(await page.locator('#setupPanel').isVisible(),false);assert.equal(await page.locator('#generate').isDisabled(),false);
+  await page.locator('#setupToggle').click();assert.equal(await page.locator('#setupPanel').isVisible(),true);
   assert.match(await page.locator('#setupChecks').innerText(),/winget install/);
   await page.locator('#prompt').fill('Teach children how to make chicken biriyani step by step in simple English.');
   await page.locator('#previewPlan').click();await page.waitForFunction(()=>!document.getElementById('planPanel').hidden);

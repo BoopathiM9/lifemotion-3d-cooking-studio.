@@ -13,9 +13,9 @@ const options=()=>({prompt:$('prompt').value.trim(),voice:$('voice').value,forma
 const post=body=>({method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 const save=id=>{try{id?sessionStorage.setItem('mayaJob',id):sessionStorage.removeItem('mayaJob');}catch{}};
 function updateButton(){
- $('generate').disabled=!setupReady||creating||remoteBusy||!$('prompt').value.trim();
- $('generateText').textContent=creating?'Creating your film…':remoteBusy?'Another film is being created':'Create my cooking film';
- $('formHint').textContent=!setupReady?'Finish the setup checks above. You can still explore recipes and preview their steps.':creating?'Keep the studio terminal open. Your short preview will appear first.':remoteBusy?'A film is already in progress. Your recent films will update when it finishes.':'Includes English narration and subtitles. New speech needs internet access.';
+ $('generate').disabled=creating||remoteBusy||!$('prompt').value.trim();
+ $('generateText').textContent=creating?'Generating video…':remoteBusy?'Generation in progress':'Generate video';
+ $('formHint').textContent=!setupReady?'Local setup is required before the first export. Select “Setup needed” for instructions.':creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Recent exports will update when it finishes.':'Includes English narration and timed subtitles.';
 }
 function count(){ $('charCount').textContent=`${$('prompt').value.length} / 2000`;updateButton();}
 function errorMessage(message){$('progressArea').hidden=false;$('progressArea').classList.add('error');$('status').textContent=message;$('stages').hidden=true;$('progress').hidden=true;}
@@ -26,25 +26,24 @@ function renderSetup(setup){
  setupReady=setup.ready;
  $('toolStatus').textContent=setupReady?'Tools ready':'Setup needed';
  $('setupToggle').classList.toggle('ready',setupReady);$('setupToggle').classList.toggle('needs-setup',!setupReady);
- $('setupSummary').textContent=setupReady?'Your local tools are installed. Choose a recipe and let Maya do the storytelling.':'A few tools need attention before your first film. Use the commands below in your project terminal.';
+ $('setupSummary').textContent=setupReady?'All required tools are available. You can generate videos.':'Some required tools are missing. Run the commands below from the project terminal.';
  $('setupChecks').replaceChildren();
  for(const check of setup.checks){
   const item=node('li');item.append(node('strong',`${check.ok?'✓':'!'} ${check.label}`,check.ok?'check-ok':'check-bad'),node('p',check.message));
   if(!check.ok&&check.fix){const command=node('div',undefined,'setup-command'),copy=node('button','Copy','copy-button');copy.type='button';copy.addEventListener('click',()=>copyText(check.fix,copy));command.append(node('code',check.fix),copy);item.append(command);}
   $('setupChecks').append(item);
  }
- if(!setupReady)$('setupPanel').hidden=false;
  updateButton();
 }
 async function checkSetup(refresh=false){
  $('checkSetup').disabled=true;
  try{renderSetup(await request('/api/setup'+(refresh?'?refresh=1':'')));}
- catch{setupReady=false;$('setupPanel').hidden=false;$('toolStatus').textContent='Studio offline';$('setupSummary').textContent='Cannot reach the studio. Keep its terminal open, restart it if necessary, then check again.';updateButton();}
+ catch{setupReady=false;$('toolStatus').textContent='Studio offline';$('setupSummary').textContent='Cannot reach the studio. Keep its terminal open, restart it if necessary, then check again.';updateButton();}
  finally{$('checkSetup').disabled=false;}
 }
 function chooseRecipe(recipe){
  if(creating)return;
- $('prompt').value=recipe.prompt;count();$('planPanel').hidden=true;
+ $('prompt').value=recipe.prompt||`Teach children how to make ${recipe.name.toLowerCase()} step by step in simple English.`;count();$('planPanel').hidden=true;
  document.querySelectorAll('.recipe-chip').forEach(button=>button.classList.toggle('active',button.dataset.recipe===recipe.id));
  $('create').scrollIntoView({behavior:'smooth'});$('prompt').focus({preventScroll:true});
 }
@@ -54,7 +53,7 @@ function renderRecipes(recipes){
  $('recipeCount').textContent=`${recipes.length} guided recipes`;$('quickRecipes').replaceChildren();$('recipeGrid').replaceChildren();
  for(const recipe of ordered){
   const card=node('button',undefined,'recipe-card');card.type='button';card.setAttribute('aria-label',`Use ${recipe.name} recipe`);
-  card.append(node('span',icons[recipe.id]||'🍽','recipe-art'),node('span','','recipe-arrow arrow'),node('strong',recipe.name),node('small','A step-by-step Maya lesson'));card.addEventListener('click',()=>chooseRecipe(recipe));$('recipeGrid').append(card);
+  card.append(node('span',icons[recipe.id]||'🍽','recipe-art'),node('span','','recipe-arrow arrow'),node('strong',recipe.name),node('small','Guided step-by-step template'));card.addEventListener('click',()=>chooseRecipe(recipe));$('recipeGrid').append(card);
   if(priority.includes(recipe.id)){const button=node('button',recipe.name.replace('Vegetable ','Veg '),'recipe-chip');button.type='button';button.dataset.recipe=recipe.id;button.addEventListener('click',()=>chooseRecipe(recipe));$('quickRecipes').append(button);}
  }
 }
@@ -69,9 +68,9 @@ function displayMedia(job){
  if(source){const video=$('video');if(video.getAttribute('src')!==source){video.src=source;video.load();}$('placeholder').hidden=true;video.hidden=false;}
  $('download').hidden=!(job.status==='complete'&&job.videoUrl);
  if(job.videoUrl){$('download').href=job.videoUrl+'?download=1';$('download').download=`maya-${job.recipe}-${job.format?.replace(':','x')||'video'}.mp4`;}
- $('filmTitle').textContent=job.title||'Your cooking film';
- $('filmDescription').textContent=job.generic?'A generic visualization. Check the recipe steps before using this lesson.':job.status==='complete'?'Your complete film, with English narration and subtitles.':job.previewUrl?'A first look. Your full film is still being created.':job.status==='failed'?'No completed film yet. Follow the message and try again.':'Maya is preparing your cooking adventure.';
- $('filmBadge').textContent=job.generic?'Generic cooking animation':job.status==='complete'?'Your film is ready':job.previewUrl?'Preview available':job.status==='failed'?'Creation paused':'A story in the making';
+ $('filmTitle').textContent=job.title||'Cooking video';
+ $('filmDescription').textContent=job.generic?'Generic animation generated. Review the recipe steps before using this lesson.':job.status==='complete'?'Complete MP4 with English narration and subtitles.':job.previewUrl?'Preview ready. The complete video is still rendering.':job.status==='failed'?'Generation stopped. Follow the message and try again.':'Preparing animation, narration, and subtitles.';
+ $('filmBadge').textContent=job.generic?'Generic animation':job.status==='complete'?'Ready':job.previewUrl?'Preview ready':job.status==='failed'?'Stopped':'Generating';
 }
 function displayJob(job){
  $('progressArea').hidden=false;const failed=job.status==='failed';$('progressArea').classList.toggle('error',failed);$('stages').hidden=failed;$('progress').hidden=failed;
