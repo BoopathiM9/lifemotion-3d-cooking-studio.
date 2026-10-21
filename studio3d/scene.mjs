@@ -48,7 +48,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = T.PCFSoftShadowMap;
 renderer.outputColorSpace = T.SRGBColorSpace;
 renderer.toneMapping = T.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
+renderer.toneMappingExposure = 1.28;
 document.body.prepend(renderer.domElement);
 let contextLost = false;
 renderer.domElement.addEventListener('webglcontextlost', event => {
@@ -61,10 +61,10 @@ const camera = new T.PerspectiveCamera(40, W / H, 0.1, 60);
 camera.position.set(5.7, 4.5, 8.2);
 camera.lookAt(0, 2, 0);
 
-scene.add(new T.AmbientLight('#ffeed7', 0.7));
-scene.add(new T.HemisphereLight('#f9fcff', '#bcb596', 1.7));
+scene.add(new T.AmbientLight('#ffeed7', 0.55));
+scene.add(new T.HemisphereLight('#f9fcff', '#a69b83', 1.95));
 
-const sun = new T.DirectionalLight('#fff3d9', 3.1);
+const sun = new T.DirectionalLight('#fff1d2', 3.6);
 sun.position.set(-3, 7, 5);
 sun.castShadow = true;
 sun.shadow.mapSize.set(512, 512);
@@ -73,7 +73,7 @@ sun.shadow.bias = -0.0015;
 sun.shadow.normalBias = 0.025;
 scene.add(sun);
 
-const rim = new T.DirectionalLight('#d5edee', 1.1);
+const rim = new T.DirectionalLight('#b8e4e3', 1.45);
 rim.position.set(4, 4, -3);
 scene.add(rim);
 const stoveGlow = new T.PointLight('#ffb85c', 0.35, 5, 2);
@@ -134,6 +134,16 @@ const lerp = T.MathUtils.lerp;
 // Kitchen Set Construction
 box(scene, mat('#eadfcc'), 0, -0.12, 0, 16, 0.2, 13);
 box(scene, mat('#f3ecdd'), 0, 3, -2.4, 13, 6, 0.15);
+const tile = mat('#d9e9df', 0.42);
+const grout = mat('#fbf7ed', 0.85);
+for (let row = 0; row < 3; row++) {
+  for (let column = -4; column <= 4; column++) {
+    box(scene, tile, column * 0.72 + (row % 2 ? 0.36 : 0), 2.1 + row * 0.44, -2.29, 0.67, 0.39, 0.022);
+  }
+}
+box(scene, grout, 0, 3.53, -2.25, 3.05, 0.08, 0.12);
+box(scene, mat('#d7c3a6', 0.32), 0, 3.79, -2.12, 1.55, 0.22, 0.28);
+box(scene, mat('#8e9a91', 0.25), 0, 3.58, -2.04, 1.05, 0.06, 0.18);
 box(scene, cream, 0, 1.52, 0.1, 8.4, 0.19, 2.7);
 box(scene, wood, 0, 0.75, 0.15, 8.25, 1.45, 2.5);
 
@@ -145,6 +155,21 @@ for (const x of [1.3, 2.8]) {
   box(scene, mint, x, 3.15, -2.22, 1.4, 1.25, 0.35);
   box(scene, mat('#a8c8b5'), x, 3.15, -2.01, 1.22, 1.05, 0.045);
   box(scene, gold, x + 0.42, 3.13, -1.95, 0.04, 0.25, 0.04);
+}
+
+// Open shelving, cookbooks, and warm pendant lights give the kitchen depth.
+for (const x of [-0.7, 2.6]) {
+  box(scene, mat('#9a7152', 0.5), x, 3.92, -2.03, 1.05, 0.07, 0.22);
+  cylinder(scene, mat('#d17d55'), x - 0.25, 4.12, -1.95, 0.12, 0.32);
+  box(scene, mat('#e8bb5e'), x + 0.18, 4.1, -1.95, 0.14, 0.34, 0.08);
+}
+for (const x of [-2.05, 1.55]) {
+  cylinder(scene, dark, x, 4.95, -0.15, 0.018, 1.22, 0.018);
+  const pendant = cylinder(scene, mat('#e1a44e', 0.22), x, 4.3, -0.15, 0.22, 0.25, 0.14);
+  pendant.rotation.x = Math.PI;
+  const light = new T.PointLight('#ffd993', 0.55, 5, 2);
+  light.position.set(x, 4.13, -0.05);
+  scene.add(light);
 }
 
 // Window & Decor
@@ -211,11 +236,14 @@ scene.add(chef);
 
 ball(chef, white, 0, 2.12, 0, 0.46, 0.68, 0.31);
 box(chef, peach, 0, 2.03, 0.306, 0.58, 0.77, 0.035);
+box(chef, mat('#e98d6b'), 0, 2.08, 0.35, 0.42, 0.55, 0.025);
+box(chef, white, 0, 2.4, 0.37, 0.5, 0.07, 0.03);
 box(chef, white, 0, 2.57, 0.1, 0.21, 0.1, 0.22);
 for (const x of [-0.24, 0.24]) {
   const strap = box(chef, peach, x, 2.37, 0.28, 0.065, 0.49, 0.045);
   strap.rotation.z = -x * 0.7;
 }
+for (const y of [2.1, 1.95]) ball(chef, gold, 0, y, 0.37, 0.024);
 ball(chef, peach, 0, 1.88, 0.34, 0.19, 0.15, 0.03);
 for (const x of [-0.11, 0.11]) {
   ball(chef, gold, x, 2.36, 0.35, 0.022);
@@ -228,6 +256,7 @@ head.position.set(0, 3.28, 0);
 chef.add(head);
 
 ball(head, hair, 0, 0.03, -0.09, 0.66, 0.68, 0.49);
+ball(head, hairLight, 0.4, 0.46, -0.12, 0.28, 0.3, 0.24);
 ball(head, skin, 0, 0, 0.045, 0.59, 0.62, 0.48);
 for (const x of [-0.6, 0.6]) {
   ball(head, skin, x, -0.04, 0.02, 0.1, 0.15, 0.09);
@@ -254,6 +283,10 @@ for (const x of [-0.225, 0.225]) {
   ball(eye, white, 0.042, -0.06, 0.102, 0.017, 0.02, 0.009);
   const brow = ball(head, hair, x, 0.33, 0.42, 0.15, 0.027, 0.035);
   brow.rotation.z = x < 0 ? 0.1 : -0.1;
+  for (const lashOffset of [-0.055, 0.055]) {
+    const lash = ball(eye, hair, lashOffset, 0.16, 0.07, 0.028, 0.009, 0.01);
+    lash.rotation.z = lashOffset * 5;
+  }
 }
 
 for (let i = 0; i < 5; i++) {
