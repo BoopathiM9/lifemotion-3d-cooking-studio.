@@ -137,7 +137,7 @@ export function storyboard({
   }
 
   const promptText = typeof prompt === 'string' ? prompt.trim() : '';
-  if (!promptText) {
+  if (!promptText || promptText.length > 2000) {
     throw new Error('Enter a recipe prompt between 1 and 2000 characters.');
   }
 

@@ -1,14 +1,19 @@
 # LifeMotion 3D Cooking Studio
 
-The separate `studio3d/` application adds a genuine Three.js chef and kitchen, supported-recipe storyboards, sentence-based speech, subtitles, CPU-compatible rendering, a local web interface, progress, previews and MP4 downloads. The working original 2D project below is preserved.
+The `studio3d/` website creates narrated 3D cooking films with Chef Maya. It includes 10 guided recipes, recipe-step previews, local setup checks, generation progress, a film library and MP4 downloads.
+
+From PowerShell in the cloned project folder:
 
 ```powershell
+npm.cmd run setup
 npm.cmd run studio
 ```
 
-Open http://127.0.0.1:4173 after starting the command. Supports masala dosa, vegetable sandwich and pancakes; arbitrary recipes are rejected. New Edge TTS speech requires internet; rendering is local and cached speech is reused. No paid API or cloud GPU is required.
+Open the local address printed by the server and keep the terminal open. Windows setup can install missing Python and FFmpeg with Windows Package Manager; Node.js and Git must already be installed. Generation uses local CPU rendering. New English narration requires internet access; cached audio is reused. The website identifies missing tools before a film starts and does not create a second portal when started again.
 
-Verified final 3D film: `output/lifemotion-3d-final-tested.mp4` (portrait, 720x1280, 24fps). Preview: `output/lifemotion-3d-preview-480p.mp4`. Full setup and commands: [studio3d/README.md](studio3d/README.md). Milestone results, executed tests, output locations and limits: [output/studio3d/DELIVERY.md](output/studio3d/DELIVERY.md).
+Try: **Teach children how to make chicken biriyani step by step in simple English.** Recipe cards also fill in ready-to-use prompts. Unsupported dishes receive a labelled generic animation; preview the steps before creating a film.
+
+Full setup, examples, supported recipes and validation: [studio3d/README.md](studio3d/README.md). The original 2D project is preserved below.
 
 ---
 

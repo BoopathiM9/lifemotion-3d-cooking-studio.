@@ -1,48 +1,73 @@
-# LifeMotion 3D Cooking Studio
+# LifeMotion Cooking Studio
 
-## Local start
+A local website that turns recipe instructions into a procedural 3D cooking lesson with Chef Maya, English narration, subtitles and an MP4 download. Rendering runs on your CPU; a cloud GPU or paid API key is not required.
 
-From `C:\life_motion-kids_project\lifemotion-kids-starter` run:
+## Windows: first-time setup
+
+Install Node.js 20+ and Git, clone this repository, and open PowerShell in the project folder. Run:
 
 ```powershell
+npm.cmd run setup
 npm.cmd run studio
 ```
 
-Open http://127.0.0.1:4173. Nothing is published. One generation runs at a time. The service listens only on loopback. Stop it with Ctrl+C. Starting it again reuses the same studio address and exits without opening a second portal. If another application occupies the selected port, startup stops with an error rather than silently switching ports. `LIFEMOTION_PORT` selects a different port explicitly.
+The setup helper installs locked Node dependencies, finds Python 3.10+, creates a local `.venv`, installs `edge-tts==7.3.1`, and installs Playwright Chromium. On Windows it uses Windows Package Manager to install missing Python and FFmpeg. Windows may ask you to approve the installers. If `winget` is unavailable, install Python and FFmpeg manually, then rerun setup. Package and TLS verification remain enabled.
 
-Enter exactly one supported recipe: masala dosa, vegetable sandwich, or pancakes. Choose Jenny or Aria English speech and landscape 16:9 or portrait 9:16. Generation creates cached sentence-level narration, a short 480p/12fps visual preview, then a complete 720p/24fps MP4. Progress, video preview, and MP4 download are available on the page. Unsupported recipes, conflicting selections, invalid voices, and invalid formats return explicit errors.
+Open the address printed by the server, normally `http://127.0.0.1:4173`. Keep that terminal open. Starting the studio again will point to the existing address instead of creating a second portal. Stop the server with Ctrl+C.
 
-This is a template-based recipe-to-storyboard engine. It does not generate arbitrary recipes, models, ingredients, or actions from unrestricted natural language. All models and animation actions are procedural original Three.js graphics. No diffusion model or paid API is used.
+The page checks Python, the speech package, FFmpeg, FFprobe and Chromium before accepting a generation request. Open **Tools ready / Setup needed** to see the checks. If a tool was just installed, restart your terminal and studio so the updated PATH is inherited. The Python resolver prefers the project virtual environment and also supports the Windows `py -3` launcher, so the Microsoft Store `python` alias is not required.
 
-## Free tools and voice
+On other platforms, install Node.js 20+, Python 3.10+ and FFmpeg with your normal package manager before running `npm run setup`. Browser/system library requirements depend on the operating system.
 
-Three.js 0.180.0, Playwright, FFmpeg/FFprobe, Python's standard library, and the already-installed edge-tts package are used. New speech requires internet to Microsoft's free Edge TTS service; cached sentence audio is reused on later jobs. Models, scene, rendering, website, and video files stay on the laptop. Piper is not bundled in this release; offline operation currently requires already-cached Edge speech. The original 2D video and audio were retained.
+## Create a film
 
-## CPU rendering
+1. Choose a card in the recipe book or enter a prompt.
+2. Use **Preview steps** to check the ingredients and narration.
+3. Choose Jenny or Aria and landscape 16:9 or portrait 9:16.
+4. Click **Create my cooking film**. The short preview appears before the complete film.
+5. Watch the final film and use **Download MP4**. Recent completed films also appear in the film library.
 
-Chromium uses ANGLE SwiftShader software WebGL with a perspective camera. Original MAYA is constructed from lightweight meshes with eyes, mouth, hair, chef hat, coat/apron, jointed arms and solved hand targets. The set has ambient/hemisphere/directional lights, a 512px shadow map, materials, kitchen furniture, a tawa, ingredient bowls, utensils, and a plate. The scene is around 33,000 triangles. FFmpeg uses single-threaded ultrafast zero-latency encoding to reduce memory pressure. Node runs with a 128MB old-space limit and 4MB semi-space limit to reduce memory pressure on this Windows laptop. Other open applications can still affect available virtual memory and rendering speed.
+Copyable examples:
 
-## Commands
-
-```powershell
-npm.cmd run 3d:test
-npm.cmd run 3d:preview
-npm.cmd run 3d:render
-node --max-old-space-size=128 --max-semi-space-size=4 studio3d/e2e.mjs
+```text
+Teach children how to make chicken biriyani step by step in simple English.
+Teach children how to make vegetable fried rice step by step in simple English.
+Teach children how to make tomato pasta step by step in simple English.
+Teach children how to make masala dosa step by step in simple English.
+Teach children how to make pancakes step by step in simple English.
 ```
 
-`3d:preview` extracts complete pouring/spreading steps from the existing dosa lesson. Preview audio, captions and actions share the same measured timeline; website previews similarly use two cooking steps for the selected recipe. `3d:render` renders the complete original dosa lesson with its unchanged voice and subtitles. Website jobs generate each new sentence separately and derive the total video duration from decoded PCM audio rather than a fixed duration. Word-boundary metadata creates captions; actual voice energy drives mouth opening.
+Guided recipes: chicken biryani (also spelled biriyani), masala dosa, pancakes, vegetable sandwich, vegetable fried rice, tomato pasta, noodles, chapati, vegetable soup and salad. The recipe cards fill in the prompt automatically.
 
-All outputs have unique directories under `output/studio3d/`. Website jobs are in `output/studio3d/jobs/<id>/`, with `storyboard.json`, `lesson.json`, measured sentence segments, narration WAV, subtitles SRT, status JSON, preview/final MP4s, key frames and validation reports. `output/studio3d/latest.json` points to the most recent successful render. No earlier MP4 is overwritten.
+You can also supply detailed cooking instructions. Dishes outside the recipe book receive a clearly labelled generic cooking animation; this is a template and rule-based engine, not an unrestricted AI recipe generator. Always inspect the plan. These short films simplify cooking motions and timing and are not substitutes for a complete cooking recipe or adult supervision.
 
-## Tests and scope
+## Narration and resources
 
-`test.mjs` exercises prompt validation, all recipe actions at 24fps sample intervals, joint reach, plate containment after landing, support from the spatula, withdrawal at the spoken instruction, pancake clearance throughout the half-turn, cold-sandwich steam suppression, deterministic seeking, portrait scene loading, browser errors, and the unsupported-recipe website UI. `e2e.mjs` submits a real dosa prompt through the website in portrait format and waits for sentence narration, a preview, a full render, stream validation, download headers, and HTTP range serving.
+New speech sends the narration text to Microsoft's Edge speech service and needs internet access. Cached sentence audio is reused. Existing `HTTPS_PROXY` / `https_proxy` settings are supported. No API key is required. Tool checks establish local installation, not remote speech-service availability.
 
-Each renderer fails on browser/resource errors, unreachable utensil targets or food leaving the plate after landing. Before completion, both preview and final MP4s must pass independent stream checks, full decoding, narration comparison, subtitle text/timing checks and sentence-duration checks. Reusing a job directory containing an MP4 or partial MP4 is rejected to preserve earlier work; generate a new job instead. `verify-media.py <video> <audio-assets-directory>` independently validates streams, durations, full decoding, decoded voice correlation and embedded subtitle content. Inspect the accompanying frames before accepting visual quality; automated geometry checks alone cannot establish artistic polish. Current motions are lightweight procedural approximations rather than physical fluid/cloth simulation or phoneme-level facial animation.
+CPU rendering may take several minutes or longer depending on film duration and laptop resources. Keep the terminal open and avoid starting multiple jobs. If graphics or capture fails, generation reports an error rather than accepting a blank video. Video validation checks the streams, full decoding, sampled kitchen frames, audio alignment and subtitle timing.
 
-## Rendering regression checks
+Each generation has a unique directory under `output/studio3d/jobs/`, containing its plan, narration, subtitles, status, preview and full film. Existing videos are preserved. Failed or interrupted jobs can be retried as a new film. On restart, completed films remain available; unfinished jobs are reported as interrupted.
 
-Run `npm run test:render` after installing Playwright Chromium. This checks timestamp-independent scene state for biryani, dosa, sandwiches and pancakes, and verifies that a lost WebGL context stops rendering. Media verification also samples the kitchen region every second and rejects blank output, even when the audio, subtitles and MP4 streams are valid. Failed browser screenshots stop the render rather than producing a canvas-only video without subtitles.
+## Configuration
 
-Run `npm run test:startup` to check duplicate startup, occupied ports and invalid port settings.
+- `LIFEMOTION_PORT`: explicit local port, default 4173.
+- `LIFEMOTION_PYTHON`: optional path to a Python executable. Otherwise the project `.venv`, Windows launcher and installed Python commands are detected automatically.
+- `LIFEMOTION_CHROMIUM`: optional explicit Chromium executable. Otherwise the installed Playwright browser is used, with system Chromium as a Linux fallback.
+
+The server listens on loopback. It is a local development application and has not been deployed as a public website.
+
+## Validation
+
+```powershell
+npm.cmd test
+npm.cmd run test:startup
+npm.cmd run test:studio
+npm.cmd run test:render
+npm.cmd run 3d:test
+node studio3d/e2e.mjs --recipe=chicken-biryani --format=16:9
+```
+
+Unit tests cover planning and procedural assets. Startup tests cover one-portal behavior. Studio tests cover Windows Python resolution, setup gating, the exact biriyani prompt, plan preview, and desktop/mobile flows. Rendering checks exercise frame determinism and graphics-context failure. The end-to-end test submits an actual website job and waits for narration, a preview and a full validated film, then checks download headers and HTTP range serving. It can take several minutes and requires local tools plus speech access or cached narration.
+
+Use `npm run 3d:preview` for the legacy cached dosa preview and `npm run 3d:render` for its full film. The original 2D animation remains separate under `animation/`.

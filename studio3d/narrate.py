@@ -1,4 +1,4 @@
-﻿import asyncio,array,hashlib,json,math,subprocess,sys,wave
+import asyncio,array,hashlib,json,math,os,subprocess,sys,wave
 from pathlib import Path
 import edge_tts
 ROOT=Path(__file__).resolve().parent.parent
@@ -13,7 +13,7 @@ async def main():
    key=hashlib.sha256((plan['voice']+'|-8%|+3Hz|'+text).encode()).hexdigest()[:24];mp3=cache/(key+'.mp3');meta=cache/(key+'.json')
    if not (mp3.exists() and meta.exists()):
     chunks=[];audio=bytearray()
-    async for c in edge_tts.Communicate(text,plan['voice'],rate='-8%',pitch='+3Hz',boundary='WordBoundary').stream():
+    async for c in edge_tts.Communicate(text,plan['voice'],rate='-8%',pitch='+3Hz',boundary='WordBoundary',proxy=os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy')).stream():
      if c['type']=='audio':audio.extend(c['data'])
      elif c['type']=='WordBoundary':chunks.append({'text':c['text'],'start':c['offset']/1e7,'end':(c['offset']+c['duration'])/1e7})
     if not chunks or not audio:raise RuntimeError('No speech or word timestamps received')

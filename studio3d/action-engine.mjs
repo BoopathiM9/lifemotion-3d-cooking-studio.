@@ -179,7 +179,7 @@ export function animateAction(params) {
         COOKING.z
       );
       food.rotation.z = flipPhase * Math.PI;
-      food.position.y = COOKING.y + 0.06 + Math.sin(flipPhase * Math.PI) * 0.3;
+      food.position.y = COOKING.y + 0.115 + Math.sin(flipPhase * Math.PI) * 0.3;
       break;
     }
 
@@ -223,7 +223,7 @@ export function animateAction(params) {
       food.scale.setScalar(lerp(1.0, 0.88, z));
 
       landed = z === 1.0;
-      tip.copy(food.position).y -= 0.035;
+      tip.copy(food.position).y -= 0.0225 * food.scale.y + 0.0175;
 
       // Spatula withdraws cleanly after landing
       withdraw = smooth((p - 0.62) / 0.23);
@@ -247,9 +247,10 @@ export function animateAction(params) {
     }
   }
 
-  // Ensure utensil height stays safely above worktop (> 1.615)
-  if (tip.y < 1.68) {
-    tip.y = 1.68;
+  // At the plate the blade lowers to support the food; the grip stays above the worktop.
+  const minimumTipY = action === 'serve' || action === 'plate' ? 1.65 : 1.68;
+  if (tip.y < minimumTipY) {
+    tip.y = minimumTipY;
   }
 
   // Hand target is the handle's grip; utensil is attached to solved right wrist

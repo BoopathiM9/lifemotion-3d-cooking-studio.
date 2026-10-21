@@ -4,6 +4,10 @@ import {once} from 'node:events';
 import {mkdir,readFile,rename,writeFile,access} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {createStaticServer,listen,root} from './host.mjs';
+import {findPython,browserLaunchOptions} from './runtime.mjs';
+const python=findPython();
+if(!python)throw Error('Python 3.10 or newer is required. Open the studio Setup checks.');
+const pythonSync=args=>spawnSync(python.command,[...python.args,...args],{cwd:root,encoding:'utf8'});
 const jobArg=process.argv.find(a=>a.startsWith('--job=')),job=jobArg?resolve(root,jobArg.slice(6)):null;
 const plan=job?JSON.parse(await readFile(join(job,'storyboard.json'),'utf8')):null;
 const full=process.argv.includes('--full'),portrait=process.argv.includes('--portrait')||plan?.format==='9:16',fps=full?24:12,width=portrait?(full?720:480):(full?1280:854),height=portrait?(full?1280:854):(full?720:480);
@@ -13,9 +17,9 @@ const staging=join(out,'preview.rendering.mp4'),output=join(out,full?'maya-3d-co
 for(const file of [staging,output]){let exists=false;try{await access(file);exists=true;}catch(e){if(e.code!=='ENOENT')throw e;}if(exists)throw Error('Preserving existing video: '+file+'. Create a new job directory to render again.');}
 await mkdir(join(out,'frames'),{recursive:true});
 const assets=full?sourceAssets:join(out,'assets');
-if(!full){const prepared=spawnSync('python',['studio3d/prepare-preview.py',sourceAssets,assets],{cwd:root,encoding:'utf8'});if(prepared.status!==0)throw Error(prepared.stderr||String(prepared.error));console.log('Synchronized preview:',prepared.stdout.trim());}
+if(!full){const prepared=pythonSync(['studio3d/prepare-preview.py',sourceAssets,assets]);if(prepared.status!==0)throw Error(prepared.stderr||String(prepared.error));console.log('Synchronized preview:',prepared.stdout.trim());}
 const lesson=JSON.parse(await readFile(join(assets,'lesson.json'),'utf8')),duration=lesson.duration;
-const server=createStaticServer(),url=await listen(server),browser=await chromium.launch({headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--renderer-process-limit=1','--num-raster-threads=1']});
+const server=createStaticServer(),url=await listen(server),browser=await chromium.launch(browserLaunchOptions());
 let encoder;const errors=[],requests=[],frames=Math.ceil(duration*fps),start=Date.now();
 try{
  const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});page.on('requestfailed',r=>requests.push(r.url()));
@@ -49,6 +53,6 @@ try{
  const decode=spawnSync('ffmpeg',['-v','error','-threads','1','-i',staging,'-f','null','-'],{encoding:'utf8'});if(decode.status!==0)throw Error(decode.stderr||String(decode.error));
  const probe=spawnSync('ffprobe',['-v','error','-show_streams','-show_format','-of','json',staging],{encoding:'utf8'});if(probe.status!==0)throw Error(probe.stderr||String(probe.error));const media=JSON.parse(probe.stdout);
  if(!media.streams.some(s=>s.codec_type==='audio')||!media.streams.some(s=>s.codec_type==='video'))throw Error('Missing audio or video');
- const checked=spawnSync('python',['studio3d/verify-media.py',staging,assets,...(full?[]:['--preview'])],{cwd:root,encoding:'utf8'});if(checked.status!==0)throw Error('Media verification failed: '+(checked.stderr||String(checked.error)));console.log(checked.stdout.trim());
+ const checked=pythonSync(['studio3d/verify-media.py',staging,assets,...(full?[]:['--preview'])]);if(checked.status!==0)throw Error('Media verification failed: '+(checked.stderr||String(checked.error)));console.log(checked.stdout.trim());
  await rename(staging,output);const mediaChecks=JSON.parse(await readFile(join(out,'media-checks.json'),'utf8'));mediaChecks.video=output;await writeFile(join(out,'media-checks.json'),JSON.stringify(mediaChecks,null,2));const report={passed:true,milestone:full?2:1,output,width,height,fps,frames,duration,softwareRenderer:debug.renderer,threeRevision:debug.threeRevision,triangles:debug.triangles,maxGripError:maxGrip,plateFramesChecked:contained,browserErrors:errors,failedRequests:requests,decodePassed:true,secondsToRender:(Date.now()-start)/1000,media};await writeFile(join(out,'validation.json'),JSON.stringify(report,null,2));await writeFile(join(root,'output/studio3d/latest.json'),JSON.stringify({out,output},null,2));console.log('VERIFIED 3D VIDEO: '+output);
 }finally{await browser.close();server.close();if(encoder&&encoder.exitCode===null)encoder.kill();}

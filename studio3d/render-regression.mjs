@@ -2,11 +2,12 @@ import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
 import {createStaticServer,listen} from './host.mjs';
 import {storyboard} from './recipes.mjs';
+import {browserLaunchOptions} from './runtime.mjs';
 
 const server=createStaticServer(),url=await listen(server);
 let browser;
 try {
- browser=await chromium.launch({headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+ browser=await chromium.launch(browserLaunchOptions());
  for(const recipe of ['chicken biryani','masala dosa','vegetable sandwich','pancakes']){
   const plan=storyboard({prompt:'Make '+recipe});
   const lesson={duration:plan.actions.length*3,steps:plan.actions.map((a,i)=>({...a,start:i*3,speechEnd:i*3+2.8,end:i*3+3})),captions:[],envelope:[]};
