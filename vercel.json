@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/studio3d/index.html"
+    }
+  ]
+}
