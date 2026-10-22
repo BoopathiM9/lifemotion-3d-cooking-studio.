@@ -8,7 +8,10 @@ import {recipes,voices,storyboard} from './recipes.mjs';
 import {inspectRuntime,publicRuntime,generationFailure} from './runtime.mjs';
 import {analyzeWithGemini,enrichWithFreeRecipe,translateActionsToTamil,translateActionsWithFreeService,translateActionsWithLocalTamil} from './free-recipe-lookup.mjs';
 
+try { process.loadEnvFile(); } catch {}
+
 export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
+
  const jobs=new Map();let busy=false,cachedRuntime,runtimeTime=0;
  const server=createStaticServer(),staticHandler=server.listeners('request')[0];
  server.removeAllListeners('request');
@@ -61,7 +64,12 @@ export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
     if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`){json(403,{error:'Use the local studio page to create videos.'});return;}
     let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>8192){json(413,{error:'Your recipe is too long. Use up to 2000 characters.'});return;}}
     if(url.pathname==='/api/generate'&&busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
-    let input,plan,source='local';try{input=JSON.parse(body);plan=storyboard(input);if(plan.genericVisualization){
+    let input,plan,source='local';try{input=JSON.parse(body);plan=storyboard(input);const hasGeminiKey=Boolean(process.env.GEMINI_API_KEY?.trim());
+     if(hasGeminiKey&&typeof input.prompt==='string'&&!input.prompt.trim().startsWith('{')){
+      const geminiRecipe=await analyzeWithGemini(input.prompt);
+      if(geminiRecipe){try{plan=storyboard({...input,prompt:geminiRecipe});source='gemini';}catch{}}
+     }
+     if(plan.genericVisualization){
      const [geminiRecipe,publicRecipe]=await Promise.all([analyzeWithGemini(input.prompt),url.pathname==='/api/generate'?enrichWithFreeRecipe(input.prompt):Promise.resolve(null)]);
      const enriched=geminiRecipe||publicRecipe;
      if(enriched){try{plan=storyboard({...input,prompt:enriched});source=geminiRecipe?'gemini':'free recipe lookup';}catch{source='local';}}
@@ -113,6 +121,13 @@ if(process.argv[1]===fileURLToPath(import.meta.url)){
    }else console.error(`Failed to start server: ${error.message}`);
    process.exitCode=1;
   });
-  server.listen(port,'127.0.0.1',()=>console.log(`LifeMotion 3D Cooking Studio: ${address}`));
+  server.listen(port,'127.0.0.1',()=>{
+    console.log(`LifeMotion 3D Cooking Studio: ${address}`);
+    if (process.env.GEMINI_API_KEY?.trim()) {
+      console.log(`✓ Google Gemini API: Active (${process.env.GEMINI_MODEL || 'gemini-2.5-flash'})`);
+    } else {
+      console.log(`ℹ To use Gemini AI as your primary recipe planner, add your key to .env: GEMINI_API_KEY=your_key`);
+    }
+   });
  }
 }

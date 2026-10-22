@@ -90,7 +90,7 @@ $('form').addEventListener('submit',async event=>{
  if(!setupReady){errorMessage('Video creation is not ready on this computer yet. Please install the required video tools, then restart LifeMotion.');return;}
  creating=true;updateButton();clearTimeout(pollTimer);
  try{
-  const job=await request('/api/generate',post(options()));current=job.id;save(current);
+  const job=await request('/api/generate',post(options()));if(job.status==='complete'){creating=false;current=null;save(null);displayJob(job);updateButton();return;}current=job.id;save(current);
   $('download').hidden=true;$('video').pause();$('video').hidden=true;$('placeholder').hidden=false;
   displayJob(job);void poll();
  }catch(error){creating=false;if(error.body?.setup)renderSetup(error.body.setup);if(error.status===409){remoteBusy=true;void loadFilms();}errorMessage(error.message);updateButton();}
@@ -99,6 +99,10 @@ count();
 await Promise.allSettled([checkSetup(),request('/api/recipes').then(data=>renderRecipes(data.recipes))]);
 try{current??=sessionStorage.getItem('mayaJob');}catch{}
 if(current&&!creating){
- try{const job=await request('/api/jobs/'+encodeURIComponent(current));restoreControls(job);creating=true;updateButton();void poll();}
- catch{current=null;save(null);}
+ try{
+  const job=await request('/api/jobs/'+encodeURIComponent(current));
+  restoreControls(job);
+  if(job.status==='complete'){current=null;save(null);displayJob(job);updateButton();}
+  else{creating=true;updateButton();void poll();}
+ }catch{current=null;save(null);}
 }
