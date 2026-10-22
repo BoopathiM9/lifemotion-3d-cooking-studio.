@@ -3,8 +3,10 @@ import { ANCHORS, createCookware, createUtensil } from './equipment-factory.mjs'
 import { createIngredientMesh, transitionIngredientState, createMaterial } from './ingredient-factory.mjs';
 import { animateAction } from './action-engine.mjs';
 
-const config = window.RENDER_CONFIG || {};
-const recipeKind = config.recipe || 'masala-dosa';
+const config = window.RENDER_CONFIG || (() => {
+  try { return JSON.parse(sessionStorage.getItem('mayaLiveConfig') || '{}'); } catch { return {}; }
+})();
+const recipeKind = config.recipe || (config.plan?.recipeId) || 'masala-dosa';
 const W = config.width || 854;
 const H = config.height || 480;
 
@@ -417,9 +419,23 @@ for (let i = 0; i < 3; i++) {
 }
 steam.visible = false;
 
-const lesson = config.lesson || { steps: [], captions: [], envelope: [] };
+const defaultSteps = (plan.actions || []).map(a => ({
+  id: a.key,
+  key: a.key,
+  text: a.text || a.action,
+  start: a.start || 0,
+  speechEnd: a.speechEnd || (a.end ? a.end - 0.5 : 5),
+  end: a.end || 6
+}));
+
+const lesson = config.lesson || {
+  duration: defaultSteps.at(-1)?.end || 30,
+  steps: defaultSteps,
+  captions: defaultSteps.map(s => ({ start: s.start, end: s.end, text: s.text })),
+  envelope: []
+};
 const preview = !!config.preview;
-const duration = config.duration || lesson.duration || 8.79;
+const duration = config.duration || lesson.duration || 30;
 
 let state = {};
 
@@ -607,3 +623,92 @@ window.setFrame = frame;
 window.studio = { scene, camera, renderer, food, chef, plate: PLATE };
 frame(0);
 window.studioReady = true;
+
+// Live Browser Playback & Canvas Video Recording
+let isPlaying = false;
+let startTime = 0;
+let playbackOffset = 0;
+let lastSpokenIndex = -1;
+let mediaRecorder = null;
+let recordedChunks = [];
+
+function speakCurrentStep(t) {
+  if (!('speechSynthesis' in window)) return;
+  const steps = lesson.steps || [];
+  const idx = steps.findIndex(s => t >= s.start && t < s.end);
+  if (idx !== -1 && idx !== lastSpokenIndex) {
+    lastSpokenIndex = idx;
+    const text = steps[idx].text;
+    if (text) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 1.0;
+      u.pitch = 1.15;
+      window.speechSynthesis.speak(u);
+    }
+  }
+}
+
+export function playLive() {
+  if (isPlaying) return;
+  isPlaying = true;
+  startTime = performance.now();
+  window.parent?.postMessage({ type: 'livePlaying' }, '*');
+
+  function tick(now) {
+    if (!isPlaying) return;
+    const elapsed = (now - startTime) / 1000 + playbackOffset;
+    if (elapsed >= duration) {
+      isPlaying = false;
+      frame(duration);
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+      }
+      window.parent?.postMessage({ type: 'liveEnded' }, '*');
+      return;
+    }
+    frame(elapsed);
+    speakCurrentStep(elapsed);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+export function pauseLive() {
+  isPlaying = false;
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  window.parent?.postMessage({ type: 'livePaused' }, '*');
+}
+
+export function startRecording() {
+  recordedChunks = [];
+  try {
+    const stream = renderer.domElement.captureStream(24);
+    const mime = MediaRecorder.isTypeSupported('video/webm;codecs=vp9')
+      ? 'video/webm;codecs=vp9'
+      : MediaRecorder.isTypeSupported('video/webm')
+      ? 'video/webm'
+      : 'video/mp4';
+    mediaRecorder = new MediaRecorder(stream, { mimeType: mime });
+    mediaRecorder.ondataavailable = e => {
+      if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+    };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: mime });
+      const videoUrl = URL.createObjectURL(blob);
+      window.parent?.postMessage({ type: 'videoRecorded', url: videoUrl }, '*');
+    };
+    mediaRecorder.start();
+  } catch (err) {
+    console.warn('Canvas recorder error:', err);
+  }
+}
+
+window.playLive = playLive;
+window.pauseLive = pauseLive;
+window.startRecording = startRecording;
+
+if (window.location.search.includes('live=1') || config.autoPlay) {
+  startRecording();
+  playLive();
+}
