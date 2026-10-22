@@ -1,0 +1,19 @@
+{
+  "name": "LifeMotion 3D Cooking Studio",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    }
+  },
+  "forwardPorts": [4173],
+  "portsAttributes": {
+    "4173": {
+      "label": "LifeMotion 3D Cooking Studio",
+      "onAutoForward": "openBrowser",
+      "visibility": "public"
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y ffmpeg && pip install edge-tts && npm install && npx playwright install-deps chromium && npx playwright install chromium",
+  "postStartCommand": "npm run studio"
+}
