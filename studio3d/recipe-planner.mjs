@@ -363,6 +363,7 @@ export function parseInstructionsToPlan(title, instructions) {
 export function cleanRecipeTitle(prompt = '') {
   let text = prompt.trim();
   const prefixes = [
+    /^(a\s+)?(cheerful\s+)?(3d\s+)?(cartoon\s+)?cooking video where (chef\s+)?maya makes\s+/i,
     /^(chef\s+maya\s+)?(teach|teaches)\s+(me|children|kids)?\s*(how\s+to\s+make\s+|how\s+to\s+|to\s+make\s+)?/i,
     /^chef\s+maya\s+/i,
     /^please\s+/i, /^can you\s+(make\s+)?/i, /^could you\s+/i,
@@ -381,6 +382,10 @@ export function cleanRecipeTitle(prompt = '') {
       }
     }
   }
+  text = text
+    .replace(/\b(?:step[- ]by[- ]step|in simple (?:english|tamil)|for (?:children|kids)|with (?:english|tamil) narration)\b.*$/i, '')
+    .replace(/\b(?:recipe|cooking lesson|cooking video)\b\s*$/i, '')
+    .trim();
   text = text.replace(/[.!?,;:]+$/g, '').trim();
   const words = text.split(/\s+/).slice(0, 6).join(' ');
   return words ? words.charAt(0).toUpperCase() + words.slice(1) : 'Delicious Dish';

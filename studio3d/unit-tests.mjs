@@ -17,6 +17,7 @@ import { storyboard, recipes, voices } from './recipes.mjs';
 import { createCookware, createUtensil, ANCHORS } from './equipment-factory.mjs';
 import { createIngredientMesh, createMaterial, transitionIngredientState } from './ingredient-factory.mjs';
 import { animateAction } from './action-engine.mjs';
+import { translateActionsWithLocalTamil } from './free-recipe-lookup.mjs';
 
 console.log('=== STARTING UNIT TESTS ===\n');
 
@@ -50,6 +51,12 @@ assert.ok(unknownRecipe.genericVisualization, 'Unknown recipe must be marked as 
 assert.ok(unknownRecipe.uncertaintyNote.includes('Generic cooking visualization'));
 assert.equal(unknownRecipe.primaryEquipment, 'pot');
 assert.ok(unknownRecipe.actions.length >= 6);
+assert.equal(unknownRecipe.title, 'Galactic Space Crunch');
+const shortUnknown = storyboard({ prompt: 'Teach children how to make avocado toast step by step in simple English.' });
+assert.equal(shortUnknown.title, 'Avocado toast');
+assert.ok(shortUnknown.actions.length >= 6, 'A dish name alone must create a complete local video plan');
+const naturalUnknown = storyboard({ prompt: 'Make a cheerful 3D cartoon cooking video where MAYA makes avocado toast in simple English.' });
+assert.equal(naturalUnknown.title, 'Avocado toast');
 console.log('✔ Unknown recipe fallback passed.');
 
 // 4. RecipePlan Validation Tests
@@ -63,6 +70,9 @@ const validPlan = validateRecipePlan({
 });
 assert.equal(validPlan.title, 'Simple Tea');
 assert.equal(validPlan.steps[validPlan.steps.length - 1].action, 'serve', 'Must guarantee serving step at end');
+const tamilFallback = translateActionsWithLocalTamil(unknownRecipe.actions, unknownRecipe.title);
+assert.equal(tamilFallback.length, unknownRecipe.actions.length);
+assert.ok(tamilFallback.every(line => /[\u0B80-\u0BFF]/.test(line)), 'Every fallback line must contain Tamil text');
 console.log('✔ RecipePlan validation passed.');
 
 // 5. Equipment Factory & Anchors Tests

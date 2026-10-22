@@ -9,7 +9,7 @@ npm.cmd run setup
 npm.cmd run studio
 ```
 
-Open the local address printed by the server and keep the terminal open. Windows setup can install missing Python and FFmpeg with Windows Package Manager; Node.js and Git must already be installed. Generation uses local CPU rendering. New English narration requires internet access; cached audio is reused. The website identifies missing tools before a film starts and does not create a second portal when started again.
+Open the local address printed by the server and keep the terminal open. Windows setup can install missing Python and FFmpeg with Windows Package Manager; Node.js and Git must already be installed. Generation uses local CPU rendering. The studio prefers online Edge narration, reuses cached audio, and falls back to the Windows speech engine if an office network blocks the speech service. The website identifies missing tools before a film starts and does not create a second portal when started again.
 
 Try: **Teach children how to make chicken biriyani step by step in simple English.** Recipe cards also fill in ready-to-use prompts. Unsupported dishes receive a labelled generic animation; preview the steps before creating a film.
 

@@ -10,7 +10,7 @@ async function geminiText(instruction, maxOutputTokens) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: instruction }] }], generationConfig: { temperature: 0.25, maxOutputTokens } }),
-        signal: AbortSignal.timeout(12000)
+        signal: AbortSignal.timeout(4500)
       });
       if (!response.ok) continue;
       const text = (await response.json()).candidates?.[0]?.content?.parts?.map(part => part.text || '').join('\n').trim();
@@ -53,19 +53,36 @@ export async function translateActionsToTamil(actions) {
 export async function translateActionsWithFreeService(actions) {
   if (!Array.isArray(actions) || !actions.length) return null;
   try {
-    const translated = [];
-    for (const action of actions) {
+    const translated = await Promise.all(actions.map(async action => {
       const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(action.text.slice(0, 450))}&langpair=en|ta`;
-      const response = await fetch(url, { headers: { 'User-Agent': 'LifeMotion-Cooking-Studio/1.0' }, signal: AbortSignal.timeout(8000) });
-      if (!response.ok) return null;
+      const response = await fetch(url, { headers: { 'User-Agent': 'LifeMotion-Cooking-Studio/1.0' }, signal: AbortSignal.timeout(4000) });
+      if (!response.ok) throw Error('Translation service unavailable');
       const text = (await response.json()).responseData?.translatedText?.trim();
-      if (!text || text.toLowerCase() === action.text.trim().toLowerCase()) return null;
-      translated.push(text);
-    }
+      if (!text || text.toLowerCase() === action.text.trim().toLowerCase()) throw Error('Translation was unchanged');
+      return text;
+    }));
     return translated.length === actions.length ? translated : null;
   } catch {
     return null;
   }
+}
+
+export function translateActionsWithLocalTamil(actions, title = 'இந்த உணவு') {
+  if (!Array.isArray(actions) || !actions.length) return null;
+  const dish = String(title || 'இந்த உணவு').trim();
+  return actions.map((action, index) => {
+    const key = String(action.key || '').toLowerCase();
+    const verb = String(action.action || '').toLowerCase();
+    if (key.includes('welcome') || index === 0) return `வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று செஃப் மாயாவுடன் ${dish} செய்வோம்.`;
+    if (key.includes('safe')) return 'சூடான பாத்திரங்களையும் கூர்மையான கருவிகளையும் பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.';
+    if (verb === 'show') return 'தேவையான பொருட்கள் அனைத்தையும் தயாராக வைத்துக்கொள்ளுங்கள்.';
+    if (['add', 'pour'].includes(verb)) return 'இந்த பொருளை மெதுவாக பாத்திரத்தில் சேர்க்கவும்.';
+    if (['mix', 'stir', 'spread'].includes(verb)) return 'அனைத்தையும் மெதுவாகவும் நன்றாகவும் கலக்கவும்.';
+    if (verb === 'flip') return 'பெரியவரின் உதவியுடன் இதை கவனமாக திருப்பவும்.';
+    if (['boil', 'simmer', 'cook', 'heat'].includes(verb)) return 'பெரியவரின் உதவியுடன் இதை நன்றாக வேகவைக்கவும்.';
+    if (['serve', 'plate'].includes(verb)) return `${dish} தயார்! அதை தட்டில் வைத்து மகிழ்ச்சியாக பரிமாறலாம்.`;
+    return 'அடுத்த படியை மெதுவாகவும் கவனமாகவும் செய்யுங்கள்.';
+  });
 }
 
 function recipeName(prompt) {

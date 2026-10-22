@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {createStaticServer,root} from './host.mjs';
 import {recipes,voices,storyboard} from './recipes.mjs';
 import {inspectRuntime,publicRuntime,generationFailure} from './runtime.mjs';
-import {analyzeWithGemini,enrichWithFreeRecipe,translateActionsToTamil,translateActionsWithFreeService} from './free-recipe-lookup.mjs';
+import {analyzeWithGemini,enrichWithFreeRecipe,translateActionsToTamil,translateActionsWithFreeService,translateActionsWithLocalTamil} from './free-recipe-lookup.mjs';
 
 export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
  const jobs=new Map();let busy=false,cachedRuntime,runtimeTime=0;
@@ -60,7 +60,12 @@ export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
    if(req.method==='POST'&&['/api/plan','/api/generate'].includes(url.pathname)){
     if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`){json(403,{error:'Use the local studio page to create videos.'});return;}
     let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>8192){json(413,{error:'Your recipe is too long. Use up to 2000 characters.'});return;}}
-    let input,plan,source='local';try{input=JSON.parse(body);plan=storyboard(input);if(plan.genericVisualization){const geminiRecipe=await analyzeWithGemini(input.prompt);const freeRecipe=geminiRecipe||((url.pathname==='/api/generate')?await enrichWithFreeRecipe(input.prompt):null);if(freeRecipe){plan=storyboard({...input,prompt:freeRecipe});source=geminiRecipe?'gemini':'free recipe lookup';}}if(input.voice==='ta-IN-PallaviNeural'){const tamil=await translateActionsToTamil(plan.actions)||await translateActionsWithFreeService(plan.actions);if(!tamil)throw Error('Tamil translation is temporarily unavailable. Check the internet connection and try again.');plan.actions.forEach((action,index)=>{action.text=tamil[index];action.sentences=[tamil[index]];});source=source==='local'?'Tamil narration':source;}}catch(error){json(400,{error:error instanceof SyntaxError?'The recipe request could not be read. Please try again.':error.message});return;}
+    if(url.pathname==='/api/generate'&&busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
+    let input,plan,source='local';try{input=JSON.parse(body);plan=storyboard(input);if(plan.genericVisualization){
+     const [geminiRecipe,publicRecipe]=await Promise.all([analyzeWithGemini(input.prompt),url.pathname==='/api/generate'?enrichWithFreeRecipe(input.prompt):Promise.resolve(null)]);
+     const enriched=geminiRecipe||publicRecipe;
+     if(enriched){try{plan=storyboard({...input,prompt:enriched});source=geminiRecipe?'gemini':'free recipe lookup';}catch{source='local';}}
+    }if(input.voice==='ta-IN-PallaviNeural'){const tamil=await translateActionsToTamil(plan.actions)||await translateActionsWithFreeService(plan.actions)||translateActionsWithLocalTamil(plan.actions,plan.title);plan.actions.forEach((action,index)=>{action.text=tamil[index];action.sentences=[tamil[index]];});source=source==='local'?'Tamil narration':source;}}catch(error){json(400,{error:error instanceof SyntaxError?'The recipe request could not be read. Please try again.':error.message});return;}
     if(url.pathname==='/api/plan'){json(200,{title:plan.title,recipe:plan.recipe,generic:plan.genericVisualization,source,limitations:plan.genericVisualization?'This is a generic recipe plan. Add more detail or connect Gemini for an AI-generated recipe plan.':null,steps:plan.actions.map(a=>({key:a.key,text:a.text,action:a.action})),ingredients:plan.ingredients.map(i=>i.name)});return;}
     if(busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
     const runtime=setup();

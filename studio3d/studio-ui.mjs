@@ -15,7 +15,7 @@ const save=id=>{try{id?sessionStorage.setItem('mayaJob',id):sessionStorage.remov
 function updateButton(){
  $('generate').disabled=creating||remoteBusy||!$('prompt').value.trim();
  $('generateText').textContent=creating?'Generating video…':remoteBusy?'Generation in progress':'Generate video';
- $('formHint').textContent=creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Please wait for it to finish.':'Type any recipe idea. Maya prepares the steps, narration, and subtitles.';
+ $('formHint').textContent=creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Please wait for it to finish.':'Type any dish name. Maya can create a local lesson even when online recipe services are unavailable.';
 }
 function count(){ $('charCount').textContent=`${$('prompt').value.length} / 2000`;updateButton();}
 function errorMessage(message){$('progressArea').hidden=false;$('progressArea').classList.add('error');$('status').textContent=message;$('stages').hidden=true;$('progress').hidden=true;}

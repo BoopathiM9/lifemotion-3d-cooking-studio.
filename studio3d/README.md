@@ -54,7 +54,7 @@ You can also supply detailed cooking instructions. Dishes outside the recipe boo
 
 ## Narration and resources
 
-New speech sends the narration text to Microsoft's Edge speech service and needs internet access. Cached sentence audio is reused. Existing `HTTPS_PROXY` / `https_proxy` settings are supported. No API key is required. Tool checks establish local installation, not remote speech-service availability.
+New speech normally sends the narration text to Microsoft's Edge speech service. Cached sentence audio is reused. Existing `HTTPS_PROXY` / `https_proxy` settings are supported. If the service is blocked or its certificate cannot be verified on a company network, Windows uses its installed local speech engine so generation can continue. No API key is required.
 
 CPU rendering may take several minutes or longer depending on film duration and laptop resources. Keep the terminal open and avoid starting multiple jobs. If graphics or capture fails, generation reports an error rather than accepting a blank video. Video validation checks the streams, full decoding, sampled kitchen frames, audio alignment and subtitle timing.
 
