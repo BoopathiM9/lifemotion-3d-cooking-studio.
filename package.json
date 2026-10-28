@@ -20,6 +20,7 @@
     "@remotion/bundler": "^4.0.539",
     "@remotion/lambda": "^4.0.539",
     "@remotion/renderer": "^4.0.539",
+    "msedge-tts": "^2.1.1",
     "playwright": "^1.56.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",

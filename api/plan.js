@@ -1,3 +1,33 @@
+function cleanRecipeTitle(prompt) {
+  return String(prompt || 'Cooking Lesson')
+    .replace(/teach\s+(children|kids|me)\s+(how\s+)?to\s+make/ig, '')
+    .replace(/make\s+(a\s+)?(cheerful\s+)?(3d\s+)?(cartoon\s+)?cooking\s+video\s+(where\s+maya\s+makes\s+)?/ig, '')
+    .replace(/step by step.*$/i, '')
+    .replace(/[.?!]/g, ' ')
+    .trim()
+    .slice(0, 40) || 'Delicious Dish';
+}
+
+function getTamilSteps(dishTitle) {
+  return [
+    { key: 'welcome', action: 'show', text: `வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் சுவையான ${dishTitle} செய்வோம்!` },
+    { key: 'safe', action: 'show', text: 'சூடான பாத்திரங்களையும் அடுப்பையும் பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.' },
+    { key: 'add', action: 'add', text: `தேவையான புதிய பொருட்களை மெதுவாக சமையல் பாத்திரத்தில் சேர்க்கவும்.` },
+    { key: 'cook', action: 'cook', text: `நறுமணம் கமழ மெதுவாக கிளறி அழகாக வேகவைக்கவும்.` },
+    { key: 'serve', action: 'serve', text: `சுவையான ${dishTitle} தயார்! தட்டில் வைத்து பரிமாறி மகிழுங்கள்!` }
+  ];
+}
+
+function getEnglishSteps(dishTitle) {
+  return [
+    { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are making ${dishTitle}!` },
+    { key: 'safe', action: 'show', text: 'Wash your hands first, and always ask a grown-up for help around hot cookware.' },
+    { key: 'add', action: 'add', text: `Gently add our fresh ingredients into the cooking bowl.` },
+    { key: 'cook', action: 'cook', text: `Stir and cook gently as delicious aromas fill the room.` },
+    { key: 'serve', action: 'serve', text: `Spoon our freshly cooked ${dishTitle} onto the plate. Great job!` }
+  ];
+}
+
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
@@ -5,81 +35,18 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { prompt } = req.body || {};
-  if (!prompt || typeof prompt !== 'string') {
-    return res.status(400).json({ error: 'Please enter a cooking prompt.' });
-  }
+  const { prompt, voice } = req.body || {};
+  const isTamil = voice === 'ta-IN-PallaviNeural';
+  const dishTitle = cleanRecipeTitle(prompt);
 
-  const cleanPrompt = prompt.trim();
-  const key = process.env.GEMINI_API_KEY?.trim();
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const steps = isTamil ? getTamilSteps(dishTitle) : getEnglishSteps(dishTitle);
 
-  if (key) {
-    try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `You are Chef Maya, creating a child-friendly cartoon cooking video lesson.
-Convert this cooking request into a structured lesson: "${cleanPrompt}".
-Respond with valid JSON only in this format:
-{
-  "title": "Dish Name",
-  "ingredients": ["Item 1", "Item 2", "Item 3"],
-  "steps": [
-    {"key": "welcome", "text": "Friendly welcome for little chefs...", "action": "show"},
-    {"key": "safe", "text": "Child safety reminder for hot stove or tools...", "action": "show"},
-    {"key": "add_ingredients", "text": "Step description...", "action": "add"},
-    {"key": "cook_dish", "text": "Cooking description...", "action": "cook"},
-    {"key": "serve", "text": "Plating and serving description...", "action": "serve"}
-  ]
-}`
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.25,
-            responseMimeType: 'application/json'
-          }
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) {
-          const parsed = JSON.parse(text);
-          return res.status(200).json({
-            title: parsed.title || cleanPrompt.slice(0, 40),
-            recipe: (parsed.title || 'custom').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-            generic: false,
-            source: 'gemini',
-            steps: parsed.steps || [],
-            ingredients: parsed.ingredients || []
-          });
-        }
-      }
-    } catch (err) {
-      console.error('Gemini Vercel API error:', err.message);
-    }
-  }
-
-  // Fallback plan
-  const title = cleanPrompt.slice(0, 50);
   return res.status(200).json({
-    title,
-    recipe: 'custom-recipe',
-    generic: true,
-    source: 'local',
-    limitations: key ? null : 'To use full Gemini AI planning, add GEMINI_API_KEY to your Vercel Environment Variables.',
-    steps: [
-      { key: 'welcome', text: `Hello little chefs! I'm Chef Maya. Let's make ${title}!`, action: 'show' },
-      { key: 'safe', text: 'Wash your hands first, and always ask a grown-up for help around warm cookware.', action: 'show' },
-      { key: 'prep', text: 'Gather our fresh ingredients and tools on the counter.', action: 'add' },
-      { key: 'cook', text: `Cook and simmer gently with our spoon as delicious aromas fill the room.`, action: 'cook' },
-      { key: 'serve', text: `Spoon our freshly prepared ${title} onto the plate. Great cooking, little chefs!`, action: 'serve' }
-    ],
-    ingredients: ['Main Ingredients', 'Fresh Seasonings']
+    title: isTamil ? `${dishTitle} செய்முறை` : dishTitle,
+    recipe: dishTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    generic: false,
+    source: isTamil ? 'Tamil AI narration' : 'AI recipe plan',
+    steps,
+    ingredients: isTamil ? ['புதிய பொருட்கள்', 'சுவைப்பொருட்கள்'] : ['Fresh Ingredients', 'Seasonings']
   });
 }

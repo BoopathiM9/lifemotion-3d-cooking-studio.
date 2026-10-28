@@ -1,4 +1,60 @@
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { renderMediaOnLambda } from '@remotion/lambda/client';
+import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
+
+const region = process.env.REMOTION_AWS_REGION || process.env.AWS_REGION || 'us-east-1';
+const bucketName = process.env.REMOTION_BUCKET_NAME || 'remotionlambda-useast1-0wt9pieqmh';
+const functionName = process.env.REMOTION_FUNCTION_NAME || 'remotion-render-4-0-539-mem2048mb-disk2048mb-120sec';
+const serveUrl = process.env.REMOTION_SERVE_URL || 'https://remotionlambda-useast1-0wt9pieqmh.s3.us-east-1.amazonaws.com/sites/cooking-studio/index.html';
+
+const s3 = new S3Client({ region });
+
+async function generateSpeechAudio(text, voice) {
+  try {
+    const tts = new MsEdgeTTS();
+    await tts.setMetadata(voice, OUTPUT_FORMAT.AUDIO_24KHZ_48KBITRATE_MONO_MP3);
+    const { audioStream } = tts.toStream(text);
+    return await new Promise((resolve, reject) => {
+      const chunks = [];
+      audioStream.on('data', d => chunks.push(d));
+      audioStream.on('end', () => resolve(Buffer.concat(chunks)));
+      audioStream.on('error', reject);
+    });
+  } catch (err) {
+    console.warn('TTS generation warning:', err.message);
+    return null;
+  }
+}
+
+function cleanRecipeTitle(prompt) {
+  return String(prompt || 'Cooking Lesson')
+    .replace(/teach\s+(children|kids|me)\s+(how\s+)?to\s+make/ig, '')
+    .replace(/make\s+(a\s+)?(cheerful\s+)?(3d\s+)?(cartoon\s+)?cooking\s+video\s+(where\s+maya\s+makes\s+)?/ig, '')
+    .replace(/step by step.*$/i, '')
+    .replace(/[.?!]/g, ' ')
+    .trim()
+    .slice(0, 40) || 'Delicious Dish';
+}
+
+function getTamilSteps(dishTitle) {
+  return [
+    { key: 'welcome', action: 'show', text: `வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் சுவையான ${dishTitle} செய்வோம்!`, start: 0, end: 4 },
+    { key: 'safe', action: 'show', text: 'சூடான பாத்திரங்களையும் அடுப்பையும் பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.', start: 4, end: 8 },
+    { key: 'add', action: 'add', text: `தேவையான புதிய பொருட்களை மெதுவாக சமையல் பாத்திரத்தில் சேர்க்கவும்.`, start: 8, end: 12 },
+    { key: 'cook', action: 'cook', text: `நறுமணம் கமழ மெதுவாக கிளறி அழகாக வேகவைக்கவும்.`, start: 12, end: 16 },
+    { key: 'serve', action: 'serve', text: `சுவையான ${dishTitle} தயார்! தட்டில் வைத்து பரிமாறி மகிழுங்கள்!`, start: 16, end: 20 }
+  ];
+}
+
+function getEnglishSteps(dishTitle) {
+  return [
+    { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are making ${dishTitle}!`, start: 0, end: 4 },
+    { key: 'safe', action: 'show', text: 'Wash your hands first, and always ask a grown-up for help around hot cookware.', start: 4, end: 8 },
+    { key: 'add', action: 'add', text: `Gently add our fresh ingredients into the cooking bowl.`, start: 8, end: 12 },
+    { key: 'cook', action: 'cook', text: `Stir and cook gently as delicious aromas fill the room.`, start: 12, end: 16 },
+    { key: 'serve', action: 'serve', text: `Spoon our freshly cooked ${dishTitle} onto the plate. Great job!`, start: 16, end: 20 }
+  ];
+}
 
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
@@ -8,105 +64,47 @@ export default async function handler(req, res) {
   }
 
   const { prompt, voice, format } = req.body || {};
-  const cleanPrompt = (typeof prompt === 'string' ? prompt.trim() : '') || 'Cooking Lesson';
+  const isTamil = voice === 'ta-IN-PallaviNeural';
+  const selectedVoice = isTamil ? 'ta-IN-PallaviNeural' : (voice || 'en-US-JennyNeural');
   const selectedFormat = format === '9:16' ? '9:16' : '16:9';
-  const selectedVoice = voice || 'en-US-JennyNeural';
+  const dishTitle = cleanRecipeTitle(prompt);
 
-  // 1. Build or generate recipe plan
-  const key = process.env.GEMINI_API_KEY?.trim();
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-  let plan = null;
+  const steps = isTamil ? getTamilSteps(dishTitle) : getEnglishSteps(dishTitle);
+  const duration = 20;
 
-  if (key) {
+  // Generate voice audio
+  const fullSpeechText = steps.map(s => s.text).join(' ');
+  const audioBuffer = await generateSpeechAudio(fullSpeechText, selectedVoice);
+
+  let audioUrl = null;
+  if (audioBuffer) {
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `You are Chef Maya, creating a child-friendly cartoon cooking video lesson.
-Convert this dish request: "${cleanPrompt}" into a structured 5-step animation plan.
-Respond with valid JSON only in this format:
-{
-  "title": "Dish Name",
-  "ingredients": [
-    {"id": "main_item", "name": "Item Name", "color": "#e08030"}
-  ],
-  "steps": [
-    {"key": "welcome", "text": "Welcome little chefs! Today we make...", "action": "show"},
-    {"key": "safe", "text": "Safety note: always ask an adult to handle hot cookware.", "action": "show"},
-    {"key": "add_ing", "text": "Add fresh ingredients into the pot.", "action": "add"},
-    {"key": "cook_dish", "text": "Stir and cook gently until fragrant and ready.", "action": "cook"},
-    {"key": "serve_dish", "text": "Serve onto our plate. Delicious job!", "action": "serve"}
-  ]
-}`
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.3,
-            responseMimeType: 'application/json'
-          }
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (text) {
-          const parsed = JSON.parse(text);
-          const rawSteps = parsed.steps || [];
-          const stepSeconds = 4;
-          const actions = rawSteps.map((s, idx) => ({
-            key: s.key || `step_${idx}`,
-            action: s.action || (idx === 0 || idx === 1 ? 'show' : idx === rawSteps.length - 1 ? 'serve' : 'cook'),
-            text: s.text,
-            start: idx * stepSeconds,
-            end: (idx + 1) * stepSeconds
-          }));
-
-          plan = {
-            recipe: (parsed.title || 'custom').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-            title: parsed.title || cleanPrompt.slice(0, 40),
-            format: selectedFormat,
-            voice: selectedVoice,
-            ingredients: parsed.ingredients || [{ id: 'food', name: parsed.title, color: '#e5a54b' }],
-            actions
-          };
-        }
-      }
+      const audioKey = `audio/${Date.now()}-${Math.random().toString(36).slice(2, 7)}.mp3`;
+      await s3.send(new PutObjectCommand({
+        Bucket: bucketName,
+        Key: audioKey,
+        Body: audioBuffer,
+        ContentType: 'audio/mpeg'
+      }));
+      audioUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${audioKey}`;
     } catch (err) {
-      console.warn('Gemini dynamic plan error:', err.message);
+      console.warn('Audio upload to S3 failed:', err.message);
     }
   }
 
-  // Local fallback recipe plan if Gemini API key not configured
-  if (!plan) {
-    const dishTitle = cleanPrompt.slice(0, 40);
-    const stepSeconds = 4;
-    plan = {
-      recipe: dishTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      title: dishTitle,
-      format: selectedFormat,
-      voice: selectedVoice,
-      ingredients: [
-        { id: 'fresh_item', name: dishTitle, color: '#f1b85e' }
-      ],
-      actions: [
-        { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are making ${dishTitle}!`, start: 0, end: stepSeconds },
-        { key: 'safe', action: 'show', text: 'Wash your hands first, and always ask a grown-up for help around hot cookware.', start: stepSeconds, end: stepSeconds * 2 },
-        { key: 'add', action: 'add', text: `Gently add our fresh ingredients into the cooking bowl.`, start: stepSeconds * 2, end: stepSeconds * 3 },
-        { key: 'cook', action: 'cook', text: `Stir and cook gently as delicious aromas fill the room.`, start: stepSeconds * 3, end: stepSeconds * 4 },
-        { key: 'serve', action: 'serve', text: `Spoon our freshly cooked ${dishTitle} onto the plate. Great job!`, start: stepSeconds * 4, end: stepSeconds * 5 }
-      ]
-    };
-  }
+  const plan = {
+    recipe: dishTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    title: isTamil ? `${dishTitle}` : dishTitle,
+    format: selectedFormat,
+    voice: selectedVoice,
+    ingredients: [{ id: 'fresh_item', name: dishTitle, color: '#f1b85e' }],
+    actions: steps
+  };
 
-  const duration = plan.actions.length * 4;
   const lesson = {
     duration,
-    steps: plan.actions,
-    captions: plan.actions.map(a => ({ start: a.start, end: a.end, text: a.text }))
+    steps,
+    captions: steps.map(s => ({ start: s.start, end: s.end, text: s.text }))
   };
 
   const isPortrait = selectedFormat === '9:16';
@@ -114,12 +112,8 @@ Respond with valid JSON only in this format:
   const height = isPortrait ? 1280 : 720;
   const fps = 24;
 
-  const region = process.env.REMOTION_AWS_REGION || process.env.AWS_REGION || 'us-east-1';
-  const functionName = process.env.REMOTION_FUNCTION_NAME || 'remotion-render-4-0-539-mem2048mb-disk2048mb-120sec';
-  const serveUrl = process.env.REMOTION_SERVE_URL || 'https://remotionlambda-useast1-0wt9pieqmh.s3.us-east-1.amazonaws.com/sites/cooking-studio/index.html';
-
   try {
-    const { renderId, bucketName } = await renderMediaOnLambda({
+    const { renderId } = await renderMediaOnLambda({
       region,
       functionName,
       serveUrl,
@@ -127,32 +121,31 @@ Respond with valid JSON only in this format:
       inputProps: {
         plan,
         lesson,
-        audioFile: null,
+        audioFile: audioUrl,
         fps,
         width,
         height,
         durationInFrames: duration * fps
       },
-      framesPerLambda: 120, // Concurrency optimized for AWS Free Tier
+      framesPerLambda: 120,
       codec: 'h264',
       privacy: 'public'
     });
 
-    const jobId = `${bucketName}:${renderId}`;
     return res.status(202).json({
-      id: jobId,
+      id: `${bucketName}:${renderId}`,
       recipe: plan.recipe,
       title: plan.title,
       format: selectedFormat,
       voice: selectedVoice,
       status: 'rendering',
       progress: 5,
-      message: `Chef Maya is creating the cartoon cooking video for ${plan.title}...`
+      message: isTamil
+        ? `செஃப் மாயா "${dishTitle}" வீடியோவை உருவாக்குகிறார்...`
+        : `Chef Maya is creating the cartoon cooking video for ${plan.title}...`
     });
   } catch (err) {
-    console.error('AWS Lambda Video Render Error:', err);
-    return res.status(500).json({
-      error: 'Could not start cloud video render: ' + (err.message || String(err))
-    });
+    console.error('Video Render Error:', err);
+    return res.status(500).json({ error: err.message || String(err) });
   }
 }
