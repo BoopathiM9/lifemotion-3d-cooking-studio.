@@ -1,5 +1,5 @@
 /**
- * LifeMotion 3D Cooking Studio
+ * LifeMotion Cooking Studio
  * Comprehensive Unit Test Suite for Generic Cooking Engine
  */
 
@@ -14,9 +14,6 @@ import {
 } from './recipe-planner.mjs';
 import { normalizeActionVerb, buildVisualPlan, VISUAL_ACTIONS } from './visual-plan.mjs';
 import { storyboard, recipes, voices } from './recipes.mjs';
-import { createCookware, createUtensil, ANCHORS } from './equipment-factory.mjs';
-import { createIngredientMesh, createMaterial, transitionIngredientState } from './ingredient-factory.mjs';
-import { animateAction } from './action-engine.mjs';
 import { translateActionsWithLocalTamil } from './free-recipe-lookup.mjs';
 
 console.log('=== STARTING UNIT TESTS ===\n');
@@ -75,31 +72,7 @@ assert.equal(tamilFallback.length, unknownRecipe.actions.length);
 assert.ok(tamilFallback.every(line => /[\u0B80-\u0BFF]/.test(line)), 'Every fallback line must contain Tamil text');
 console.log('✔ RecipePlan validation passed.');
 
-// 5. Equipment Factory & Anchors Tests
-console.log('Testing Equipment Factory...');
-assert.ok(ANCHORS.COOKING_CENTER);
-assert.ok(ANCHORS.SERVING_CENTER);
-for (const type of ['pan', 'pot', 'wok', 'saucepan', 'bowl', 'plate', 'board']) {
-  const eq = createCookware(type);
-  assert.equal(eq.name, `equipment_${type}`);
-}
-for (const u of ['spoon', 'ladle', 'spatula', 'knife', 'rolling pin']) {
-  const ut = createUtensil(u);
-  assert.equal(ut.name, `utensil_${u}`);
-}
-console.log('✔ Equipment factory passed.');
-
-// 6. Ingredient Factory Tests
-console.log('Testing Ingredient Factory...');
-const categories = ['grain', 'protein', 'vegetable', 'liquid', 'dough', 'batter', 'pasta', 'noodle', 'bread', 'cheese', 'herb'];
-for (const cat of categories) {
-  const mesh = createIngredientMesh({ id: cat, name: cat, category: cat, state: 'raw', color: '#e0a96d' });
-  assert.ok(mesh, `Mesh for category ${cat} must be created`);
-  assert.equal(mesh.name, `ing_${cat}`);
-}
-console.log('✔ Ingredient factory passed.');
-
-// 7. Core Test Recipes Verification (Prompt-to-Plan Accuracy)
+// 5. Core Test Recipes Verification (Prompt-to-Plan Accuracy)
 console.log('Testing Recipe Plans for Core Recipes...');
 const testDishes = [
   { prompt: 'Make chicken biryani', expectedEquip: 'pot', keyIng: 'Chicken Pieces' },
@@ -125,7 +98,7 @@ for (const { prompt, expectedEquip, keyIng } of testDishes) {
 }
 console.log('✔ All 10 core recipe visual plans verified.');
 
-// 8. User-Supplied Cooking Instructions Parsing Test
+// 6. User-Supplied Cooking Instructions Parsing Test
 console.log('Testing User-Supplied Instructions Parsing...');
 const customInstructions = `
 Chef Maya teaches kids how to make Lemonade.
@@ -143,7 +116,7 @@ assert.ok(customPlan.actions.some(a => a.action === 'mix'));
 assert.ok(customPlan.actions.some(a => a.action === 'serve'));
 console.log('✔ User instructions parsing passed.');
 
-// 9. Input Validation & Error Handling
+// 7. Input Validation & Error Handling
 console.log('Testing Input Validation...');
 assert.throws(() => storyboard({ prompt: '' }), /Enter a recipe prompt/);
 assert.throws(() => storyboard({ prompt: 'Make dosa', voice: 'unsupported-voice' }), /Choose an available narration voice/);

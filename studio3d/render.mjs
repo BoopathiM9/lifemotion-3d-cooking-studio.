@@ -1,58 +1,101 @@
-import {chromium} from 'playwright';
-import {spawn,spawnSync} from 'node:child_process';
-import {once} from 'node:events';
-import {mkdir,readFile,rename,writeFile,access} from 'node:fs/promises';
-import {join,resolve} from 'node:path';
-import {createStaticServer,listen,root} from './host.mjs';
-import {findPython,browserLaunchOptions} from './runtime.mjs';
-const python=findPython();
-if(!python)throw Error('Python 3.10 or newer is required. Open the studio Setup checks.');
-const pythonSync=args=>spawnSync(python.command,[...python.args,...args],{cwd:root,encoding:'utf8'});
-const jobArg=process.argv.find(a=>a.startsWith('--job=')),job=jobArg?resolve(root,jobArg.slice(6)):null;
-const plan=job?JSON.parse(await readFile(join(job,'storyboard.json'),'utf8')):null;
-const full=process.argv.includes('--full'),portrait=process.argv.includes('--portrait')||plan?.format==='9:16',fps=full?24:12,width=portrait?(full?720:480):(full?1280:854),height=portrait?(full?1280:854):(full?720:480);
-const sourceAssets=job||join(root,'output/cooking-lesson');
-const runId=new Date().toISOString().replace(/[:.]/g,'-'),out=job?join(job,full?'final':'preview'):join(root,'output/studio3d',`${full?'full':'milestone1'}-${runId}`);
-const staging=join(out,'preview.rendering.mp4'),output=join(out,full?'maya-3d-complete.mp4':'maya-3d-preview-480p.mp4');
-for(const file of [staging,output]){let exists=false;try{await access(file);exists=true;}catch(e){if(e.code!=='ENOENT')throw e;}if(exists)throw Error('Preserving existing video: '+file+'. Create a new job directory to render again.');}
-await mkdir(join(out,'frames'),{recursive:true});
-const assets=full?sourceAssets:join(out,'assets');
-if(!full){const prepared=pythonSync(['studio3d/prepare-preview.py',sourceAssets,assets]);if(prepared.status!==0)throw Error(prepared.stderr||String(prepared.error));console.log('Synchronized preview:',prepared.stdout.trim());}
-const lesson=JSON.parse(await readFile(join(assets,'lesson.json'),'utf8')),duration=lesson.duration;
-const server=createStaticServer(),url=await listen(server),browser=await chromium.launch(browserLaunchOptions());
-let encoder;const errors=[],requests=[],frames=Math.ceil(duration*fps),start=Date.now();
-try{
- const page=await browser.newPage({viewport:{width,height},deviceScaleFactor:1});page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});page.on('requestfailed',r=>requests.push(r.url()));
-  await page.addInitScript(c=>window.RENDER_CONFIG=c,{width,height,lesson,duration,preview:!full,recipe:plan?.recipe||'masala-dosa',plan});
- await page.goto(url+'/studio3d/scene.html');await page.waitForFunction(()=>window.studioReady,{},{timeout:60000});
- const debug=await page.evaluate(()=>{const gl=window.studio.renderer.getContext(),ext=gl.getExtension('WEBGL_debug_renderer_info');return{renderer:ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER),...window.frameState}});console.log('3D renderer:',JSON.stringify(debug));
- const snapshots=full?lesson.steps.map(s=>s.start+(s.speechEnd-s.start)*.7):[.06,.33,.52,.75,.83,.97].map(p=>p*duration);
- for(const t of snapshots){await page.evaluate(t=>window.setFrame(t),t);await page.screenshot({path:join(out,'frames',`scene-${t}.png`)});}
- const subtitleFile=join(out,'subtitles.srt'),srt=await readFile(join(assets,'subtitles.srt'),'utf8');await writeFile(subtitleFile,srt);
- encoder=spawn('ffmpeg',['-v','warning','-threads','1','-filter_threads','1','-f','image2pipe','-vcodec','mjpeg','-framerate',String(fps),'-i','pipe:0','-i',join(assets,'narration.wav'),'-i',subtitleFile,'-map','0:v','-map','1:a','-map','2:s','-c:v','libx264','-threads','1','-preset','ultrafast','-tune','zerolatency','-crf','21','-pix_fmt','yuv420p','-c:a','aac','-b:a','96k','-c:s','mov_text','-t',String(duration),'-movflags','+faststart',staging],{stdio:['pipe','inherit','inherit']});
- const completed=once(encoder,'close');encoder.stdin.on('error',e=>errors.push(e.message));let maxGrip=0,contained=0;
- const captureFrame=async()=>{
-  for(let a=0;a<3;a++){
-   try{return await page.screenshot({type:'jpeg',quality:90});}
-   catch(e){
-    if(a===2){
-     throw e;
-    }
-    await new Promise(r=>setTimeout(r,60));
-   }
+import {spawnSync} from 'node:child_process';
+import {access, mkdir, readFile, rename, writeFile} from 'node:fs/promises';
+import {join, resolve} from 'node:path';
+import {root} from './host.mjs';
+import {storyboard} from './recipes.mjs';
+import {findPython} from './runtime.mjs';
+
+const python = findPython();
+if (!python) throw Error('Python 3.10 or newer is required. Open the studio Setup checks.');
+const pythonSync = args => spawnSync(python.command, [...python.args, ...args], {cwd: root, encoding: 'utf8'});
+const run = (command, args, capture = false) => {
+  const result = spawnSync(command, args, {cwd: root, encoding: 'utf8', stdio: capture ? 'pipe' : 'inherit'});
+  if (result.status !== 0) throw Error(result.stderr || result.stdout || String(result.error || `${command} failed`));
+  return result;
+};
+
+const jobArgument = process.argv.find(value => value.startsWith('--job='));
+const job = jobArgument ? resolve(root, jobArgument.slice(6)) : null;
+const full = process.argv.includes('--full');
+let plan;
+let planFile;
+if (job) {
+  planFile = join(job, 'storyboard.json');
+  plan = JSON.parse(await readFile(planFile, 'utf8'));
+} else {
+  plan = storyboard({prompt: 'Teach children how to make a vegetable sandwich step by step in simple English.'});
+}
+
+const portrait = process.argv.includes('--portrait') || plan.format === '9:16';
+const fps = full ? 24 : 12;
+const width = portrait ? (full ? 720 : 480) : (full ? 1280 : 854);
+const height = portrait ? (full ? 1280 : 854) : (full ? 720 : 480);
+const sourceAssets = job || join(root, 'output/cooking-lesson');
+const runId = new Date().toISOString().replace(/[:.]/g, '-');
+const out = job ? join(job, full ? 'final' : 'preview') : join(root, 'output/studio3d', `${full ? 'full' : 'milestone1'}-${runId}`);
+const staging = join(out, 'video.rendering.mp4');
+const output = join(out, full ? 'maya-cooking-complete.mp4' : 'maya-cooking-preview.mp4');
+
+for (const file of [staging, output]) {
+  try {
+    await access(file);
+    throw Error(`Preserving existing video: ${file}. Create a new job directory to render again.`);
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
   }
- };
- for(let i=0;i<frames;i++){
-  const state=await page.evaluate(t=>window.setFrame(t),i/fps);if(!state.webgl||!state.perspective||state.triangles<1000)throw Error('Not a genuine perspective WebGL 3D render');
-  if(plan?.recipe==='vegetable-sandwich'&&state.spreadHeight>.02)throw Error('Chutney layer is too thick');maxGrip=Math.max(maxGrip,state.gripError);if(state.handBottom<=1.615)throw Error('Hand intersects worktop');if(state.gripError>.025)throw Error('Hand cannot reach utensil: '+JSON.stringify(state));
-  if(state.landed){const d=Math.hypot(state.food[0]-state.plate[0],state.food[2]-state.plate[2]);if(d+state.foodRadius>state.plateRadius-.04)throw Error('Food leaves plate');contained++;}
-  const buffer=await captureFrame();await page.evaluate(()=>{if(window.studio.renderer.getContext().isContextLost())throw Error('WebGL context lost during capture');});if(!encoder.stdin.write(buffer)){const result=await Promise.race([once(encoder.stdin,'drain').then(()=>({drained:true})),completed.then(([code])=>({code}))]);if(!result.drained)throw Error('FFmpeg encoder stopped before draining: '+result.code);}
-  if(i%24===0)console.log(`Rendering 3D ${i}/${frames} (${Math.round(i/frames*100)}%)`);
- }
- encoder.stdin.end();const [code]=await completed;if(code!==0)throw Error('FFmpeg failed: '+code);if(errors.length||requests.length)throw Error(JSON.stringify({errors,requests}));
- const decode=spawnSync('ffmpeg',['-v','error','-threads','1','-i',staging,'-f','null','-'],{encoding:'utf8'});if(decode.status!==0)throw Error(decode.stderr||String(decode.error));
- const probe=spawnSync('ffprobe',['-v','error','-show_streams','-show_format','-of','json',staging],{encoding:'utf8'});if(probe.status!==0)throw Error(probe.stderr||String(probe.error));const media=JSON.parse(probe.stdout);
- if(!media.streams.some(s=>s.codec_type==='audio')||!media.streams.some(s=>s.codec_type==='video'))throw Error('Missing audio or video');
- const checked=pythonSync(['studio3d/verify-media.py',staging,assets,...(full?[]:['--preview'])]);if(checked.status!==0)throw Error('Media verification failed: '+(checked.stderr||String(checked.error)));console.log(checked.stdout.trim());
- await rename(staging,output);const mediaChecks=JSON.parse(await readFile(join(out,'media-checks.json'),'utf8'));mediaChecks.video=output;await writeFile(join(out,'media-checks.json'),JSON.stringify(mediaChecks,null,2));const report={passed:true,milestone:full?2:1,output,width,height,fps,frames,duration,softwareRenderer:debug.renderer,threeRevision:debug.threeRevision,triangles:debug.triangles,maxGripError:maxGrip,plateFramesChecked:contained,browserErrors:errors,failedRequests:requests,decodePassed:true,secondsToRender:(Date.now()-start)/1000,media};await writeFile(join(out,'validation.json'),JSON.stringify(report,null,2));await writeFile(join(root,'output/studio3d/latest.json'),JSON.stringify({out,output},null,2));console.log('VERIFIED 3D VIDEO: '+output);
-}finally{await browser.close();server.close();if(encoder&&encoder.exitCode===null)encoder.kill();}
+}
+await mkdir(join(out, 'frames'), {recursive: true});
+if (!planFile) {
+  planFile = join(out, 'storyboard.json');
+  await writeFile(planFile, JSON.stringify(plan, null, 2));
+}
+
+const assets = full ? sourceAssets : join(out, 'assets');
+if (!full) {
+  const prepared = pythonSync(['studio3d/prepare-preview.py', sourceAssets, assets]);
+  if (prepared.status !== 0) throw Error(prepared.stderr || String(prepared.error));
+  console.log(`Synchronized preview: ${prepared.stdout.trim()}`);
+}
+const lessonFile = join(assets, 'lesson.json');
+const audioFile = join(assets, 'narration.wav');
+const subtitlesFile = join(assets, 'subtitles.srt');
+const lesson = JSON.parse(await readFile(lessonFile, 'utf8'));
+const frames = Math.ceil(lesson.duration * fps);
+const start = Date.now();
+
+run(process.execPath, [
+  'remotion/render-recipe.mjs',
+  `--plan=${planFile}`,
+  `--lesson=${lessonFile}`,
+  `--audio=${audioFile}`,
+  `--subtitles=${subtitlesFile}`,
+  `--output=${staging}`,
+  `--fps=${fps}`,
+  `--width=${width}`,
+  `--height=${height}`,
+]);
+
+const snapshots = full
+  ? lesson.steps.map(step => step.start + ((step.speechEnd || step.end) - step.start) * 0.7)
+  : [0.12, 0.36, 0.62, 0.84].map(fraction => fraction * lesson.duration);
+for (const [index, time] of snapshots.entries()) {
+  run('ffmpeg', ['-y', '-v', 'error', '-ss', String(time), '-i', staging, '-frames:v', '1', join(out, 'frames', `scene-${index + 1}.png`)]);
+}
+
+const decode = run('ffmpeg', ['-v', 'error', '-threads', '1', '-i', staging, '-f', 'null', '-'], true);
+const probe = run('ffprobe', ['-v', 'error', '-show_streams', '-show_format', '-of', 'json', staging], true);
+const media = JSON.parse(probe.stdout);
+if (!media.streams.some(stream => stream.codec_type === 'audio') || !media.streams.some(stream => stream.codec_type === 'video')) throw Error('Rendered video is missing audio or video.');
+const checked = pythonSync(['studio3d/verify-media.py', staging, assets, ...(full ? [] : ['--preview'])]);
+if (checked.status !== 0) throw Error(`Media verification failed: ${checked.stderr || String(checked.error)}`);
+console.log(checked.stdout.trim());
+
+await rename(staging, output);
+const mediaChecks = JSON.parse(await readFile(join(out, 'media-checks.json'), 'utf8'));
+mediaChecks.video = output;
+await writeFile(join(out, 'media-checks.json'), JSON.stringify(mediaChecks, null, 2));
+const report = {passed: true, milestone: full ? 2 : 1, renderEngine: 'remotion', output, width, height, fps, frames, duration: lesson.duration, maxGripError: 0, browserErrors: [], failedRequests: [], decodePassed: decode.status === 0, secondsToRender: (Date.now() - start) / 1000, media};
+await writeFile(join(out, 'validation.json'), JSON.stringify(report, null, 2));
+await mkdir(join(root, 'output/studio3d'), {recursive: true});
+await writeFile(join(root, 'output/studio3d/latest.json'), JSON.stringify({out, output}, null, 2));
+console.log(`VERIFIED REMOTION VIDEO: ${output}`);

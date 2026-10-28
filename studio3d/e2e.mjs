@@ -10,7 +10,7 @@ const recipe=process.argv.find(a=>a.startsWith('--recipe='))?.slice(9)||'masala-
 const server=await createStudioServer(),url=await listen(server),browser=await chromium.launch(browserLaunchOptions());
 try{
  const page=await browser.newPage({viewport:{width:1100,height:900}});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
- await page.locator('#prompt').fill(`Make a cheerful 3D cartoon cooking video where MAYA makes ${recipe.replaceAll('-',' ')} in simple English.`);await page.locator('#format').selectOption(format);
+ await page.locator('#prompt').fill(`Make a cheerful cartoon cooking video where MAYA makes ${recipe.replaceAll('-',' ')} in simple English.`);await page.locator('#format').selectOption(format);
  const submitted=page.waitForResponse(r=>r.url().endsWith('/api/generate')&&r.request().method()==='POST');await page.locator('#generate').click();const r=await submitted;assert.equal(r.status(),202);let job=await r.json();console.log('Website generation job:',job.id);const busy=await fetch(url+'/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:`Make ${recipe.replaceAll('-',' ')}`})});assert.equal(busy.status,409,'Reject overlapping generation');
  const start=Date.now();let last='',sawPreview=false;
  while(job.status!=='complete'){

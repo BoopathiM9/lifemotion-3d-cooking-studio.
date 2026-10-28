@@ -54,7 +54,7 @@ export function inspectRuntime(){
   checks.push({id:command,label:command==='ffmpeg'?'Video encoding':'Media validation',ok:result.status===0,message:result.status===0?`${command} is available`:`${command} was not found. Install FFmpeg, then restart the studio.`,fix:windows?'winget install --id Gyan.FFmpeg -e --source winget':'Install ffmpeg using your system package manager.'});
  }
  const executable=browserLaunchOptions().executablePath||chromium.executablePath();
- checks.push({id:'browser',label:'3D renderer',ok:existsSync(executable),message:existsSync(executable)?'Chromium is installed':'Install the browser used for 3D rendering.',fix:'npx playwright install chromium'});
+ checks.push({id:'browser',label:'Animation renderer',ok:existsSync(executable),message:existsSync(executable)?'Chromium is installed':'Install the browser used for Remotion rendering.',fix:'npx playwright install chromium'});
  return {ready:checks.every(c=>c.ok),checks,python,checkedAt:new Date().toISOString()};
 }
 
@@ -67,6 +67,6 @@ export function generationFailure(error,phase){
  const text=String(error?.message||error);
  if(/python was not found|no module named edge_tts|ENOENT/i.test(text))return 'A required tool is missing. Open Setup checks, install the missing item, then restart the studio.';
  if(/NoAudioReceived|speech.platform|ClientConnector|403|certificate|handshake|timed out|timeout/i.test(text)&&phase==='narration')return 'The speech service could not be reached. Check your internet connection and try again. Previously cached narration can be reused.';
- if(/WebGL|context lost|Target.*closed|browser.*closed|Blank or missing kitchen/i.test(text))return 'The 3D renderer stopped. Close other heavy applications and try again. A blank video will not be marked complete.';
+ if(/Target.*closed|browser.*closed|Blank or missing kitchen|Remotion/i.test(text))return 'The animation renderer stopped. Close other heavy applications and try again. A blank video will not be marked complete.';
  return phase==='narration'?'Narration could not be created. Check Setup checks and your internet connection, then try again.':'Video rendering could not finish. Check Setup checks, free some memory and try again.';
 }

@@ -1,8 +1,8 @@
-# LifeMotion 3D Cooking Studio
+# LifeMotion Cooking Studio
 
-The `studio3d/` website creates narrated 3D cooking films with Chef Maya. It includes 10 guided recipes, recipe-step previews, local setup checks, generation progress, a film library and MP4 downloads.
+The `studio3d/` website creates narrated cartoon cooking films with Chef Maya. It includes 10 guided recipes, recipe-step previews, local setup checks, generation progress and MP4 downloads.
 
-Chef Maya is an original Blender-authored 3D character loaded as GLB by Three.js. Her named head, shoulder and forearm pivots follow each recipe action during rendering. The editable Blender source is `studio3d/blender/maya-chef.blend`; rebuild the web asset with `npm run 3d:character` when Blender is installed.
+Remotion is the single animation framework. React and SVG draw Chef Maya, the kitchen, ingredients and clear recipe actions; Remotion renders the frames and FFmpeg creates the final H.264/AAC MP4 with timed subtitles.
 
 From PowerShell in the cloned project folder:
 
@@ -15,7 +15,7 @@ Open the local address printed by the server and keep the terminal open. Windows
 
 Try: **Teach children how to make chicken biriyani step by step in simple English.** Recipe cards also fill in ready-to-use prompts. Unsupported dishes receive a labelled generic animation; preview the steps before creating a film.
 
-Full setup, examples, supported recipes and validation: [studio3d/README.md](studio3d/README.md). The original 2D project is preserved below.
+Full setup, examples, supported recipes and validation: [studio3d/README.md](studio3d/README.md).
 
 ---
 

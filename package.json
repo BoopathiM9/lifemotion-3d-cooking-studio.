@@ -8,18 +8,19 @@
     "verify": "node animation/verify.mjs",
     "setup": "node studio3d/setup.mjs",
     "studio": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/server.mjs",
-    "3d:preview": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/render.mjs",
-    "3d:render": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/render.mjs --full",
-    "3d:character": "blender --background --python studio3d/blender/create_maya.py",
-    "3d:test": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/test.mjs",
+    "render:preview": "node --max-old-space-size=512 studio3d/render.mjs",
+    "render:video": "node --max-old-space-size=512 studio3d/render.mjs --full",
     "test:unit": "node studio3d/unit-tests.mjs",
-    "test:render": "node studio3d/render-regression.mjs",
     "test:startup": "node --test studio3d/startup-test.mjs",
     "test:studio": "node --test studio3d/studio-test.mjs",
     "test": "node studio3d/unit-tests.mjs"
   },
   "dependencies": {
+    "@remotion/bundler": "^4.0.539",
+    "@remotion/renderer": "^4.0.539",
     "playwright": "^1.56.0",
-    "three": "0.180.0"
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.539"
   }
 }

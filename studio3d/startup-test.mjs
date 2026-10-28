@@ -32,7 +32,7 @@ test('an unrelated occupied port fails without starting another portal',async()=
  try{await assert.rejects(launch(port),error=>{
   assert.equal(error.code,1);
   assert.match(error.stderr,/already in use/);
-  assert.doesNotMatch(error.stdout,/LifeMotion 3D Cooking Studio:/);
+  assert.doesNotMatch(error.stdout,/LifeMotion Cooking Studio:/);
   return true;
  });}finally{await close(server);}
 });

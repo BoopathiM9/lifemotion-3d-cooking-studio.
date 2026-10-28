@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `You are Chef Maya, creating a child-friendly 3D cooking video lesson.
+              text: `You are Chef Maya, creating a child-friendly cartoon cooking video lesson.
 Convert this cooking request into a structured lesson: "${cleanPrompt}".
 Respond with valid JSON only in this format:
 {

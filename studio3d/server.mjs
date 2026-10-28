@@ -29,7 +29,7 @@ export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
    const child=spawn(cmd,args,{cwd:root,stdio:['ignore','pipe','pipe'],windowsHide:true});let tail='';
    const log=buffer=>{
     const text=buffer.toString();tail=(tail+text).slice(-6000);
-    const match=text.match(/Rendering 3D (\d+)\/(\d+)/);
+    const match=text.match(/Rendering Remotion (\d+)\/(\d+)/);
     if(match){job.progress=Math.round((phase==='preview'?12:30)+Number(match[1])/Number(match[2])*(phase==='preview'?15:65));job.message=phase==='preview'?'Rendering your short preview':'Animating and encoding your full film';}
     if(phase==='narration'&&text.includes('Narration:')){job.narratedSegments=(job.narratedSegments||0)+(text.match(/Narration:/g)||[]).length;job.message=`Recording sentence ${job.narratedSegments} of ${job.totalSegments}`;}
    };
@@ -43,9 +43,9 @@ export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
    const dir=join(base,job.id);job.status='narration';job.progress=3;job.message='Preparing your narration';await persist(job);
    await command(python.command,[...python.args,'studio3d/narrate.py',dir],job,'narration');
    job.status='preview';job.progress=12;job.message='Creating your first look';await persist(job);
-   await command(process.execPath,['--max-old-space-size=128','--max-semi-space-size=4','studio3d/render.mjs','--job='+dir],job,'preview');
+   await command(process.execPath,['--max-old-space-size=512','studio3d/render.mjs','--job='+dir],job,'preview');
    job.previewUrl=`/media/${job.id}/preview`;job.status='rendering';job.progress=30;job.message='Your preview is ready. Rendering the full film';await persist(job);
-   await command(process.execPath,['--max-old-space-size=128','--max-semi-space-size=4','studio3d/render.mjs','--full','--job='+dir],job,'final');
+   await command(process.execPath,['--max-old-space-size=512','studio3d/render.mjs','--full','--job='+dir],job,'final');
    job.status='complete';job.progress=100;job.videoUrl=`/media/${job.id}/final`;job.message='Your cooking film is ready to watch and download.';
   }catch(error){job.status='failed';job.failureDetail=String(error.message);job.message=generationFailure(error,job.phase);}
   finally{busy=false;job.updatedAt=new Date().toISOString();await persist(job);}
@@ -87,7 +87,7 @@ export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
    if(req.method==='GET'&&url.pathname.startsWith('/media/')){
     const [,prefix,id,type]=url.pathname.split('/');const job=jobs.get(id);
     if(!job||!['preview','final'].includes(type)||!(type==='final'?job.videoUrl:job.previewUrl)){res.writeHead(404);res.end();return;}
-    const file=join(base,id,type,type==='final'?'maya-3d-complete.mp4':'maya-3d-preview-480p.mp4'),size=(await stat(file)).size,range=req.headers.range;
+    const file=join(base,id,type,type==='final'?'maya-cooking-complete.mp4':'maya-cooking-preview.mp4'),size=(await stat(file)).size,range=req.headers.range;
     const headers={'Content-Type':'video/mp4','Accept-Ranges':'bytes'};
     if(url.searchParams.has('download'))headers['Content-Disposition']=`attachment; filename="maya-${job.recipe}-${job.format.replace(':','x')}.mp4"`;
     if(range){const match=/^bytes=(\d+)-(\d*)$/.exec(range);if(!match){res.writeHead(416,{'Content-Range':`bytes */${size}`});res.end();return;}
@@ -122,7 +122,7 @@ if(process.argv[1]===fileURLToPath(import.meta.url)){
    process.exitCode=1;
   });
   server.listen(port,'127.0.0.1',()=>{
-    console.log(`LifeMotion 3D Cooking Studio: ${address}`);
+    console.log(`LifeMotion Cooking Studio: ${address}`);
     if (process.env.GEMINI_API_KEY?.trim()) {
       console.log(`✓ Google Gemini API: Active (${process.env.GEMINI_MODEL || 'gemini-2.5-flash'})`);
     } else {

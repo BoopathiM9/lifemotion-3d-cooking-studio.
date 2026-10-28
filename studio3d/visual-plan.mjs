@@ -1,5 +1,5 @@
 /**
- * LifeMotion 3D Cooking Studio
+ * LifeMotion Cooking Studio
  * Visual Plan & Action Vocabulary Normalization Layer
  */
 
@@ -65,7 +65,7 @@ export function normalizeActionVerb(rawVerb = '') {
 
 /**
  * Builds the visual plan from a validated RecipePlan.
- * Produces the exact structure needed by narrate.py, render.mjs, and scene.mjs.
+ * Produces the exact structure needed by narrate.py and the Remotion renderer.
  * @param {any} recipePlan
  * @returns {any} Complete visual plan
  */
@@ -90,7 +90,7 @@ export function buildVisualPlan(recipePlan) {
     recipe: recipePlan.recipeId || recipePlan.recipe,
     actions,
     limitations: recipePlan.genericVisualization
-      ? 'Generic cooking visualization. Ingredients and cookware are procedurally rendered approximations.'
-      : 'Authentic procedural cooking plan. Procedurally animated using Three.js.'
+      ? 'Generic cooking visualization. Ingredients and cookware are illustrated approximations.'
+      : 'Authentic procedural cooking plan animated with Remotion.'
   };
 }

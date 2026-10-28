@@ -1,6 +1,6 @@
 # LifeMotion Cooking Studio
 
-A local website that turns recipe instructions into a procedural 3D cooking lesson with Chef Maya, English narration, subtitles and an MP4 download. Rendering runs on your CPU; a cloud GPU or paid API key is not required.
+A local website that turns recipe instructions into a cartoon cooking lesson with Chef Maya, English or Tamil narration, subtitles and an MP4 download. Rendering runs on your CPU; a cloud GPU or paid API key is not required.
 
 ### Optional free recipe analysis
 
@@ -24,7 +24,7 @@ npm.cmd run studio
 
 The setup helper installs locked Node dependencies, finds Python 3.10+, creates a local `.venv`, installs `edge-tts==7.3.1`, and installs Playwright Chromium. On Windows it uses Windows Package Manager to install missing Python and FFmpeg. Windows may ask you to approve the installers. If `winget` is unavailable, install Python and FFmpeg manually, then rerun setup. Package and TLS verification remain enabled.
 
-The visible Chef Maya character is built in Blender and exported to `studio3d/assets/maya-chef.glb`. Three.js loads that GLB and poses its named pivots for adding, pouring, mixing, cooking and serving. The original `.blend` file and repeatable generator are under `studio3d/blender/`; run `npm run 3d:character` after character edits.
+Remotion is the only animation framework. React and SVG build Chef Maya and the kitchen, while action-based choreography shows adding, pouring, stirring, spreading, chopping, flipping and serving. FFmpeg packages the rendered frames, narration and subtitle track into an MP4.
 
 Open the address printed by the server, normally `http://127.0.0.1:4173`. Keep that terminal open. Starting the studio again will point to the existing address instead of creating a second portal. Stop the server with Ctrl+C.
 
@@ -76,11 +76,9 @@ The server listens on loopback. It is a local development application and has no
 npm.cmd test
 npm.cmd run test:startup
 npm.cmd run test:studio
-npm.cmd run test:render
-npm.cmd run 3d:test
 node studio3d/e2e.mjs --recipe=chicken-biryani --format=16:9
 ```
 
-Unit tests cover planning and procedural assets. Startup tests cover one-portal behavior. Studio tests cover Windows Python resolution, setup gating, the exact biriyani prompt, plan preview, and desktop/mobile flows. Rendering checks exercise frame determinism and graphics-context failure. The end-to-end test submits an actual website job and waits for narration, a preview and a full validated film, then checks download headers and HTTP range serving. It can take several minutes and requires local tools plus speech access or cached narration.
+Unit tests cover recipe planning and action normalization. Startup tests cover one-portal behavior. Studio tests cover Windows Python resolution, setup gating, the exact biriyani prompt, plan preview, and desktop/mobile flows. The end-to-end test submits an actual website job and waits for narration, a preview and a full validated film, then checks download headers and HTTP range serving. It can take several minutes and requires local tools plus speech access or cached narration.
 
-Use `npm run 3d:preview` for the legacy cached dosa preview and `npm run 3d:render` for its full film. The original 2D animation remains separate under `animation/`.
+Use `npm run render:preview` for a short cached preview and `npm run render:video` for the complete cached lesson.

@@ -52,31 +52,7 @@ function restoreControls(job){
 }
 function displayMedia(job){
  const video = $('video');
- const liveFrame = $('liveFrame');
  const placeholder = $('placeholder');
-
- if (job.isLive3D && job.plan) {
-   if (video) { video.pause(); video.hidden = true; }
-   if (placeholder) placeholder.hidden = true;
-   if (liveFrame) {
-     liveFrame.hidden = false;
-     liveFrame.style.display = 'block';
-     sessionStorage.setItem('mayaLiveConfig', JSON.stringify({
-       plan: job.plan,
-       autoPlay: true,
-       recipe: job.recipe
-     }));
-     liveFrame.src = '/studio3d/scene.html?live=1&t=' + Date.now();
-   }
-   $('download').hidden = false;
-   $('download').textContent = 'Recording 3D Video...';
-   $('filmTitle').textContent = job.title || 'Live 3D Cooking Animation';
-   $('filmDescription').textContent = 'Live animated 3D lesson with Chef Maya, 3D cookware, ingredients, and voice narration.';
-   $('filmBadge').textContent = '3D Animation';
-   return;
- }
-
- if (liveFrame) { liveFrame.hidden = true; liveFrame.style.display = 'none'; }
  const source = job.status === 'complete' ? job.videoUrl : job.previewUrl;
  if (source && video) {
    if (video.getAttribute('src') !== source) {
@@ -97,18 +73,6 @@ function displayMedia(job){
  $('filmDescription').textContent = job.generic ? 'Generic animation generated. Review the recipe steps before using this lesson.' : job.status === 'complete' ? 'Complete MP4 with English narration and subtitles.' : job.previewUrl ? 'Preview ready. The complete video is still rendering.' : job.status === 'failed' ? 'Generation stopped. Follow the message and try again.' : 'Preparing animation, narration, and subtitles.';
  $('filmBadge').textContent = job.generic ? 'Generic animation' : job.status === 'complete' ? 'Ready' : job.previewUrl ? 'Preview ready' : job.status === 'failed' ? 'Stopped' : 'Generating';
 }
-
-window.addEventListener('message', e => {
-  if (e.data?.type === 'videoRecorded' && e.data?.url) {
-    const dl = $('download');
-    if (dl) {
-      dl.hidden = false;
-      dl.href = e.data.url;
-      dl.download = 'maya-cooking-animation.webm';
-      dl.textContent = 'Download Recorded Video';
-    }
-  }
-});
 function displayJob(job){
  $('progressArea').hidden=false;const failed=job.status==='failed';$('progressArea').classList.toggle('error',failed);$('stages').hidden=failed;$('progress').hidden=failed;
  $('status').textContent=job.message||statusNames[job.status]||'Preparing your film';$('progressText').textContent=`${Math.round(job.progress||0)}%`;$('progress').value=job.progress||0;

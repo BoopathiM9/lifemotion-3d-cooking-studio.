@@ -1,5 +1,5 @@
 /**
- * LifeMotion 3D Cooking Studio
+ * LifeMotion Cooking Studio
  * Reusable Recipe Storyboard & Catalog Interface
  */
 
