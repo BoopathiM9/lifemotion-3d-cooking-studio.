@@ -7,3 +7,5 @@ backups/
 .venv/
 .DS_Store
 Thumbs.db
+
+lambda-dist/
