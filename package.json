@@ -10,6 +10,7 @@
     "studio": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/server.mjs",
     "3d:preview": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/render.mjs",
     "3d:render": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/render.mjs --full",
+    "3d:character": "blender --background --python studio3d/blender/create_maya.py",
     "3d:test": "node --max-old-space-size=128 --max-semi-space-size=4 studio3d/test.mjs",
     "test:unit": "node studio3d/unit-tests.mjs",
     "test:render": "node studio3d/render-regression.mjs",

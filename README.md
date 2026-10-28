@@ -2,6 +2,8 @@
 
 The `studio3d/` website creates narrated 3D cooking films with Chef Maya. It includes 10 guided recipes, recipe-step previews, local setup checks, generation progress, a film library and MP4 downloads.
 
+Chef Maya is an original Blender-authored 3D character loaded as GLB by Three.js. Her named head, shoulder and forearm pivots follow each recipe action during rendering. The editable Blender source is `studio3d/blender/maya-chef.blend`; rebuild the web asset with `npm run 3d:character` when Blender is installed.
+
 From PowerShell in the cloned project folder:
 
 ```powershell

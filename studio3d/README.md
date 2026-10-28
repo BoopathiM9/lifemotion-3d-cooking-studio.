@@ -24,6 +24,8 @@ npm.cmd run studio
 
 The setup helper installs locked Node dependencies, finds Python 3.10+, creates a local `.venv`, installs `edge-tts==7.3.1`, and installs Playwright Chromium. On Windows it uses Windows Package Manager to install missing Python and FFmpeg. Windows may ask you to approve the installers. If `winget` is unavailable, install Python and FFmpeg manually, then rerun setup. Package and TLS verification remain enabled.
 
+The visible Chef Maya character is built in Blender and exported to `studio3d/assets/maya-chef.glb`. Three.js loads that GLB and poses its named pivots for adding, pouring, mixing, cooking and serving. The original `.blend` file and repeatable generator are under `studio3d/blender/`; run `npm run 3d:character` after character edits.
+
 Open the address printed by the server, normally `http://127.0.0.1:4173`. Keep that terminal open. Starting the studio again will point to the existing address instead of creating a second portal. Stop the server with Ctrl+C.
 
 The page checks Python, the speech package, FFmpeg, FFprobe and Chromium before accepting a generation request. Open **Tools ready / Setup needed** to see the checks. If a tool was just installed, restart your terminal and studio so the updated PATH is inherited. The Python resolver prefers the project virtual environment and also supports the Windows `py -3` launcher, so the Microsoft Store `python` alias is not required.

@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { ANCHORS, createCookware, createUtensil } from './equipment-factory.mjs';
 import { createIngredientMesh, transitionIngredientState, createMaterial } from './ingredient-factory.mjs';
 import { animateAction } from './action-engine.mjs';
@@ -50,7 +51,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = T.PCFSoftShadowMap;
 renderer.outputColorSpace = T.SRGBColorSpace;
 renderer.toneMapping = T.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.28;
+renderer.toneMappingExposure = 1.08;
 document.body.prepend(renderer.domElement);
 let contextLost = false;
 renderer.domElement.addEventListener('webglcontextlost', event => {
@@ -83,9 +84,6 @@ stoveGlow.position.set(0, 2.25, 0.05);
 scene.add(stoveGlow);
 
 const mat = (color, roughness = 0.65) => new T.MeshStandardMaterial({ color, roughness, metalness: 0 });
-const skin = mat('#f2b895');
-const hair = mat('#4a2a25');
-const hairLight = mat('#704336');
 const white = mat('#fffcf1');
 const peach = mat('#df9b86');
 const mint = mat('#8bb5a4');
@@ -231,96 +229,18 @@ bowl(-2, 0.82, '#d59077');
 cylinder(scene, mat('#f5e9c9'), -2, 1.77, 0.82, 0.24, 0.02);
 bowl(-0.85, 0.95, '#85aaa0');
 
-// Original MAYA character
+// Invisible kinematic helpers retained for utensil placement and collision QA.
+// Chef Maya's only visible geometry comes from the Blender GLB below.
 const chef = new T.Group();
 chef.position.set(-1.55, 0, -0.65);
-scene.add(chef);
-
-ball(chef, white, 0, 2.12, 0, 0.46, 0.68, 0.31);
-box(chef, peach, 0, 2.03, 0.306, 0.58, 0.77, 0.035);
-box(chef, mat('#e98d6b'), 0, 2.08, 0.35, 0.42, 0.55, 0.025);
-box(chef, white, 0, 2.4, 0.37, 0.5, 0.07, 0.03);
-box(chef, white, 0, 2.57, 0.1, 0.21, 0.1, 0.22);
-for (const x of [-0.24, 0.24]) {
-  const strap = box(chef, peach, x, 2.37, 0.28, 0.065, 0.49, 0.045);
-  strap.rotation.z = -x * 0.7;
-}
-for (const y of [2.1, 1.95]) ball(chef, gold, 0, y, 0.37, 0.024);
-ball(chef, peach, 0, 1.88, 0.34, 0.19, 0.15, 0.03);
-for (const x of [-0.11, 0.11]) {
-  ball(chef, gold, x, 2.36, 0.35, 0.022);
-}
-cylinder(chef, skin, 0, 2.7, 0, 0.15, 0.26);
-ball(chef, peach, 0, 2.62, 0.19, 0.2, 0.07, 0.13);
-
-const head = new T.Group();
-head.position.set(0, 3.28, 0);
-head.scale.setScalar(1.12);
-chef.add(head);
-
-ball(head, hair, 0, 0.03, -0.09, 0.66, 0.68, 0.49);
-ball(head, hairLight, 0.4, 0.46, -0.12, 0.28, 0.3, 0.24);
-ball(head, skin, 0, 0, 0.045, 0.59, 0.62, 0.48);
-for (const x of [-0.6, 0.6]) {
-  ball(head, skin, x, -0.04, 0.02, 0.1, 0.15, 0.09);
-  ball(head, hair, x * 0.92, -0.2, -0.1, 0.12, 0.34, 0.3);
-}
-
-const blush = mat('#e99c8f');
-for (const x of [-0.37, 0.37]) {
-  ball(head, blush, x, -0.17, 0.425, 0.115, 0.06, 0.018);
-}
-ball(head, skin, 0, -0.085, 0.53, 0.075, 0.07, 0.085);
-
-const eyes = [], pupils = [];
-for (const x of [-0.225, 0.225]) {
-  const eye = new T.Group();
-  eye.position.set(x, 0.06, 0.455);
-  head.add(eye);
-  eyes.push(eye);
-  ball(eye, white, 0, 0, 0, 0.174, 0.22, 0.072);
-  ball(eye, mat('#4b8d83'), x < 0 ? 0.014 : -0.014, -0.008, 0.066, 0.108, 0.145, 0.035);
-  const pupil = ball(eye, mat('#203c3d'), x < 0 ? 0.014 : -0.014, -0.002, 0.094, 0.055, 0.105, 0.018);
-  pupils.push(pupil);
-  ball(eye, white, -0.03, 0.063, 0.11, 0.035, 0.047, 0.012);
-  ball(eye, white, 0.042, -0.06, 0.102, 0.017, 0.02, 0.009);
-  const brow = ball(head, hair, x, 0.33, 0.42, 0.15, 0.027, 0.035);
-  brow.rotation.z = x < 0 ? 0.1 : -0.1;
-  for (const lashOffset of [-0.055, 0.055]) {
-    const lash = ball(eye, hair, lashOffset, 0.16, 0.07, 0.028, 0.009, 0.01);
-    lash.rotation.z = lashOffset * 5;
-  }
-}
-
-for (let i = 0; i < 5; i++) {
-  const lock = ball(head, i % 2 ? hair : hairLight, -0.44 + i * 0.2, 0.45 - Math.sin(i) * 0.03, 0.32, 0.16, 0.25, 0.17);
-  lock.rotation.z = -0.45 + i * 0.12;
-}
-
-const mouth = new T.Group();
-mouth.position.set(0, -0.32, 0.475);
-head.add(mouth);
-
-const mouthOpen = ball(mouth, mat('#713b3e'), 0, 0, 0.015, 0.12, 0.08, 0.035);
-const tongue = ball(mouth, mat('#e99699'), 0, -0.027, 0.046, 0.065, 0.022, 0.01);
-const smile = mesh(new T.TorusGeometry(0.115, 0.014, 6, 20, Math.PI), mat('#975948'), mouth);
-smile.rotation.z = Math.PI;
-smile.position.z = 0.04;
-
-cylinder(head, white, 0, 0.62, -0.01, 0.55, 0.22, 0.58);
-for (let i = 0; i < 5; i++) {
-  ball(head, white, Math.sin(i * 1.3) * 0.33, 0.88 + Math.cos(i * 1.7) * 0.075, Math.cos(i * 1.3) * 0.2, 0.32, 0.28, 0.29);
-}
-
-// Articulated Arm Rig & Analytical IK
 const armRig = [];
 for (const side of [-1, 1]) {
   const group = new T.Group();
-  scene.add(group);
-  const upper = mesh(new T.CylinderGeometry(0.115, 0.14, 1, 10), white, group);
-  const lower = mesh(new T.CylinderGeometry(0.1, 0.115, 1, 10), white, group);
-  const elbow = ball(group, white, 0, 0, 0, 0.12);
-  const hand = ball(group, skin, 0, 0, 0, 0.12, 0.13, 0.11);
+  const upper = new T.Object3D();
+  const lower = new T.Object3D();
+  const elbow = new T.Object3D();
+  const hand = new T.Object3D();
+  group.add(upper, lower, elbow, hand);
   armRig.push({ side, group, upper, lower, elbow, hand });
 }
 
@@ -359,25 +279,29 @@ const utensilType = plan.utensil || 'spoon';
 const tool = createUtensil(utensilType);
 scene.add(tool);
 
-// Premium illustrated Maya host. The transparent character matches the studio
-// artwork while the procedural food and cookware continue animating in 3D.
-let illustratedMaya = null;
-const mayaSize = W < H ? { width: 2.65, height: 3.98, y: 3.1 } : { width: 2.85, height: 4.28, y: 3.25 };
-try {
-  const mayaTexture = await new T.TextureLoader().loadAsync('/studio3d/assets/maya-character.png');
-  mayaTexture.colorSpace = T.SRGBColorSpace;
-  const mayaMaterial = new T.SpriteMaterial({ map: mayaTexture, transparent: true, alphaTest: 0.03, depthWrite: false });
-  illustratedMaya = new T.Sprite(mayaMaterial);
-  illustratedMaya.position.set(-1.25, mayaSize.y, -0.48);
-  illustratedMaya.scale.set(mayaSize.width, mayaSize.height, 1);
-  illustratedMaya.renderOrder = 2;
-  scene.add(illustratedMaya);
-  chef.visible = false;
-  armRig.forEach(rig => { rig.group.visible = false; });
-  tool.visible = false;
-} catch {
-  illustratedMaya = null;
-}
+// Blender-authored Chef Maya. Named pivots in the GLB are posed by Three.js so
+// her movement follows the current recipe action deterministically.
+let blenderMaya;
+const mayaRig = {};
+const gltf = await new GLTFLoader().loadAsync('/studio3d/assets/maya-chef.glb');
+blenderMaya = gltf.scene;
+  blenderMaya.name = 'ChefMayaBlender';
+  blenderMaya.position.set(-1.48, W < H ? 0.55 : 0.42, -0.55);
+  blenderMaya.rotation.y = W < H ? 0.32 : 0.58;
+  blenderMaya.scale.setScalar(W < H ? 0.82 : 0.88);
+  blenderMaya.traverse(object => {
+    if (object.isMesh) {
+      object.castShadow = true;
+      object.receiveShadow = true;
+      object.frustumCulled = false;
+    }
+  });
+  scene.add(blenderMaya);
+  for (const name of ['MayaRoot', 'MayaBody', 'MayaHead', 'MayaArmL', 'MayaArmR', 'MayaForearmL', 'MayaForearmR', 'MayaHandL', 'MayaHandR']) {
+    const node = blenderMaya.getObjectByName(name);
+    if (node && name === 'MayaHead') node.position.y += 0.16;
+    if (node) mayaRig[name] = { node, rotation: node.quaternion.clone(), position: node.position.clone() };
+  }
 
 // Main Food Entity
 const food = new T.Group();
@@ -496,27 +420,50 @@ function frame(t, draw = true) {
   const actionName = act.action || 'cook';
   const amp = lesson.envelope?.[Math.floor(t / 0.02)] || 0;
 
-  if (illustratedMaya) {
-    const serving = actionName === 'serve' || actionName === 'plate';
-    illustratedMaya.position.x = serving ? -0.95 : -1.25;
-    illustratedMaya.position.y = mayaSize.y + Math.sin(t * 2.1) * 0.035 + amp * 0.045;
-    illustratedMaya.scale.set(mayaSize.width + amp * 0.025, mayaSize.height + amp * 0.04, 1);
-    illustratedMaya.material.rotation = Math.sin(t * 1.25) * 0.012;
+  if (blenderMaya) {
+    for (const rig of Object.values(mayaRig)) {
+      rig.node.quaternion.copy(rig.rotation);
+      rig.node.position.copy(rig.position);
+    }
+    const root = mayaRig.MayaRoot?.node;
+    const mayaHead = mayaRig.MayaHead?.node;
+    const leftArm = mayaRig.MayaArmL?.node;
+    const rightArm = mayaRig.MayaArmR?.node;
+    const leftForearm = mayaRig.MayaForearmL?.node;
+    const rightForearm = mayaRig.MayaForearmR?.node;
+    const pulse = Math.sin(t * 2.2);
+    if (root) root.position.y += pulse * 0.018 + amp * 0.035;
+    if (mayaHead) {
+      mayaHead.rotateZ(Math.sin(t * 1.4) * 0.045);
+      mayaHead.rotateY(Math.sin(t * 0.8) * 0.055);
+    }
+    if (leftArm && rightArm && leftForearm && rightForearm) {
+      leftArm.rotateZ(-0.12 + pulse * 0.025);
+      rightArm.rotateZ(0.12 - pulse * 0.025);
+      leftForearm.rotateZ(-0.08);
+      rightForearm.rotateZ(0.08);
+      if (['add', 'pour'].includes(actionName)) {
+        rightArm.rotateX(-0.65 * smooth(p));
+        rightArm.rotateZ(-0.42 * smooth(p));
+        rightForearm.rotateX(-0.55 * smooth(p));
+      } else if (['mix', 'stir', 'spread', 'cook', 'boil', 'simmer'].includes(actionName)) {
+        rightArm.rotateX(-0.48);
+        rightArm.rotateZ(-0.34 + Math.sin(t * 5.2) * 0.16);
+        rightForearm.rotateX(-0.62 + Math.cos(t * 5.2) * 0.18);
+      } else if (['serve', 'plate'].includes(actionName)) {
+        leftArm.rotateX(-0.35);
+        rightArm.rotateX(-0.35);
+        leftArm.rotateZ(0.75 * smooth(p));
+        rightArm.rotateZ(-0.75 * smooth(p));
+        leftForearm.rotateX(-0.35);
+        rightForearm.rotateX(-0.35);
+      } else if (act.key === 'welcome') {
+        leftArm.rotateX(-0.35);
+        leftArm.rotateZ(0.55 + Math.sin(t * 4.5) * 0.16);
+        leftForearm.rotateX(-0.75);
+      }
+    }
   }
-
-  // Head and eye animation
-  head.rotation.z = Math.sin(t * 1.5) * 0.035;
-  head.rotation.y = act.key === 'serve' ? 0.05 : 0.12;
-  head.position.y = 3.28 + Math.sin(t * 2) * 0.012;
-
-  const blink = 1 - Math.sin(Math.min(1, (t % 3.9) / 0.18) * Math.PI) * 0.96;
-  eyes.forEach(e => e.scale.y = blink);
-  pupils.forEach(e => e.position.x = 0.02);
-
-  mouthOpen.visible = amp > 0.045;
-  tongue.visible = amp > 0.25;
-  smile.visible = amp <= 0.045;
-  mouthOpen.scale.y = 0.012 + amp * 0.095;
 
   // Execute Action Kinematics
   const currentIng = ingredientMeshes.get(act.step?.ingredient);
@@ -602,7 +549,7 @@ function frame(t, draw = true) {
     plateRadius,
     foodBottom: foodCenter.y - 0.0225 * food.scale.y,
     bladeTop: toolTip.y + 0.0175,
-    mouthOpen: mouthOpen.visible,
+    mouthOpen: amp > 0.045,
     speechEnergy: amp,
     steamVisible: steam.visible,
     spreadHeight: spreadLayer.scale.y,
@@ -612,7 +559,8 @@ function frame(t, draw = true) {
     triangles: renderer.info.render.triangles,
     perspective: camera.isPerspectiveCamera,
     webgl: renderer.capabilities.isWebGL2,
-    threeRevision: T.REVISION
+    threeRevision: T.REVISION,
+    characterType: 'blender-glb'
   };
 
   window.frameState = state;
@@ -620,7 +568,7 @@ function frame(t, draw = true) {
 }
 
 window.setFrame = frame;
-window.studio = { scene, camera, renderer, food, chef, plate: PLATE };
+window.studio = { scene, camera, renderer, food, chef: blenderMaya, plate: PLATE };
 frame(0);
 window.studioReady = true;
 
