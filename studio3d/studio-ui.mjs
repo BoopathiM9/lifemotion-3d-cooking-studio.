@@ -3,8 +3,10 @@ let setupReady=false,creating=false,remoteBusy=false,current=null,pollTimer;
 const icons={'chicken-biryani':'🍲','masala-dosa':'🥞',pancakes:'🥞','vegetable-sandwich':'🥪','vegetable-fried-rice':'🍚','tomato-pasta':'🍝',noodles:'🍜',chapati:'🫓','vegetable-soup':'🥣',salad:'🥗'};
 const statusNames={queued:'Queued',narration:'Recording narration',preview:'Making a preview',rendering:'Animating the full film',complete:'Ready to watch',failed:'Needs another try'};
 function node(tag,text,className){const element=document.createElement(tag);if(text!==undefined)element.textContent=text;if(className)element.className=className;return element;}
+const API_BASE = window.location.hostname.includes('amplifyapp.com') ? 'https://k0cdmsjevc.execute-api.us-east-1.amazonaws.com' : '';
 async function request(path,options){
- const response=await fetch(path,options);let body;
+ const fullPath = path.startsWith('/api') ? API_BASE + path : path;
+ const response = await fetch(fullPath, options);let body;
  try{body=await response.json();}catch{throw Error('The studio returned an unexpected response. Restart the studio and refresh this page.');}
  if(!response.ok){const error=Error(body.error||'The studio could not finish this request.');error.body=body;error.status=response.status;throw error;}
  return body;
