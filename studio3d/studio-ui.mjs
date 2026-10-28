@@ -57,6 +57,8 @@ function displayMedia(job){
  const placeholder = $('placeholder');
  const source = job.status === 'complete' ? job.videoUrl : job.previewUrl;
  if (source && video) {
+   video.muted = false;
+   video.volume = 1.0;
    if (video.getAttribute('src') !== source) {
      video.src = source;
      video.load();
@@ -97,7 +99,21 @@ $('previewPlan').addEventListener('click',async()=>{
  if(!$('form').reportValidity())return;
  $('previewPlan').disabled=true;
  try{
-  const plan=await request('/api/plan',post(options()));$('planTitle').textContent=plan.title;$('planType').textContent=plan.source==='gemini'?'AI recipe plan':plan.source==='free recipe lookup'?'Recipe lookup':plan.source==='Tamil AI narration'?'Tamil AI narration':plan.generic?'Basic recipe plan':'Guided recipe';$('planNote').textContent=plan.limitations||`${plan.ingredients.join(', ')}. Ready for narration.`;$('planSteps').replaceChildren(...plan.steps.map(step=>node('li',step.text)));$('planPanel').hidden=false;
+  const plan=await request('/api/plan',post(options()));
+  $('planTitle').textContent=plan.title;
+  $('planType').textContent=plan.source==='gemini'?'AI recipe plan':plan.source==='free recipe lookup'?'Recipe lookup':plan.source==='Tamil AI narration'?'Tamil AI narration':plan.generic?'Basic recipe plan':'Guided recipe';
+  $('planSteps').replaceChildren(...plan.steps.map(step=>node('li',step.text)));
+  const audioEl = $('planAudio');
+  if (audioEl) {
+    if (plan.audioUrl) {
+      audioEl.src = plan.audioUrl;
+      audioEl.parentElement.hidden = false;
+      audioEl.play().catch(()=>{});
+    } else {
+      audioEl.parentElement.hidden = true;
+    }
+  }
+  $('planPanel').hidden=false;
  }catch(error){errorMessage(error.message);}
  finally{$('previewPlan').disabled=false;}
 });
