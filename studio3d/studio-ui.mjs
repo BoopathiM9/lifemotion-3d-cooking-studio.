@@ -34,7 +34,17 @@ async function checkSetup(refresh=false){
 }
 function chooseRecipe(recipe){
  if(creating)return;
- $('prompt').value=recipe.prompt||`Teach children how to make ${recipe.name.toLowerCase()} step by step in simple English.`;count();$('planPanel').hidden=true;
+ const isTamil = $('voice').value === 'ta-IN-PallaviNeural';
+ $('prompt').value = isTamil ? recipe.name : `Teach children how to make ${recipe.name.toLowerCase()} step by step in simple English.`;
+ count();
+ $('planPanel').hidden = true;
+ save(null);
+ current = null;
+ if ($('video')) { $('video').pause(); $('video').hidden = true; }
+ if ($('placeholder')) $('placeholder').hidden = false;
+ if ($('download')) $('download').hidden = true;
+ if ($('filmTitle')) $('filmTitle').textContent = 'No video generated';
+ if ($('filmBadge')) $('filmBadge').textContent = 'Waiting';
  document.querySelectorAll('.recipe-chip').forEach(button=>button.classList.toggle('active',button.dataset.recipe===recipe.id));
  $('create').scrollIntoView({behavior:'smooth'});$('prompt').focus({preventScroll:true});
 }
@@ -129,12 +139,14 @@ $('form').addEventListener('submit',async event=>{
 });
 count();
 await Promise.allSettled([checkSetup(),request('/api/recipes').then(data=>renderRecipes(data.recipes))]);
-try{current??=sessionStorage.getItem('mayaJob');}catch{}
+try{current=sessionStorage.getItem('mayaJob');}catch{}
 if(current&&!creating){
  try{
   const job=await request('/api/jobs/'+encodeURIComponent(current));
-  restoreControls(job);
-  if(job.status==='complete'){current=null;save(null);displayJob(job);updateButton();}
-  else{creating=true;updateButton();void poll();}
+  if(job.status!=='complete'&&job.status!=='failed'){
+    creating=true;updateButton();void poll();
+  } else {
+    current=null;save(null);
+  }
  }catch{current=null;save(null);}
 }
