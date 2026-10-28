@@ -1,0 +1,12 @@
+version: 1
+frontend:
+  phases:
+    build:
+      commands:
+        - mkdir -p dist/studio3d
+        - cp studio3d/index.html dist/index.html
+        - cp -r studio3d/* dist/studio3d/
+  artifacts:
+    baseDirectory: dist
+    files:
+      - '**/*'
