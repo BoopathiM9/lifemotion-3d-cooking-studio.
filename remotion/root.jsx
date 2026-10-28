@@ -5,7 +5,7 @@ import {CookingLesson} from './cooking-lesson.jsx';
 const defaults = {
   plan: {title: 'Cooking with Chef Maya', actions: [], ingredients: []},
   lesson: {duration: 10, steps: [], captions: [], envelope: []},
-  audioFile: 'narration.wav',
+  audioFile: null,
   fps: 24,
   width: 1280,
   height: 720,

@@ -16,7 +16,9 @@
     "test": "node studio3d/unit-tests.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1158.0",
     "@remotion/bundler": "^4.0.539",
+    "@remotion/lambda": "^4.0.539",
     "@remotion/renderer": "^4.0.539",
     "playwright": "^1.56.0",
     "react": "^19.3.1",

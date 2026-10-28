@@ -172,7 +172,7 @@ export const CookingLesson = ({plan, lesson, audioFile}) => {
   const ending = interpolate(frame, [endStart, endStart + fps*.5], [0, .82], clamp);
   return (
     <AbsoluteFill style={{fontFamily: 'Arial, sans-serif', background: '#eef5f0', overflow: 'hidden'}}>
-      <Audio src={staticFile(audioFile)} />
+      {audioFile ? (audioFile.startsWith('http') || audioFile.startsWith('data:') ? <Audio src={audioFile} /> : <Audio src={staticFile(audioFile)} />) : null}
       <Kitchen width={width} height={height} plan={plan} lesson={lesson} state={state} time={time} speech={speech}/>
       <div style={{position:'absolute',top:28,left:28,display:'flex',alignItems:'center',gap:14,padding:'12px 18px',borderRadius:18,background:'rgba(255,253,245,.92)',border:'2px solid rgba(26,103,73,.18)',boxShadow:'0 10px 26px rgba(17,56,43,.15)',transform:`translateY(${mix(entrance,-25,0)}px)`,opacity:entrance,color:'#11382b'}}>
         <span style={{display:'grid',placeItems:'center',width:42,height:42,borderRadius:'50%',background:'#19724e',color:'white',fontWeight:900,fontSize:20}}>{state.index+1}</span>
