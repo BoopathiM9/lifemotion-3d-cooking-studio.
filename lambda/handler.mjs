@@ -1,4 +1,5 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { renderMediaOnLambda, getRenderProgress } from '@remotion/lambda/client';
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 
@@ -442,6 +443,45 @@ export async function handler(event) {
     const height = isPortrait ? 1920 : 1080;
     const fps = 30;
 
+    // Serverless GPU Engine (Modal.com / Fal.ai)
+    if (process.env.MODAL_ENDPOINT) {
+      try {
+        const s3Key = `videos/modal-${Date.now()}-${plan.recipe}.mp4`;
+        const modalRes = await fetch(process.env.MODAL_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipe: plan.recipe,
+            title: plan.title,
+            prompt: fullSpeechText,
+            voice: selectedVoice,
+            format: selectedFormat,
+            duration,
+            s3_bucket: bucketName,
+            s3_key: s3Key
+          })
+        });
+        if (modalRes.ok) {
+          const modalData = await modalRes.json();
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+              id: `modal:${Date.now()}`,
+              status: 'complete',
+              progress: 100,
+              videoUrl: modalData.videoUrl,
+              message: isTamil
+                ? 'டிஸ்னி/பிக்சார் 3D கார்ட்டூன் வீடியோ தயாராகிவிட்டது!'
+                : '3D Pixar-style cooking video rendered on Serverless GPU and ready to stream!'
+            })
+          };
+        }
+      } catch (err) {
+        console.warn('Modal serverless execution notice:', err.message);
+      }
+    }
+
     // Support for independent Python Diffusers server (LTX-Video / Wan2.2)
     if (process.env.AI_DIFFUSION_WORKER_URL) {
       try {
@@ -571,7 +611,21 @@ export async function handler(event) {
       };
     }
 
-    if (progress.done) {
+        if (progress.done) {
+      let finalUrl = progress.outputFile;
+      try {
+        // Generate pre-signed URL from S3 bucket so playback works securely without public ACLs
+        const outputKey = progress.outputFile.split('.amazonaws.com/').pop();
+        if (outputKey) {
+          finalUrl = await getSignedUrl(s3, new GetObjectCommand({
+            Bucket: bName,
+            Key: outputKey
+          }), { expiresIn: 7200 });
+        }
+      } catch (e) {
+        console.warn('Presigned URL fallback notice:', e.message);
+      }
+
       return {
         statusCode: 200,
         headers,
@@ -579,7 +633,7 @@ export async function handler(event) {
           id: rawId,
           status: 'complete',
           progress: 100,
-          videoUrl: progress.outputFile,
+          videoUrl: finalUrl,
           message: 'Your cartoon cooking video is ready to watch and download!'
         })
       };
