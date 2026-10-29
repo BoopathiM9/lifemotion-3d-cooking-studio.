@@ -745,13 +745,25 @@ export async function handler(event) {
       if (progress.done) {
         let finalUrl = progress.outputFile;
         try {
-          const outputKey = progress.outputFile.split('.amazonaws.com/').pop();
-          if (outputKey) {
-            finalUrl = await getSignedUrl(s3, new GetObjectCommand({
-              Bucket: bName,
-              Key: outputKey
-            }), { expiresIn: 7200 });
+          // Remotion Lambda outputs to renders/{renderId}/out.mp4
+          // Extract the exact S3 key without duplicate bucket prefixes
+          let outputKey = `renders/${renderId}/out.mp4`;
+          if (progress.outputFile) {
+            try {
+              const parsed = new URL(progress.outputFile);
+              let pathPart = parsed.pathname.replace(/^\/+/, '');
+              if (pathPart.startsWith(bName + '/')) {
+                pathPart = pathPart.slice(bName.length + 1);
+              }
+              if (pathPart.endsWith('.mp4')) {
+                outputKey = pathPart;
+              }
+            } catch {}
           }
+          finalUrl = await getSignedUrl(s3, new GetObjectCommand({
+            Bucket: bName,
+            Key: outputKey
+          }), { expiresIn: 7200 });
         } catch (e) {
           console.warn('Presigned URL fallback notice:', e.message);
         }
