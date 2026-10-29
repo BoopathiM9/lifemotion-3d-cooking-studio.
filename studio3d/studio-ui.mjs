@@ -115,30 +115,7 @@ async function poll(){
   if(error.status===404){repeat=false;creating=false;current=null;save(null);errorMessage('Your previous session is no longer available. Choose a recipe to start a new film.');updateButton();}
   else $('status').textContent='Connection interrupted. Keep the studio running; we’re trying to reconnect…';
  }finally{if(repeat&&current)pollTimer=setTimeout(poll,2500);}
-}
-$('prompt').addEventListener('input',()=>{count();$('planPanel').hidden=true;});
-$('previewPlan').addEventListener('click',async()=>{
- if(!$('form').reportValidity())return;
- $('previewPlan').disabled=true;
- try{
-  const plan=await request('/api/plan',post(options()));
-  $('planTitle').textContent=plan.title;
-  $('planType').textContent=$('voice').value==='ta-IN-PallaviNeural'?'Tamil Culinary Lesson':plan.generic?'Custom Recipe Plan':'Guided Recipe Film';
-  $('planSteps').replaceChildren(...plan.steps.map(step=>node('li',step.text)));
-  const audioEl = $('planAudio');
-  if (audioEl) {
-    if (plan.audioUrl) {
-      audioEl.src = plan.audioUrl;
-      audioEl.parentElement.hidden = false;
-      audioEl.play().catch(()=>{});
-    } else {
-      audioEl.parentElement.hidden = true;
-    }
-  }
-  $('planPanel').hidden=false;
- }catch(error){errorMessage(error.message);}
- finally{$('previewPlan').disabled=false;}
-});
+$('prompt').addEventListener('input', () => { count(); });
 $('form').addEventListener('submit',async event=>{
  event.preventDefault();if(creating||remoteBusy)return;
  if(!setupReady){errorMessage('Video creation is not ready on this computer yet. Please install the required video tools, then restart LifeMotion.');return;}

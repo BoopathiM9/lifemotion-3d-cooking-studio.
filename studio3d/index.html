@@ -29,13 +29,6 @@
       <div class="heading-content">
         <span class="eyebrow">3D Animation &amp; Recipe Studio</span>
         <h1>Turn Your Recipe Into a 3D Cooking Film</h1>
-        <p>Enter any dish or recipe idea. Chef Maya animates every step in her 3D kitchen with voice narration, playful ingredients, and subtitles.</p>
-      </div>
-      <div class="feature-pills" aria-label="Studio features">
-        <span class="pill">🎬 3D Cartoon Animation</span>
-        <span class="pill">🎙️ Multilingual Narration</span>
-        <span class="pill">💬 Timed Subtitles</span>
-        <span class="pill">📥 Full HD MP4 Download</span>
       </div>
     </section>
 
@@ -89,31 +82,9 @@
               <span id="generateText">Generate Cooking Film</span>
               <span class="btn-arrow" aria-hidden="true">→</span>
             </button>
-            <button id="previewPlan" class="secondary-button" type="button">
-              <span>📋</span> Preview Steps
-            </button>
           </div>
           <p id="formHint" class="form-hint">Type any dish name. Chef Maya automatically structures ingredients, voice narration, and 3D visual steps.</p>
         </form>
-
-        <!-- PLAN PREVIEW SECTION -->
-        <section id="planPanel" class="plan-panel" aria-labelledby="planTitle" hidden>
-          <div class="subheading-row">
-            <div>
-              <span class="step-label">Curated Recipe Plan</span>
-              <h3 id="planTitle">Video Steps</h3>
-            </div>
-            <span id="planType" class="panel-tag">Chef Maya Studio Plan</span>
-          </div>
-          <ol id="planSteps"></ol>
-          <div class="audio-preview-box">
-            <div class="audio-preview-header">
-              <span class="audio-icon">🔊</span>
-              <span class="audio-title">Voice Narration Audio Preview (குரல் பதிவு)</span>
-            </div>
-            <audio id="planAudio" controls></audio>
-          </div>
-        </section>
 
         <!-- PROGRESS SECTION -->
         <section id="progressArea" class="progress-area" aria-live="polite" hidden>
@@ -164,7 +135,6 @@
             <span>📥</span> Download Film MP4
           </a>
         </div>
-        <p class="render-note">Rendering creates a 3D animated lesson. You can keep this page open while your video is produced.</p>
       </article>
     </section>
   </main>
