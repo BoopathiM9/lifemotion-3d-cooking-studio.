@@ -407,9 +407,6 @@ async function generateSpeechAudio(text, voice) {
 }
 
 export async function handler(event) {
-  const path = event.rawPath || event.path || '/';
-  const method = (event.requestContext?.http?.method || event.httpMethod || 'GET').toUpperCase();
-
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
@@ -417,9 +414,13 @@ export async function handler(event) {
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   };
 
-  if (method === 'OPTIONS') {
-    return { statusCode: 200, headers, body: '' };
-  }
+  try {
+    const path = event.rawPath || event.path || '/';
+    const method = (event.requestContext?.http?.method || event.httpMethod || 'GET').toUpperCase();
+
+    if (method === 'OPTIONS') {
+      return { statusCode: 200, headers, body: '' };
+    }
 
   // 1. GET /api/setup
   if (path.endsWith('/setup') || path.endsWith('/setup/')) {
@@ -642,41 +643,52 @@ export async function handler(event) {
       }
     }
 
-    const { renderId } = await renderMediaOnLambda({
-      region,
-      functionName,
-      serveUrl,
-      composition: 'LifeMotionCooking',
-      inputProps: {
-        plan,
-        lesson,
-        audioFile: audioUrl,
-        fps,
-        width,
-        height,
-        durationInFrames: duration * fps
-      },
-      concurrency: 2,
-      codec: 'h264',
-      privacy: 'public'
-    });
+    try {
+      const { renderId } = await renderMediaOnLambda({
+        region,
+        functionName,
+        serveUrl,
+        composition: 'LifeMotionCooking',
+        inputProps: {
+          plan,
+          lesson,
+          audioFile: audioUrl,
+          fps,
+          width,
+          height,
+          durationInFrames: duration * fps
+        },
+        concurrency: 2,
+        codec: 'h264',
+        privacy: 'public'
+      });
 
-    return {
-      statusCode: 202,
-      headers,
-      body: JSON.stringify({
-        id: `${bucketName}:${renderId}`,
-        recipe: plan.recipe,
-        title: plan.title,
-        format: selectedFormat,
-        voice: selectedVoice,
-        status: 'rendering',
-        progress: 5,
-        message: isTamil
-          ? `செஃப் மாயா "${planData.title}" கார்ட்டூன் வீடியோவை உருவாக்குகிறார்...`
-          : `Chef Maya is animating the cooking video for ${plan.title}...`
-      })
-    };
+      return {
+        statusCode: 202,
+        headers,
+        body: JSON.stringify({
+          id: `${bucketName}:${renderId}`,
+          recipe: plan.recipe,
+          title: plan.title,
+          format: selectedFormat,
+          voice: selectedVoice,
+          status: 'rendering',
+          progress: 5,
+          message: isTamil
+            ? `செஃப் மாயா "${planData.title}" கார்ட்டூன் வீடியோவை உருவாக்குகிறார்...`
+            : `Chef Maya is animating the cooking video for ${plan.title}...`
+        })
+      };
+    } catch (renderError) {
+      console.error('Lambda render launch error:', renderError);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({
+          error: `Video generation failed on AWS Lambda: ${renderError.message || String(renderError)}. Please try again.`
+        })
+      };
+    }
   }
 
   // 5. GET /api/jobs/:id
@@ -709,14 +721,67 @@ export async function handler(event) {
       renderId = parts[1];
     }
 
-    const progress = await getRenderProgress({
-      renderId,
-      bucketName: bName,
-      functionName,
-      region
-    });
+    try {
+      const progress = await getRenderProgress({
+        renderId,
+        bucketName: bName,
+        functionName,
+        region
+      });
 
-    if (progress.fatalErrorEncountered) {
+      if (progress.fatalErrorEncountered) {
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            id: rawId,
+            status: 'failed',
+            progress: 0,
+            message: progress.errors?.[0]?.message || 'Cloud render failed.'
+          })
+        };
+      }
+
+      if (progress.done) {
+        let finalUrl = progress.outputFile;
+        try {
+          const outputKey = progress.outputFile.split('.amazonaws.com/').pop();
+          if (outputKey) {
+            finalUrl = await getSignedUrl(s3, new GetObjectCommand({
+              Bucket: bName,
+              Key: outputKey
+            }), { expiresIn: 7200 });
+          }
+        } catch (e) {
+          console.warn('Presigned URL fallback notice:', e.message);
+        }
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            id: rawId,
+            status: 'complete',
+            progress: 100,
+            videoUrl: finalUrl,
+            message: 'Your cartoon cooking video is ready to watch and download!'
+          })
+        };
+      }
+
+      const pct = Math.max(5, Math.min(95, Math.round(progress.overallProgress * 100)));
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          id: rawId,
+          status: 'rendering',
+          progress: pct,
+          message: `Chef Maya is animating your recipe (${pct}%)...`
+        })
+      };
+    } catch (progressError) {
+      console.error('Progress check error:', progressError);
       return {
         statusCode: 200,
         headers,
@@ -724,55 +789,25 @@ export async function handler(event) {
           id: rawId,
           status: 'failed',
           progress: 0,
-          message: progress.errors?.[0]?.message || 'Cloud render failed.'
+          message: `Cloud render check error: ${progressError.message || String(progressError)}`
         })
       };
     }
+  }
 
-        if (progress.done) {
-      let finalUrl = progress.outputFile;
-      try {
-        // Generate pre-signed URL from S3 bucket so playback works securely without public ACLs
-        const outputKey = progress.outputFile.split('.amazonaws.com/').pop();
-        if (outputKey) {
-          finalUrl = await getSignedUrl(s3, new GetObjectCommand({
-            Bucket: bName,
-            Key: outputKey
-          }), { expiresIn: 7200 });
-        }
-      } catch (e) {
-        console.warn('Presigned URL fallback notice:', e.message);
-      }
-
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          id: rawId,
-          status: 'complete',
-          progress: 100,
-          videoUrl: finalUrl,
-          message: 'Your cartoon cooking video is ready to watch and download!'
-        })
-      };
-    }
-
-    const pct = Math.max(5, Math.min(95, Math.round(progress.overallProgress * 100)));
     return {
-      statusCode: 200,
+      statusCode: 404,
+      headers,
+      body: JSON.stringify({ error: 'Endpoint not found' })
+    };
+  } catch (fatalError) {
+    console.error('Fatal Lambda error:', fatalError);
+    return {
+      statusCode: 500,
       headers,
       body: JSON.stringify({
-        id: rawId,
-        status: 'rendering',
-        progress: pct,
-        message: `Chef Maya is animating your recipe (${pct}%)...`
+        error: `Cloud Studio error: ${fatalError.message || String(fatalError)}`
       })
     };
   }
-
-  return {
-    statusCode: 404,
-    headers,
-    body: JSON.stringify({ error: 'Endpoint not found' })
-  };
 }

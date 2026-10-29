@@ -1,8 +1,9 @@
 const RECIPES = [
   { id: 'chicken-biryani', name: 'Chicken Biryani' },
+  { id: 'sundal', name: 'Chana Sundal' },
+  { id: 'masala-dosa', name: 'Masala Dosa' },
   { id: 'vegetable-fried-rice', name: 'Vegetable Fried Rice' },
   { id: 'pancakes', name: 'Fluffy Pancakes' },
-  { id: 'masala-dosa', name: 'Masala Dosa' },
   { id: 'tomato-pasta', name: 'Tomato Pasta' },
   { id: 'noodles', name: 'Vegetable Noodles' },
   { id: 'vegetable-sandwich', name: 'Vegetable Sandwich' },
