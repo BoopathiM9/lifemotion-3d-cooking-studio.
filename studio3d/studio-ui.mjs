@@ -37,7 +37,6 @@ function chooseRecipe(recipe){
  const isTamil = $('voice').value === 'ta-IN-PallaviNeural';
  $('prompt').value = isTamil ? recipe.name : `Teach children how to make ${recipe.name.toLowerCase()} step by step in simple English.`;
  count();
- $('planPanel').hidden = true;
  save(null);
  current = null;
  if ($('video')) { $('video').pause(); $('video').hidden = true; }
@@ -90,8 +89,8 @@ function displayMedia(job){
  }
  $('download').hidden = !(job.status === 'complete' && job.videoUrl);
  if (job.videoUrl) {
+   $('download').dataset.url = job.videoUrl;
    $('download').href = job.videoUrl;
-   $('download').target = '_blank';
    $('download').download = `chef-maya-${job.recipe || 'cooking'}.mp4`;
    $('download').textContent = '📥 Download Full HD MP4';
  }
@@ -115,6 +114,32 @@ async function poll(){
   if(error.status===404){repeat=false;creating=false;current=null;save(null);errorMessage('Your previous session is no longer available. Choose a recipe to start a new film.');updateButton();}
   else $('status').textContent='Connection interrupted. Keep the studio running; we’re trying to reconnect…';
  }finally{if(repeat&&current)pollTimer=setTimeout(poll,2500);}
+$('video').addEventListener('click', () => { $('video').muted = false; });
+$('download').addEventListener('click', async (e) => {
+ e.preventDefault();
+ const url = $('download').dataset.url || $('download').href;
+ if (!url || url === '#' || url.startsWith('javascript:')) return;
+ const originalText = $('download').textContent;
+ $('download').textContent = '⏳ Preparing Download...';
+ try {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Fetch failed');
+  const blob = await res.blob();
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = $('download').download || 'chef-maya-cooking-film.mp4';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+  $('download').textContent = '✅ Downloaded!';
+  setTimeout(() => { $('download').textContent = originalText; }, 3500);
+ } catch (err) {
+  window.open(url, '_blank');
+  $('download').textContent = originalText;
+ }
+});
 $('prompt').addEventListener('input', () => { count(); });
 $('form').addEventListener('submit',async event=>{
  event.preventDefault();if(creating||remoteBusy)return;
