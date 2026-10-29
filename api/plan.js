@@ -7,7 +7,7 @@ const s3 = new S3Client({ region });
 
 const RECIPE_CATALOG = {
   'chicken-biryani': {
-    aliases: ['biryani', 'biriyani', 'chicken biryani', 'chicken'],
+    aliases: ['biryani', 'biriyani', 'chicken biryani', 'chicken dum biryani', 'dum biryani'],
     titleEn: 'Chicken Biryani',
     titleTa: 'சிக்கன் பிரியாணி (Chicken Biryani)',
     ingredientsEn: [
