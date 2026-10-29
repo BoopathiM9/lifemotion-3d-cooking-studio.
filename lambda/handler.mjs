@@ -265,50 +265,126 @@ async function searchMealDbOnline(query) {
   }
 }
 
+function detectArchetype(dish) {
+  const d = dish.toLowerCase();
+  if (/smoothie|shake|juice|lassi|milk|drink|tea|coffee|chai|soda|sherbet/.test(d)) return 'beverage';
+  if (/cake|brownie|cookie|biscuit|pie|muffin|bread|pizza|cupcake|bake|pastry/.test(d)) return 'bake';
+  if (/sweet|halwa|laddu|ladoo|kheer|payasam|gulab|jamun|pudding|ice cream/.test(d)) return 'dessert';
+  if (/sandwich|burger|toast|chaat|samosa|wrap|taco|roll|fries|nugget/.test(d)) return 'snack';
+  if (/noodle|pasta|macaroni|spaghetti|chowmein|maggi/.test(d)) return 'noodles';
+  return 'general';
+}
+
 function getCustomRecipePlan(dishTitle, isTamil) {
+  const type = detectArchetype(dishTitle);
+  const cleanId = dishTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+
   if (isTamil) {
+    if (type === 'beverage') {
+      return {
+        title: `${dishTitle} (சுவையான பானம்)`,
+        recipeId: cleanId,
+        ingredients: [
+          { id: 'fruit', name: 'புதிய பழங்கள் / பால்', color: '#fbbf24' },
+          { id: 'sweetener', name: 'சுவையான தேன் / சர்க்கரை', color: '#f59e0b' },
+          { id: 'ice', name: 'குளிர்ந்த ஐஸ் கட்டிகள்', color: '#93c5fd' }
+        ],
+        steps: [
+          { key: 'welcome', action: 'show', text: `வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று செஃப் மாயாவுடன் சுவையான ${dishTitle} செய்வோம்!`, start: 0, end: 6 },
+          { key: 'prep', action: 'show', text: `புதிய பழங்கள், பால் மற்றும் தேனை மிக்ஸி ஜாரில் தயாராக வைக்கவும்.`, start: 6, end: 13 },
+          { key: 'blend', action: 'cook', text: `மிக்ஸியில் மென்மையாக மற்றும் நுரை பொங்க நன்றாக அடிக்கவும்.`, start: 13, end: 21 },
+          { key: 'pour', action: 'pour', text: `குளிர்ந்த அழகான கண்ணாடிக் கிண்ணத்தில் மெதுவாக ஊற்றவும்.`, start: 21, end: 28 },
+          { key: 'serve', action: 'serve', text: `குளிர்ச்சியான சுவையான ${dishTitle} தயார்! மகிழ்ச்சியாக பருகுங்கள்!`, start: 28, end: 36 }
+        ]
+      };
+    }
+    if (type === 'bake') {
+      return {
+        title: `${dishTitle} (பேக்கிங் செய்முறை)`,
+        recipeId: cleanId,
+        ingredients: [
+          { id: 'flour', name: 'மாவு மற்றும் பேக்கிங் பவுடர்', color: '#fef08a' },
+          { id: 'butter', name: 'வெண்ணெய் மற்றும் பால்', color: '#fde047' },
+          { id: 'flavor', name: 'சாக்கலேட் / வெண்ணிலா', color: '#78350f' }
+        ],
+        steps: [
+          { key: 'welcome', action: 'show', text: `வணக்கம் குட்டி கலைஞர்களே! இன்று செஃப் மாயாவுடன் சுவையான ${dishTitle} பேக் செய்வோம்!`, start: 0, end: 6 },
+          { key: 'mix', action: 'add', text: `மாவு, வெண்ணெய் மற்றும் நறுமணப் பொருட்களை பாத்திரத்தில் கட்டி இல்லாமல் கலக்கவும்.`, start: 6, end: 13 },
+          { key: 'pour', action: 'pour', text: `பேக்கிங் டிரேயில் வெண்ணெய் தடவி கலவையை சீராக ஊற்றவும்.`, start: 13, end: 21 },
+          { key: 'bake', action: 'cook', text: `சூடான அவனில் பொன்னிறமாகவும் நறுமணம் கமழவும் வேகவைக்கவும்.`, start: 21, end: 28 },
+          { key: 'serve', action: 'serve', text: `சுடச்சுட நறுமணம் கமழும் ${dishTitle} தயார்! துண்டுகளாக்கி பரிமாறுங்கள்!`, start: 28, end: 36 }
+        ]
+      };
+    }
     return {
       title: `${dishTitle} (செய்முறை)`,
-      recipeId: dishTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      recipeId: cleanId,
       ingredients: [
-        { id: 'main_item', name: dishTitle, color: '#f1b85e' },
+        { id: 'main', name: dishTitle, color: '#f1b85e' },
         { id: 'veggies', name: 'நறுக்கிய காய்கறிகள்', color: '#27ae60' },
-        { id: 'spices', name: 'நறுமண மசாலா', color: '#e65100' },
-        { id: 'oil', name: 'நெய் மற்றும் எண்ணெய்', color: '#dfb445' }
+        { id: 'spices', name: 'நறுமண மசாலா & எண்ணெய்', color: '#e65100' }
       ],
       steps: [
         { key: 'welcome', action: 'show', text: `வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று செஃப் மாயாவுடன் சுவையான ${dishTitle} செய்வோம்!`, start: 0, end: 6 },
-        { key: 'safe', action: 'show', text: 'சூடான பாத்திரங்களையும் அடுப்பையும் பயன்படுத்த எப்போதும் பெரியவர்களின் உதவியை கேளுங்கள்.', start: 6, end: 13 },
-        { key: 'prep', action: 'show', text: `சுவையான ${dishTitle} செய்ய தேவையான அனைத்து புதிய பொருட்களையும் தயாராக வைக்கவும்.`, start: 13, end: 20 },
-        { key: 'heat', action: 'cook', text: `சமையல் பாத்திரத்தை மிதமான தீயில் வைத்து, சிறிது எண்ணெய் அல்லது நெய் ஊற்றி சூடாக்கவும்.`, start: 20, end: 27 },
-        { key: 'aromatics', action: 'add', text: 'நறுக்கிய வெங்காயம் மற்றும் நறுமணப் பொருட்களை சேர்த்து பொன்னிறமாக வதக்கவும்.', start: 27, end: 35 },
-        { key: 'main', action: 'add', text: `முக்கிய சுவைப்பொருட்களை சேர்த்து மரக்கரண்டியால் சுவைகள் ஒன்றுசேருமாறு கிளறவும்.`, start: 35, end: 43 },
-        { key: 'simmer', action: 'cook', text: 'சிறிதளவு தண்ணீர் மற்றும் உப்பு சேர்த்து, மூடி வைத்து மிதமான தீயில் வேகவைக்கவும்.', start: 43, end: 51 },
-        { key: 'garnish', action: 'pour', text: 'புதிய கொத்தமல்லி மற்றும் அலங்கார பொருட்களை மேலே தூவி அலங்கரிக்கவும்.', start: 51, end: 58 },
-        { key: 'serve', action: 'serve', text: `சுடச்சுட தயாரான ${dishTitle} உணவை தட்டில் வைத்து மகிழ்ச்சியாக பரிமாறுங்கள்!`, start: 58, end: 66 }
+        { key: 'safe', action: 'show', text: 'கைகளை கழுவுங்கள். சூடான அடுப்பை பயன்படுத்த பெரியவர்களின் உதவியை நாடுங்கள்.', start: 6, end: 13 },
+        { key: 'saute', action: 'cook', text: `பாத்திரத்தை சூடாக்கி, எண்ணெய் ஊற்றி நறுமணப் பொருட்களை பொன்னிறமாக வதக்கவும்.`, start: 13, end: 21 },
+        { key: 'simmer', action: 'add', text: `${dishTitle} முக்கிய பொருட்களை சேர்த்து மிதமான தீயில் சுவைகள் ஒன்றுசேர வேகவைக்கவும்.`, start: 21, end: 28 },
+        { key: 'serve', action: 'serve', text: `சுடச்சுட தயாரான ${dishTitle} உணவை அழகான தட்டில் வைத்து பரிமாறுங்கள்!`, start: 28, end: 36 }
       ]
     };
   }
 
+  // English Plans
+  if (type === 'beverage') {
+    return {
+      title: `${dishTitle}`,
+      recipeId: cleanId,
+      ingredients: [
+        { id: 'fruit', name: 'Fresh Fruits / Milk', color: '#fbbf24' },
+        { id: 'sweetener', name: 'Golden Honey / Sugar', color: '#f59e0b' },
+        { id: 'ice', name: 'Chilled Ice Cubes', color: '#93c5fd' }
+      ],
+      steps: [
+        { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are making refreshing ${dishTitle} with Chef Maya!`, start: 0, end: 6 },
+        { key: 'prep', action: 'show', text: `Add fresh peeled fruits, cold milk, and a drizzle of honey into our blender.`, start: 6, end: 13 },
+        { key: 'blend', action: 'cook', text: `Whirr and blend on high speed until delightfully smooth and frothy.`, start: 13, end: 21 },
+        { key: 'pour', action: 'pour', text: `Pour our creamy chilled drink into a tall colorful glass with a straw.`, start: 21, end: 28 },
+        { key: 'serve', action: 'serve', text: `Our delicious homemade ${dishTitle} is ready! Sip and enjoy!`, start: 28, end: 36 }
+      ]
+    };
+  }
+  if (type === 'bake') {
+    return {
+      title: `${dishTitle}`,
+      recipeId: cleanId,
+      ingredients: [
+        { id: 'flour', name: 'Flour & Cocoa', color: '#fef08a' },
+        { id: 'butter', name: 'Butter & Sugar', color: '#fde047' },
+        { id: 'frosting', name: 'Rich Cream / Chocolate', color: '#78350f' }
+      ],
+      steps: [
+        { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are baking delicious ${dishTitle} with Chef Maya!`, start: 0, end: 6 },
+        { key: 'mix', action: 'add', text: `Whisk flour, sugar, and golden butter into a silky smooth batter.`, start: 6, end: 13 },
+        { key: 'pour', action: 'pour', text: `Gently spoon the batter into our warm baking pan lined with butter.`, start: 13, end: 21 },
+        { key: 'bake', action: 'cook', text: `Bake golden and fragrant in our oven until wonderfully soft and fluffy.`, start: 21, end: 28 },
+        { key: 'serve', action: 'serve', text: `Slice our freshly baked ${dishTitle} onto a colorful party plate. Delicious!`, start: 28, end: 36 }
+      ]
+    };
+  }
   return {
     title: dishTitle,
-    recipeId: dishTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    recipeId: cleanId,
     ingredients: [
-      { id: 'main_item', name: dishTitle, color: '#f1b85e' },
+      { id: 'main', name: dishTitle, color: '#f1b85e' },
       { id: 'veggies', name: 'Fresh Vegetables', color: '#27ae60' },
-      { id: 'spices', name: 'Aromatic Spices', color: '#e65100' },
-      { id: 'oil', name: 'Butter / Oil', color: '#dfb445' }
+      { id: 'spices', name: 'Aromatic Spices & Oil', color: '#e65100' }
     ],
     steps: [
-      { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are cooking delicious homemade ${dishTitle} with Chef Maya!`, start: 0, end: 6 },
-      { key: 'safe', action: 'show', text: 'Wash your hands clean and always ask a grown-up for help around hot stoves and sharp cookware.', start: 6, end: 13 },
-      { key: 'prep', action: 'show', text: `Gather all our fresh ingredients and seasonings for our delicious ${dishTitle}.`, start: 13, end: 20 },
-      { key: 'heat', action: 'cook', text: 'Warm our cooking pan over medium heat and drizzle with golden oil or butter.', start: 20, end: 27 },
-      { key: 'aromatics', action: 'add', text: 'Add aromatic seasonings and vegetables, sautéing gently with our wooden spoon until fragrant.', start: 27, end: 35 },
-      { key: 'main', action: 'add', text: `Add our main ingredients into the warm pan and stir evenly to coat with spices.`, start: 35, end: 43 },
-      { key: 'simmer', action: 'cook', text: 'Pour in our liquid base, cover with the lid, and let everything simmer gently until tender.', start: 43, end: 51 },
-      { key: 'garnish', action: 'pour', text: 'Garnish the top with fresh green herbs and a touch of savory seasoning.', start: 51, end: 58 },
-      { key: 'serve', action: 'serve', text: `Spoon our finished ${dishTitle} onto a colorful serving plate. Great cooking, little chefs!`, start: 58, end: 66 }
+      { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are cooking homemade ${dishTitle} with Chef Maya!`, start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: 'Wash your hands clean and always ask a grown-up for help around hot cookware.', start: 6, end: 13 },
+      { key: 'saute', action: 'cook', text: 'Warm golden oil in the pan and saute our seasonings until fragrant.', start: 13, end: 21 },
+      { key: 'simmer', action: 'add', text: `Add our ingredients for ${dishTitle} and simmer gently until tender and juicy.`, start: 21, end: 28 },
+      { key: 'serve', action: 'serve', text: `Spoon our freshly cooked ${dishTitle} onto our serving plate. Great cooking!`, start: 28, end: 36 }
     ]
   };
 }
@@ -441,8 +517,8 @@ export async function handler(event) {
     }
 
     // Dynamic duration based on recipe steps (never fixed 20 sec!)
-    const lastStepEnd = planData.steps[planData.steps.length - 1]?.end || 66;
-    const duration = Math.max(55, Math.min(90, Math.ceil(lastStepEnd)));
+    const lastStepEnd = planData.steps[planData.steps.length - 1]?.end || 36;
+    const duration = Math.max(30, Math.min(90, Math.ceil(lastStepEnd)));
 
     // Generate voice audio
     console.log(`Generating narration for: ${planData.title} in ${selectedVoice} (duration ~${duration}s)`);
