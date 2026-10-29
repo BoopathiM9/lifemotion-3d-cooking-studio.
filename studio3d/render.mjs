@@ -27,9 +27,9 @@ if (job) {
 }
 
 const portrait = process.argv.includes('--portrait') || plan.format === '9:16';
-const fps = full ? 24 : 12;
-const width = portrait ? (full ? 720 : 480) : (full ? 1280 : 854);
-const height = portrait ? (full ? 1280 : 854) : (full ? 720 : 480);
+const fps = full ? 30 : 24;
+const width = portrait ? (full ? 1080 : 720) : (full ? 1920 : 1280);
+const height = portrait ? (full ? 1920 : 1280) : (full ? 1080 : 720);
 const sourceAssets = job || join(root, 'output/cooking-lesson');
 const runId = new Date().toISOString().replace(/[:.]/g, '-');
 const out = job ? join(job, full ? 'final' : 'preview') : join(root, 'output/studio3d', `${full ? 'full' : 'milestone1'}-${runId}`);

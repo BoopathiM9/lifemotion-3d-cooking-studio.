@@ -17,7 +17,7 @@ const save=id=>{try{id?sessionStorage.setItem('mayaJob',id):sessionStorage.remov
 function updateButton(){
  $('generate').disabled=creating||remoteBusy||!$('prompt').value.trim();
  $('generateText').textContent=creating?'Generating video…':remoteBusy?'Generation in progress':'Generate video';
- $('formHint').textContent=creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Please wait for it to finish.':'Type any dish name. Maya can create a local lesson even when online recipe services are unavailable.';
+ $('formHint').textContent=creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Please wait for it to finish.':'Type any recipe or dish name. Chef Maya prepares the ingredients, narration, and 3D steps.';
 }
 function count(){ $('charCount').textContent=`${$('prompt').value.length} / 2000`;updateButton();}
 function errorMessage(message){$('progressArea').hidden=false;$('progressArea').classList.add('error');$('status').textContent=message;$('stages').hidden=true;$('progress').hidden=true;}
@@ -111,7 +111,7 @@ $('previewPlan').addEventListener('click',async()=>{
  try{
   const plan=await request('/api/plan',post(options()));
   $('planTitle').textContent=plan.title;
-  $('planType').textContent=plan.source==='gemini'?'AI recipe plan':plan.source==='free recipe lookup'?'Recipe lookup':plan.source==='Tamil AI narration'?'Tamil AI narration':plan.generic?'Basic recipe plan':'Guided recipe';
+  $('planType').textContent=$('voice').value==='ta-IN-PallaviNeural'?'Tamil Culinary Lesson':plan.generic?'Custom Recipe Plan':'Guided Recipe Film';
   $('planSteps').replaceChildren(...plan.steps.map(step=>node('li',step.text)));
   const audioEl = $('planAudio');
   if (audioEl) {

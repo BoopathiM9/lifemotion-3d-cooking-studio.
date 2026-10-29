@@ -1,0 +1,271 @@
+<mxGraphModel dx="1600" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="1650" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ==================== 1. TOP HEADER BANNER ==================== -->
+    <mxCell id="top_banner" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0A1424;strokeColor=none;arcSize=4;" vertex="1" parent="1">
+      <mxGeometry x="30" y="30" width="1620" height="75" as="geometry" />
+    </mxCell>
+    <mxCell id="top_title" value="LifeMotion — AWS Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1;fontColor=#FFFFFF;" vertex="1" parent="1">
+      <mxGeometry x="55" y="42" width="600" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="top_sub" value="Cloud-Native 3D Cartoon Cooking Studio &amp; AI Video Platform | AWS Account: 384875139605 | Region: us-east-1 (N. Virginia)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontColor=#94A3B8;" vertex="1" parent="1">
+      <mxGeometry x="55" y="70" width="900" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="top_badge" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#132038;strokeColor=#1E2E4A;strokeWidth=1;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="1440" y="45" width="180" height="45" as="geometry" />
+    </mxCell>
+    <mxCell id="top_badge_text" value="AWS 2026 ARCHITECTURE&#xa;&lt;b style='color:#38BDF8;'&gt;BEDROCK + REMOTION&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#94A3B8;" vertex="1" parent="1">
+      <mxGeometry x="1440" y="47" width="180" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 2. AWS CLOUD PERIMETER ==================== -->
+    <mxCell id="box_aws_cloud" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1E293B;strokeWidth=2;dashed=1;dashPattern=8 6;arcSize=2;" vertex="1" parent="1">
+      <mxGeometry x="270" y="130" width="1380" height="660" as="geometry" />
+    </mxCell>
+    <mxCell id="tab_aws_cloud" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=none;arcSize=4;" vertex="1" parent="1">
+      <mxGeometry x="270" y="130" width="135" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="tab_aws_cloud_text" value="&lt;b style='color:#FFFFFF;font-size:12px;'&gt;aws&lt;/b&gt;&amp;nbsp;&amp;nbsp;&lt;span style='color:#E2E8F0;font-size:11px;font-weight:600;'&gt;AWS Cloud&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="270" y="130" width="135" height="30" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 3. REGION CONTAINER ==================== -->
+    <mxCell id="box_region" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#0073BB;strokeWidth=2;arcSize=2;" vertex="1" parent="1">
+      <mxGeometry x="295" y="180" width="1330" height="585" as="geometry" />
+    </mxCell>
+    <mxCell id="tab_region_text" value="&lt;span style='color:#0073BB;font-size:14px;'&gt;⚑&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;b style='color:#0073BB;font-size:12px;'&gt;Region: us-east-1 (N. Virginia)&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="315" y="190" width="300" height="24" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 4. USER / CLIENT CARD ==================== -->
+    <mxCell id="card_user" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;shadow=1;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="30" y="290" width="190" height="230" as="geometry" />
+    </mxCell>
+    <mxCell id="avatar_box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E293B;strokeColor=none;arcSize=6;" vertex="1" parent="1">
+      <mxGeometry x="85" y="315" width="80" height="75" as="geometry" />
+    </mxCell>
+    <mxCell id="avatar_icon" value="👤" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=36;fontColor=#FFFFFF;" vertex="1" parent="1">
+      <mxGeometry x="85" y="320" width="80" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="user_title" value="Little Chef / Learner" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+      <mxGeometry x="35" y="405" width="180" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="user_sub" value="Parents &amp; Children&#xa;Web Browser&#xa;&lt;b style='color:#2563EB;'&gt;Desktop &amp; Mobile UI&lt;/b&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#64748B;" vertex="1" parent="1">
+      <mxGeometry x="35" y="425" width="180" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 5. SERVICE CARD: AWS AMPLIFY ==================== -->
+    <mxCell id="card_amplify" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F97316;strokeWidth=1.5;shadow=1;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="330" y="300" width="195" height="220" as="geometry" />
+    </mxCell>
+    <mxCell id="icon_amplify" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.amplify;" vertex="1" parent="1">
+      <mxGeometry x="400" y="320" width="55" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="amplify_title" value="AWS Amplify" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#EA580C;" vertex="1" parent="1">
+      <mxGeometry x="335" y="380" width="185" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="amplify_name" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;LifeMotion Studio Web&lt;/b&gt;&#xa;&lt;span style='font-size:9px;color:#64748B;'&gt;App ID: &lt;b&gt;d2cookingstudio&lt;/b&gt;&lt;br&gt;Branch: main&lt;br&gt;Three.js 0.180.0 + React SPA&lt;br&gt;Global CloudFront Edge&lt;br&gt;HTTPS / Custom Domain&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="335" y="405" width="185" height="105" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 6. SERVICE CARD: AMAZON API GATEWAY ==================== -->
+    <mxCell id="card_apigw" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#A855F7;strokeWidth=1.5;shadow=1;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="575" y="300" width="200" height="220" as="geometry" />
+    </mxCell>
+    <mxCell id="icon_apigw" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#BD081C;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.api_gateway;" vertex="1" parent="1">
+      <mxGeometry x="647" y="320" width="55" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="apigw_title" value="Amazon API Gateway" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#9333EA;" vertex="1" parent="1">
+      <mxGeometry x="580" y="380" width="190" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="apigw_desc" value="&lt;b style='font-size:11px;color:#0F172A;'&gt;REST / HTTP API&lt;/b&gt;&#xa;&lt;span style='font-size:9px;color:#64748B;'&gt;• CORS Preflight Handlers&lt;br&gt;• GET /api/setup, /api/recipes&lt;br&gt;• POST /api/plan (Preview)&lt;br&gt;• POST /api/generate (202 Job)&lt;br&gt;• GET /api/jobs/{id} (Poll Status)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="580" y="405" width="190" height="105" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 7. SERVICE CARD: AMAZON S3 ==================== -->
+    <mxCell id="card_s3" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#22C55E;strokeWidth=1.5;shadow=1;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="830" y="215" width="245" height="195" as="geometry" />
+    </mxCell>
+    <mxCell id="icon_s3" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#7AA116;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.s3;" vertex="1" parent="1">
+      <mxGeometry x="927" y="230" width="50" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="s3_title" value="Amazon S3" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#16A34A;" vertex="1" parent="1">
+      <mxGeometry x="835" y="282" width="235" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="s3_desc" value="&lt;b style='font-size:10px;color:#0F172A;'&gt;remotionlambda-384875139605&lt;/b&gt;&#xa;&lt;span style='font-size:9px;color:#64748B;'&gt;• /sites/cooking-studio/* (Remotion Bundle)&lt;br&gt;• /audio/preview-*.mp3 (Speech Narration)&lt;br&gt;• /renders/{id}/* (Render Chunks)&lt;br&gt;• /out/{id}.mp4 (Final Validated MP4)&lt;br&gt;• SSE-S3 &amp; 24h Lifecycle Cleanup Rule&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="835" y="303" width="235" height="100" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 8. SERVICE CARD: AWS LAMBDA HANDLERS ==================== -->
+    <mxCell id="card_lambda" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#F97316;strokeWidth=1.5;shadow=1;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="830" y="445" width="245" height="295" as="geometry" />
+    </mxCell>
+    <mxCell id="icon_lambda" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="1">
+      <mxGeometry x="927" y="460" width="50" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="lambda_title" value="AWS Lambda Handlers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#EA580C;" vertex="1" parent="1">
+      <mxGeometry x="835" y="512" width="235" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="lambda_sub" value="Node.js 20.x ESM (lambda/handler.mjs)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+      <mxGeometry x="835" y="530" width="235" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="lambda_desc" value="&lt;div style='text-align:left;padding-left:14px;font-size:9.5px;color:#334155;'&gt;&#xa;&lt;b style='color:#0F172A;'&gt;1. RecipePlannerLambda&lt;/b&gt;&lt;br&gt;&#xa;• Catalog Alias Matching (Biryani, Dosa, etc.)&lt;br&gt;&#xa;• Invokes Amazon Bedrock Converse API&lt;br&gt;&#xa;• Speech Generation (msedge-tts dispatch)&lt;br&gt;&#xa;• Direct S3 Upload for Preview MP3&lt;br&gt;&#xa;&lt;br&gt;&#xa;&lt;b style='color:#0F172A;'&gt;2. RenderDispatchLambda&lt;/b&gt;&lt;br&gt;&#xa;• Calls &lt;code&gt;renderMediaOnLambda()&lt;/code&gt;&lt;br&gt;&#xa;• Composition: &lt;i&gt;LifeMotionCooking&lt;/i&gt;&lt;br&gt;&#xa;• Polls status with &lt;code&gt;getRenderProgress()&lt;/code&gt;&lt;br&gt;&#xa;• Returns real-time percentage % to UI&#xa;&lt;/div&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="835" y="555" width="235" height="175" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 9. SERVICE CARD: AMAZON BEDROCK (GENAI) ==================== -->
+    <mxCell id="card_bedrock" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#14B8A6;strokeWidth=1.5;shadow=1;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="1190" y="215" width="380" height="235" as="geometry" />
+    </mxCell>
+    <!-- Bedrock Icon -->
+    <mxCell id="icon_bedrock" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#0D9488;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" vertex="1" parent="1">
+      <mxGeometry x="1355" y="230" width="50" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="bedrock_title" value="Amazon Bedrock (GenAI)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#0D9488;" vertex="1" parent="1">
+      <mxGeometry x="1195" y="282" width="370" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="bedrock_sub" value="amazon.nova-micro-v1:0" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+      <mxGeometry x="1195" y="302" width="370" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="bedrock_desc" value="&lt;span style='font-size:9.5px;color:#475569;'&gt;• &lt;b&gt;Bedrock Converse API:&lt;/b&gt; &lt;code&gt;@aws-sdk/client-bedrock-runtime&lt;/code&gt;&lt;br&gt;• &lt;b&gt;Structured Recipe Synthesis:&lt;/b&gt; Extracts ingredients &amp; cooking steps&lt;br&gt;• &lt;b&gt;Grounded Knowledge:&lt;/b&gt; Maya culinary rules &amp; child kitchen safety guidance&lt;br&gt;• &lt;b&gt;Multilingual Tamil Translation:&lt;/b&gt; Direct translation for speech narration&lt;br&gt;• &lt;b&gt;Zero 3rd-Party Keys:&lt;/b&gt; Uses native AWS IAM credentials&lt;br&gt;• &lt;b style='color:#0D9488;'&gt;$0.035 / 1M Input Tokens (Ultra Low Cost Serverless GenAI)&lt;/b&gt;&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="1215" y="325" width="340" height="115" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 10. SERVICE CARD: REMOTION LAMBDA CLUSTER ==================== -->
+    <mxCell id="card_remotion" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#3B82F6;strokeWidth=1.5;shadow=1;arcSize=8;" vertex="1" parent="1">
+      <mxGeometry x="1190" y="485" width="380" height="255" as="geometry" />
+    </mxCell>
+    <mxCell id="icon_remotion" value="" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#2563EB;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.lambda;" vertex="1" parent="1">
+      <mxGeometry x="1355" y="500" width="50" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="remotion_title" value="Remotion Lambda Cluster" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=13;fontStyle=1;fontColor=#2563EB;" vertex="1" parent="1">
+      <mxGeometry x="1195" y="552" width="370" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="remotion_sub" value="remotion-render-4-0-539 (Distributed Cloud Video Rendering)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+      <mxGeometry x="1195" y="572" width="370" height="18" as="geometry" />
+    </mxCell>
+    <mxCell id="remotion_desc" value="&lt;span style='font-size:9.5px;color:#475569;'&gt;• &lt;b&gt;Parallel Video Chunks:&lt;/b&gt; 120 frames per Lambda worker instance&lt;br&gt;• &lt;b&gt;Compute Specs:&lt;/b&gt; 2048 MB RAM, 2048 MB /tmp Disk, 120s Timeout&lt;br&gt;• &lt;b&gt;Headless Chromium Engine:&lt;/b&gt; Executes React 19 Remotion compositions&lt;br&gt;• &lt;b&gt;Built-in FFmpeg Muxer:&lt;/b&gt; Combines frames + speech MP3 into H.264/AAC MP4&lt;br&gt;• Writes final film to &lt;code&gt;s3://remotionlambda-.../out/{id}.mp4&lt;/code&gt;&lt;br&gt;• Highly scalable on AWS Lambda Free Tier (400,000 GB-sec/mo)&lt;/span&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="1215" y="595" width="340" height="135" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== CONNECTORS & STEP BADGES ==================== -->
+
+    <!-- Edge 1: User to Amplify -->
+    <mxCell id="edge1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_user" target="card_amplify">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="badge1" value="1" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#0F172A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="250" y="390" width="26" height="26" as="geometry" />
+    </mxCell>
+
+    <!-- Edge 2: Amplify to S3 (Direct Stream) -->
+    <mxCell id="edge2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;dashed=1;dashPattern=6 3;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_amplify" target="card_s3">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="428" y="275" />
+          <mxPoint x="830" y="275" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="badge2" value="2" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#16A34A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="540" y="262" width="26" height="26" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl_edge2" value="Direct S3 Stream Audio / Download MP4" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;fontColor=#16A34A;" vertex="1" parent="1">
+      <mxGeometry x="580" y="265" width="220" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Edge 3: Amplify to API Gateway -->
+    <mxCell id="edge3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_amplify" target="card_apigw">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="badge3" value="3" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#0F172A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="538" y="397" width="26" height="26" as="geometry" />
+    </mxCell>
+
+    <!-- Edge 4: API Gateway to Lambda -->
+    <mxCell id="edge4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#EA580C;strokeWidth=2.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_apigw" target="card_lambda">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="800" y="410" />
+          <mxPoint x="800" y="534" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="badge4" value="4" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#0F172A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="788" y="450" width="26" height="26" as="geometry" />
+    </mxCell>
+
+    <!-- Edge S3: Lambda to S3 -->
+    <mxCell id="edge_s3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#16A34A;strokeWidth=2;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_lambda" target="card_s3">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl_edge_s3" value="PutObject (MP3)" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;fontColor=#16A34A;" vertex="1" parent="1">
+      <mxGeometry x="965" y="417" width="90" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Edge 5: Lambda to Bedrock GenAI -->
+    <mxCell id="edge5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#0D9488;strokeWidth=2.5;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_lambda" target="card_bedrock">
+      <mxGeometry relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="1130" y="519" />
+          <mxPoint x="1130" y="333" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="badge5" value="5" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#0F172A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="1117" y="410" width="26" height="26" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl_edge5" value="Bedrock Converse API (amazon.nova-micro)" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;fontColor=#0D9488;" vertex="1" parent="1">
+      <mxGeometry x="1080" y="440" width="185" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Edge 6: Lambda to Remotion Cluster -->
+    <mxCell id="edge6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#2563EB;strokeWidth=2.5;exitX=1;exitY=0.65;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="card_lambda" target="card_remotion">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="badge6" value="6" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#0F172A;strokeColor=none;fontColor=#FFFFFF;fontStyle=1;fontSize=11;align=center;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="1117" y="625" width="26" height="26" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl_edge6" value="renderMediaOnLambda() &amp; Poll Status" style="text;html=1;strokeColor=none;fillColor=#FFFFFF;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=9;fontStyle=1;fontColor=#2563EB;" vertex="1" parent="1">
+      <mxGeometry x="1060" y="655" width="180" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- ==================== 11. BOTTOM TIER CARDS ==================== -->
+
+    <!-- TIER 1 -->
+    <mxCell id="tier1_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;shadow=1;arcSize=4;" vertex="1" parent="1">
+      <mxGeometry x="30" y="820" width="1620" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="tier1_title" value="Tier 1: Access &amp; Direct S3 Media Streaming" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+      <mxGeometry x="50" y="830" width="600" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="tier1_content" value="&lt;p style='margin:0;font-size:11px;line-height:1.7;color:#334155;'&gt;&#xa;&lt;b style='color:#2563EB;'&gt;● User Access:&lt;/b&gt; Little Chefs &amp;amp; Parents open LifeMotion 3D Cooking Studio Three.js SPA hosted on AWS Amplify via CloudFront global CDN edge network.&lt;br&gt;&#xa;&lt;b style='color:#16A34A;'&gt;● Direct S3 Streaming:&lt;/b&gt; Client web browser directly plays synthesized voice narration MP3 preview and streams/downloads completed 1080p/720p H.264 video files directly from Amazon S3 (bypassing 10MB API Gateway/Lambda payload limits).&#xa;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="50" y="860" width="1580" height="90" as="geometry" />
+    </mxCell>
+
+    <!-- TIER 2 -->
+    <mxCell id="tier2_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;shadow=1;arcSize=4;" vertex="1" parent="1">
+      <mxGeometry x="30" y="990" width="1620" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="tier2_title" value="Tier 2: Ingress, Recipe Planning &amp; Voice Synthesis" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+      <mxGeometry x="50" y="1000" width="600" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="tier2_content" value="&lt;p style='margin:0;font-size:11px;line-height:1.7;color:#334155;'&gt;&#xa;&lt;b style='color:#9333EA;'&gt;● API Gateway Dispatch:&lt;/b&gt; Browser issues lightweight REST calls (&lt;code&gt;/setup&lt;/code&gt;, &lt;code&gt;/recipes&lt;/code&gt;, &lt;code&gt;/plan&lt;/code&gt;, &lt;code&gt;/generate&lt;/code&gt;, &lt;code&gt;/jobs/{id}&lt;/code&gt;) with CORS handling to serverless API routes.&lt;br&gt;&#xa;&lt;b style='color:#EA580C;'&gt;● Serverless Orchestration:&lt;/b&gt; Node.js 20 ESM Lambda Orchestrator parses user prompts, matches alias catalog (10 core recipes), invokes Amazon Bedrock for AI recipe extraction, and handles speech audio synthesis to S3.&#xa;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="50" y="1030" width="1580" height="90" as="geometry" />
+    </mxCell>
+
+    <!-- TIER 3 -->
+    <mxCell id="tier3_card" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;strokeWidth=1.5;shadow=1;arcSize=4;" vertex="1" parent="1">
+      <mxGeometry x="30" y="1160" width="1620" height="150" as="geometry" />
+    </mxCell>
+    <mxCell id="tier3_title" value="Tier 3: Amazon Bedrock GenAI &amp; Distributed Video Production" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#0F172A;" vertex="1" parent="1">
+      <mxGeometry x="50" y="1170" width="600" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="tier3_content" value="&lt;p style='margin:0;font-size:11px;line-height:1.7;color:#334155;'&gt;&#xa;&lt;b style='color:#0D9488;'&gt;● Bedrock Grounding:&lt;/b&gt; Amazon Bedrock (&lt;code&gt;amazon.nova-micro-v1:0&lt;/code&gt;) extracts structured technical recipe breakdown and safe cooking instructions grounded in Chef Maya taxonomy with dynamic Tamil translation.&lt;br&gt;&#xa;&lt;b style='color:#2563EB;'&gt;● Distributed Cloud Video Farm:&lt;/b&gt; Remotion Lambda Cluster renders React 19 3D cooking scenes in parallel across multi-worker Chromium instances (&lt;code&gt;framesPerLambda: 120&lt;/code&gt;), stitches audio with FFmpeg into H.264 MP4, and saves directly to S3.&#xa;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+      <mxGeometry x="50" y="1200" width="1580" height="90" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>

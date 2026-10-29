@@ -13,22 +13,6 @@ def estimated_words(text,duration):
   result.append({'text':token,'start':start,'end':duration*cursor/total})
  return result
 
-def offline_speech(text,target,voice):
- if sys.platform=='win32':
-  culture='ta-IN' if voice.startswith('ta-') else 'en-US'
-  script=("Add-Type -AssemblyName System.Speech;"
-   "$s=New-Object System.Speech.Synthesis.SpeechSynthesizer;"
-   "$v=$s.GetInstalledVoices()|Where-Object {$_.VoiceInfo.Culture.Name -eq $args[2]}|Select-Object -First 1;"
-   "if($v){$s.SelectVoice($v.VoiceInfo.Name)};"
-   "$s.Rate=-1;$s.SetOutputToWaveFile($args[1]);$s.Speak($args[0]);$s.Dispose()")
-  subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-Command',script,text,str(target),culture],check=True,capture_output=True)
- else:
-  textfile=target.with_suffix('.txt');textfile.write_text(text,encoding='utf-8')
-  escaped=str(textfile).replace('\\','/').replace(':','\\:').replace("'","\\'")
-  try:subprocess.run(['ffmpeg','-y','-v','error','-f','lavfi','-i',f"flite=textfile='{escaped}':voice=slt",'-ar','24000','-ac','1',str(target)],check=True,capture_output=True)
-  finally:textfile.unlink(missing_ok=True)
- if not target.exists() or target.stat().st_size<100:raise RuntimeError('The offline speech engine did not create audio')
-
 async def main():
  job=Path(sys.argv[1]).resolve();assert job.is_relative_to(ROOT/'output/studio3d')
  plan=json.loads((job/'storyboard.json').read_text(encoding='utf-8-sig'))
@@ -37,19 +21,19 @@ async def main():
  for action in plan['actions']:
   begin=cursor
   for text in action['sentences']:
-   key=hashlib.sha256((plan['voice']+'|-8%|+3Hz|'+text).encode()).hexdigest()[:24];mp3=cache/(key+'.mp3');local=cache/(key+'.wav');meta=cache/(key+'.json')
-   if not ((mp3.exists() or local.exists()) and meta.exists()):
+   key=hashlib.sha256((plan['voice']+'|-8%|+3Hz|'+text).encode()).hexdigest()[:24];mp3=cache/(key+'.mp3');meta=cache/(key+'.json')
+   if not (mp3.exists() and meta.exists()):
     chunks=[];audio=bytearray()
     try:
      async for c in edge_tts.Communicate(text,plan['voice'],rate='-8%',pitch='+3Hz',boundary='WordBoundary',proxy=os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy')).stream():
       if c['type']=='audio':audio.extend(c['data'])
       elif c['type']=='WordBoundary':chunks.append({'text':c['text'],'start':c['offset']/1e7,'end':(c['offset']+c['duration'])/1e7})
-     if not chunks or not audio:raise RuntimeError('No speech or word timestamps received')
+     if not chunks or not audio:raise RuntimeError('No speech or word timestamps received from neural voice engine')
      mp3.write_bytes(audio);meta.write_text(json.dumps(chunks),encoding='utf-8')
     except Exception as error:
-     print(f'Online narration unavailable; using the local speech engine ({type(error).__name__}).',file=sys.stderr,flush=True)
-     offline_speech(text,local,plan['voice'])
-   source=mp3 if mp3.exists() and meta.exists() else local
+     # User requirement: If fallback occurs, do NOT run in local offline speech — raise explicit error
+     raise RuntimeError(f"Voice generation failed for '{plan['voice']}': {error}. Check connection or voice configuration.")
+   source=mp3
    raw=subprocess.check_output(['ffmpeg','-v','error','-i',str(source),'-f','s16le','-ar',str(rate),'-ac','1','pipe:1'])
    duration=len(raw)/2/rate
    if not meta.exists():meta.write_text(json.dumps(estimated_words(text,duration)),encoding='utf-8')

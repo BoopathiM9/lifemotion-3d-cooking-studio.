@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {createStaticServer,root} from './host.mjs';
 import {recipes,voices,storyboard} from './recipes.mjs';
 import {inspectRuntime,publicRuntime,generationFailure} from './runtime.mjs';
-import {analyzeWithGemini,enrichWithFreeRecipe,translateActionsToTamil,translateActionsWithFreeService,translateActionsWithLocalTamil} from './free-recipe-lookup.mjs';
+import {analyzeWithBedrock,analyzeWithGemini,enrichWithFreeRecipe,translateActionsToTamil,translateActionsWithFreeService,translateActionsWithLocalTamil} from './free-recipe-lookup.mjs';
 
 try { process.loadEnvFile(); } catch {}
 
@@ -64,17 +64,25 @@ export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
     if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`){json(403,{error:'Use the local studio page to create videos.'});return;}
     let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>8192){json(413,{error:'Your recipe is too long. Use up to 2000 characters.'});return;}}
     if(url.pathname==='/api/generate'&&busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
-    let input,plan,source='local';try{input=JSON.parse(body);plan=storyboard(input);const hasGeminiKey=Boolean(process.env.GEMINI_API_KEY?.trim());
-     if(hasGeminiKey&&typeof input.prompt==='string'&&!input.prompt.trim().startsWith('{')){
-      const geminiRecipe=await analyzeWithGemini(input.prompt);
-      if(geminiRecipe){try{plan=storyboard({...input,prompt:geminiRecipe});source='gemini';}catch{}}
+    let input,plan,source='local';try{input=JSON.parse(body);plan=storyboard(input);const hasBedrockKey=Boolean(process.env.AWS_ACCESS_KEY_ID?.trim() || process.env.BEDROCK_ENABLED === 'true' || process.env.AWS_PROFILE);
+     if(hasBedrockKey&&typeof input.prompt==='string'&&!input.prompt.trim().startsWith('{')){
+      const bedrockRecipe=await analyzeWithBedrock(input.prompt);
+      if(bedrockRecipe){try{plan=storyboard({...input,prompt:bedrockRecipe});source='Studio Plan';}catch{}}
      }
      if(plan.genericVisualization){
-     const [geminiRecipe,publicRecipe]=await Promise.all([analyzeWithGemini(input.prompt),url.pathname==='/api/generate'?enrichWithFreeRecipe(input.prompt):Promise.resolve(null)]);
-     const enriched=geminiRecipe||publicRecipe;
-     if(enriched){try{plan=storyboard({...input,prompt:enriched});source=geminiRecipe?'gemini':'free recipe lookup';}catch{source='local';}}
-    }if(input.voice==='ta-IN-PallaviNeural'){const tamil=await translateActionsToTamil(plan.actions)||await translateActionsWithFreeService(plan.actions)||translateActionsWithLocalTamil(plan.actions,plan.title);plan.actions.forEach((action,index)=>{action.text=tamil[index];action.sentences=[tamil[index]];});source=source==='local'?'Tamil narration':source;}}catch(error){json(400,{error:error instanceof SyntaxError?'The recipe request could not be read. Please try again.':error.message});return;}
-    if(url.pathname==='/api/plan'){json(200,{title:plan.title,recipe:plan.recipe,generic:plan.genericVisualization,source,limitations:plan.genericVisualization?'This is a generic recipe plan. Add more detail or connect Gemini for an AI-generated recipe plan.':null,steps:plan.actions.map(a=>({key:a.key,text:a.text,action:a.action})),ingredients:plan.ingredients.map(i=>i.name)});return;}
+      const enriched=await enrichWithFreeRecipe(input.prompt);
+      if(enriched){try{plan=storyboard({...input,prompt:enriched});source='MealDB Recipe';}catch{source='local';}}
+     }
+     if(input.voice==='ta-IN-PallaviNeural'){
+      const tamil=await translateActionsToTamil(plan.actions)||await translateActionsWithFreeService(plan.actions)||translateActionsWithLocalTamil(plan.actions,plan.title);
+      plan.actions.forEach((action,index)=>{action.text=tamil[index];action.sentences=[tamil[index]];});
+      if(!plan.title.includes('(')&&!plan.title.includes('செய்முறை')){
+        plan.title=`${plan.title} (செய்முறை)`;
+      }
+      source=source==='local'?'Tamil narration':source;
+     }
+    }catch(error){json(400,{error:error instanceof SyntaxError?'The recipe request could not be read. Please try again.':error.message});return;}
+    if(url.pathname==='/api/plan'){json(200,{title:plan.title,recipe:plan.recipe,generic:plan.genericVisualization,source,limitations:plan.genericVisualization?'Generic cooking visualization. Add more recipe details to customize your video.':null,steps:plan.actions.map(a=>({key:a.key,text:a.text,action:a.action})),ingredients:plan.ingredients.map(i=>i.name)});return;}
     if(busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
     const runtime=setup();
     if(!runtime.ready){json(503,{error:'Finish the setup checks before creating a film.',setup:publicRuntime(runtime)});return;}
@@ -123,10 +131,10 @@ if(process.argv[1]===fileURLToPath(import.meta.url)){
   });
   server.listen(port,'127.0.0.1',()=>{
     console.log(`LifeMotion Cooking Studio: ${address}`);
-    if (process.env.GEMINI_API_KEY?.trim()) {
-      console.log(`✓ Google Gemini API: Active (${process.env.GEMINI_MODEL || 'gemini-2.5-flash'})`);
+    if (process.env.AWS_ACCESS_KEY_ID?.trim() || process.env.BEDROCK_ENABLED === 'true') {
+      console.log(`✓ Amazon Bedrock (GenAI): Active (${process.env.BEDROCK_MODEL_ID || 'amazon.nova-micro-v1:0'})`);
     } else {
-      console.log(`ℹ To use Gemini AI as your primary recipe planner, add your key to .env: GEMINI_API_KEY=your_key`);
+      console.log(`ℹ To use Amazon Bedrock GenAI as your recipe planner, set AWS credentials in .env: BEDROCK_MODEL_ID=amazon.nova-micro-v1:0`);
     }
    });
  }

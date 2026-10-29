@@ -32,111 +32,159 @@ const RECIPE_CATALOG = {
   'chicken-biryani': {
     aliases: ['biryani', 'biriyani', 'chicken biryani', 'chicken'],
     titleEn: 'Chicken Biryani',
-    titleTa: 'சிக்கன் பிரியாணி',
+    titleTa: 'சிக்கன் பிரியாணி (Chicken Biryani)',
     ingredientsEn: [
       { id: 'rice', name: 'Basmati Rice', color: '#fbfbf0' },
       { id: 'chicken', name: 'Chicken Pieces', color: '#d69a68' },
-      { id: 'spices', name: 'Biryani Spices', color: '#c4672f' }
+      { id: 'onion', name: 'Golden Onions', color: '#b57c3d' },
+      { id: 'ghee', name: 'Ghee & Spices', color: '#dfb445' },
+      { id: 'mint', name: 'Fresh Mint & Herbs', color: '#27ae60' }
     ],
     ingredientsTa: [
       { id: 'rice', name: 'பாஸ்மதி அரிசி', color: '#fbfbf0' },
       { id: 'chicken', name: 'சிக்கன் துண்டுகள்', color: '#d69a68' },
-      { id: 'spices', name: 'பிரியாணி மசாலா', color: '#c4672f' }
+      { id: 'onion', name: 'நறுக்கிய வெங்காயம்', color: '#b57c3d' },
+      { id: 'ghee', name: 'நெய் மற்றும் மசாலா', color: '#dfb445' },
+      { id: 'mint', name: 'புதினா மற்றும் கொத்தமல்லி', color: '#27ae60' }
     ],
     stepsEn: [
-      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we are cooking fragrant Chicken Biryani!", start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: "Always ask a grown-up for help around hot stoves and cooking pots.", start: 4, end: 8 },
-      { key: 'saute', action: 'add', text: "Add sliced onions, ghee, and chicken pieces into the warm pot.", start: 8, end: 12 },
-      { key: 'rice', action: 'layer', text: "Layer fragrant basmati rice and warm aromatic spices on top.", start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: "Fluffy, steaming Chicken Biryani is ready! Serve onto the plate.", start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we are making royal fragrant Chicken Biryani with Chef Maya!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "Wash your hands clean, and ask a grown-up to help around hot stoves and cooking pots.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "Soak our aromatic basmati rice in water, and keep fresh chicken pieces and spices ready.", start: 13, end: 20 },
+      { key: 'saute', action: 'add', text: "Warm golden ghee in our deep cooking pot, and add whole cloves, cardamom, and sliced onions.", start: 20, end: 28 },
+      { key: 'chicken', action: 'add', text: "Add our tender chicken pieces with rich aromatic spices, stirring so every piece is coated.", start: 28, end: 36 },
+      { key: 'simmer', action: 'cook', text: "Pour in a little water, cover with the lid, and simmer gently until the chicken is tender and juicy.", start: 36, end: 44 },
+      { key: 'layer', action: 'layer', text: "Gently layer our drained basmati rice on top, scattering fresh mint and saffron strands.", start: 44, end: 52 },
+      { key: 'steam', action: 'cook', text: "Cover tightly on low heat so the rice steams fluffy and absorbs all the heavenly flavors.", start: 52, end: 60 },
+      { key: 'serve', action: 'serve', text: "Spoon steaming, colorful Chicken Biryani onto our serving plate. It smells incredible!", start: 60, end: 68 }
     ],
     stepsTa: [
-      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் சுவையான சிக்கன் பிரியாணி செய்வோம்!", start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: "சூடான பாத்திரங்கள் மற்றும் அடுப்பை பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.", start: 4, end: 8 },
-      { key: 'saute', action: 'add', text: "பாத்திரத்தில் நெய் ஊற்றி, நறுக்கிய வெங்காயம் மற்றும் சிக்கன் துண்டுகளை வதக்கவும்.", start: 8, end: 12 },
-      { key: 'rice', action: 'layer', text: "வாசனை மசாலா மற்றும் பாஸ்மதி அரிசியை சேர்த்து சமமாக அடுக்கவும்.", start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: "சுவையான சிக்கன் பிரியாணி தயார்! தட்டில் வைத்து பரிமாறி மகிழுங்கள்!", start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று செஃப் மாயாவுடன் சுவையான சிக்கன் பிரியாணி சமைப்போம்!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "கைகளை நன்றாக கழுவுங்கள். சூடான அடுப்பு மற்றும் பாத்திரங்களை பயன்படுத்த பெரியவர்களின் உதவியை நாடுங்கள்.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "பாஸ்மதி அரிசியை ஊறவைத்து, புதிய சிக்கன் துண்டுகள் மற்றும் வாசனை மசாலாக்களை தயாராக வைக்கவும்.", start: 13, end: 20 },
+      { key: 'saute', action: 'add', text: "பாத்திரத்தில் நெய் ஊற்றி, ஏலக்காய், பட்டை மற்றும் நறுக்கிய வெங்காயத்தை பொன்னிறமாக வதக்கவும்.", start: 20, end: 28 },
+      { key: 'chicken', action: 'add', text: "மசாலா கலந்த சிக்கன் துண்டுகளை சேர்த்து, மசாலா சிக்கனில் நன்றாக சேருமாறு வதக்கவும்.", start: 28, end: 36 },
+      { key: 'simmer', action: 'cook', text: "சிறிதளவு தண்ணீர் சேர்த்து, மூடி போட்டு சிக்கன் மென்மையாகவும் சாறாகவும் வேகும் வரை சமைக்கவும்.", start: 36, end: 44 },
+      { key: 'layer', action: 'layer', text: "வாசனை பாஸ்மதி அரிசியை சிக்கனின் மேல் பரப்பி, புதினா மற்றும் கொத்தமல்லி தழைகளை தூவவும்.", start: 44, end: 52 },
+      { key: 'steam', action: 'cook', text: "பாத்திரத்தை மூடி, மிதமான தீயில் வைத்து அரிசி உதிரியாகவும் வாசனையுடனும் வேகும் வரை தம் போடவும்.", start: 52, end: 60 },
+      { key: 'serve', action: 'serve', text: "சுடச்சுட மணக்கும் சிக்கன் பிரியாணியை அழகான தட்டில் வைத்து பரிமாறுங்கள். மிகச் சிறப்பான சமையல்!", start: 60, end: 68 }
     ]
   },
   'masala-dosa': {
     aliases: ['dosa', 'masala dosa', 'dosai'],
-    titleEn: 'Masala Dosa',
-    titleTa: 'மசாலா தோசை',
+    titleEn: 'Crispy Masala Dosa',
+    titleTa: 'மொறுமொறு மசாலா தோசை (Masala Dosa)',
     ingredientsEn: [
       { id: 'batter', name: 'Dosa Batter', color: '#fffdf5' },
-      { id: 'masala', name: 'Potato Masala', color: '#e0a538' }
+      { id: 'masala', name: 'Potato Masala', color: '#e0a538' },
+      { id: 'oil', name: 'Golden Ghee', color: '#e5b84c' },
+      { id: 'chutney', name: 'Coconut Chutney', color: '#f0f3f4' }
     ],
     ingredientsTa: [
       { id: 'batter', name: 'தோசை மாவு', color: '#fffdf5' },
-      { id: 'masala', name: 'உருளைக்கிழங்கு மசாலா', color: '#e0a538' }
+      { id: 'masala', name: 'உருளைக்கிழங்கு மசாலா', color: '#e0a538' },
+      { id: 'oil', name: 'நெய் மற்றும் எண்ணெய்', color: '#e5b84c' },
+      { id: 'chutney', name: 'தேங்காய் சட்னி', color: '#f0f3f4' }
     ],
     stepsEn: [
-      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we make golden crispy Masala Dosa!", start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: "Ask a grown-up for help around the hot tawa or griddle.", start: 4, end: 8 },
-      { key: 'spread', action: 'spread', text: "Pour batter onto the tawa and spread it smoothly in circles.", start: 8, end: 12 },
-      { key: 'masala', action: 'add', text: "Place the delicious spiced potato filling right in the center.", start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: "Fold and serve crispy Masala Dosa with coconut chutney!", start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we make golden crispy South Indian Masala Dosa with Chef Maya!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "Always ask a grown-up for help around the hot tawa griddle to stay safe.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "We have smooth fermented rice-lentil batter and warm spiced potato filling ready to cook.", start: 13, end: 20 },
+      { key: 'warm', action: 'cook', text: "Warm our flat tawa griddle over medium heat and lightly grease the surface.", start: 20, end: 27 },
+      { key: 'pour', action: 'pour', text: "Pour a generous ladle of smooth batter right in the center of our warm tawa.", start: 27, end: 34 },
+      { key: 'spread', action: 'spread', text: "Using the ladle base, spread the batter outward smoothly into a wide, even circle.", start: 34, end: 42 },
+      { key: 'crisp', action: 'cook', text: "Drizzle golden ghee along the edges and let it cook until golden, fragrant, and crispy.", start: 42, end: 50 },
+      { key: 'masala', action: 'add', text: "Spoon our delicious spiced potato filling right across the center of the crispy crepe.", start: 50, end: 58 },
+      { key: 'serve', action: 'serve', text: "Fold the golden dosa carefully, and plate with fresh coconut chutney and spicy sambar!", start: 58, end: 66 }
     ],
     stepsTa: [
-      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் சுவையான மசாலா தோசை செய்வோம்!", start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: "சூடான தவா மற்றும் அடுப்பை பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.", start: 4, end: 8 },
-      { key: 'spread', action: 'spread', text: "தோசை மாவை தவாவில் ஊற்றி வட்டமாக மெதுவாக தேய்க்கவும்.", start: 8, end: 12 },
-      { key: 'masala', action: 'add', text: "சுவையான உருளைக்கிழங்கு மசாலாவை நடுவில் வைக்கவும்.", start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: "மொறுமொறுப்பான மசாலா தோசை தயார்! சட்னியுடன் பரிமாறுங்கள்!", start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று செஃப் மாயாவுடன் மொறுமொறுப்பான மசாலா தோசை செய்வோம்!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "சூடான தோசைக் கல்லை பயன்படுத்தும்போது எப்போதும் பெரியவர்களின் பாதுகாப்பான உதவியைப் பெறுங்கள்.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "மென்மையான தோசை மாவு மற்றும் உருளைக்கிழங்கு மசாலாவை தயாராக எடுத்துக்கொள்ளுங்கள்.", start: 13, end: 20 },
+      { key: 'warm', action: 'cook', text: "தோசைக் கல்லை மிதமான தீயில் சூடாக்கி, சிறிதளவு எண்ணெய் தடவி தயார் செய்யுங்கள்.", start: 20, end: 27 },
+      { key: 'pour', action: 'pour', text: "ஒரு கரண்டி தோசை மாவை எடுத்து சூடான தோசைக் கல்லின் நடுவே மெதுவாக ஊற்றவும்.", start: 27, end: 34 },
+      { key: 'spread', action: 'spread', text: "கரண்டியின் அடிப்புறத்தை வைத்து நடுவிலிருந்து வெளிப்பக்கமாக வட்டமாக அழகாக தேய்க்கவும்.", start: 34, end: 42 },
+      { key: 'crisp', action: 'cook', text: "ஓரங்களில் பொன்னிற நெய் ஊற்றி, தோசை பொன்னிறமாக மொறுமொறுப்பாகும் வரை வேகவைக்கவும்.", start: 42, end: 50 },
+      { key: 'masala', action: 'add', text: "சுவையான மஞ்சள் உருளைக்கிழங்கு மசாலாவை தோசையின் நடுவில் சீராக பரப்பி வைக்கவும்.", start: 50, end: 58 },
+      { key: 'serve', action: 'serve', text: "மொறுமொறு மசாலா தோசையை தட்டில் வைத்து தேங்காய் சட்னி மற்றும் சாம்பாருடன் பரிமாறுங்கள்!", start: 58, end: 66 }
     ]
   },
   'vegetable-fried-rice': {
     aliases: ['fried rice', 'fried-rice', 'veg rice'],
     titleEn: 'Vegetable Fried Rice',
-    titleTa: 'காய்கறி ஃப்ரைட் ரைஸ்',
+    titleTa: 'காய்கறி ஃப்ரைட் ரைஸ் (Vegetable Fried Rice)',
     ingredientsEn: [
       { id: 'rice', name: 'Steamed Rice', color: '#f5f5f5' },
-      { id: 'veggies', name: 'Diced Vegetables', color: '#529668' }
+      { id: 'veggies', name: 'Carrots & Peas', color: '#529668' },
+      { id: 'garlic', name: 'Garlic & Onions', color: '#e8d5b5' },
+      { id: 'sauce', name: 'Soy Sauce', color: '#5d4037' }
     ],
     ingredientsTa: [
       { id: 'rice', name: 'சாதம்', color: '#f5f5f5' },
-      { id: 'veggies', name: 'நறுக்கிய காய்கறிகள்', color: '#529668' }
+      { id: 'veggies', name: 'நறுக்கிய காய்கறிகள்', color: '#529668' },
+      { id: 'garlic', name: 'பூண்டு மற்றும் வெங்காயம்', color: '#e8d5b5' },
+      { id: 'sauce', name: 'சோயா சாஸ்', color: '#5d4037' }
     ],
     stepsEn: [
-      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we make colorful Vegetable Fried Rice!", start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: "Always ask a grown-up for help around hot pans and high heat.", start: 4, end: 8 },
-      { key: 'veggies', action: 'add', text: "Add fresh crunchy carrots, peas, and bell peppers into the pan.", start: 8, end: 12 },
-      { key: 'stir', action: 'stir', text: "Add fluffy rice and stir-fry gently with savory seasoning.", start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: "Serve warm, colorful Vegetable Fried Rice in our favorite bowl!", start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we stir-fry colorful Vegetable Fried Rice with Chef Maya!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "Always ask a grown-up for help around hot pans and high heat stir-fry cooking.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "Gather chilled fluffy rice, diced carrots, green peas, sweet corn, and minced garlic.", start: 13, end: 20 },
+      { key: 'heat', action: 'cook', text: "Heat sesame oil in our wide wok until it gives a gentle, warm sizzle.", start: 20, end: 27 },
+      { key: 'aromatics', action: 'add', text: "Add minced garlic and sliced spring onions, tossing quickly with our spatula until fragrant.", start: 27, end: 35 },
+      { key: 'veggies', action: 'add', text: "Tumble in crunchy carrots, tender green peas, and bell peppers, stir-frying on high heat.", start: 35, end: 43 },
+      { key: 'rice', action: 'add', text: "Add our fluffy cooked rice into the wok, breaking up clumps with the back of the spatula.", start: 43, end: 51 },
+      { key: 'season', action: 'pour', text: "Drizzle savory soy sauce, a pinch of pepper, and salt evenly over the steaming rice.", start: 51, end: 58 },
+      { key: 'serve', action: 'serve', text: "Scoop warm Vegetable Fried Rice into our serving bowl and garnish with fresh greens!", start: 58, end: 66 }
     ],
     stepsTa: [
-      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் காய்கறி ஃப்ரைட் ரைஸ் செய்வோம்!", start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: "சூடான கடாய் மற்றும் அடுப்பை பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.", start: 4, end: 8 },
-      { key: 'veggies', action: 'add', text: "கேரட், பட்டாணி போன்ற காய்கறிகளை வாணலியில் சேர்க்கவும்.", start: 8, end: 12 },
-      { key: 'stir', action: 'stir', text: "சாதத்தை சேர்த்து மெதுவாக கிளறி சுவையாக வதக்கவும்.", start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: "சுவையான காய்கறி ஃப்ரைட் ரைஸ் தயார்! கிண்ணத்தில் பரிமாறுங்கள்!", start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் காய்கறி ஃப்ரைட் ரைஸ் செய்வோம்!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "சூடான கடாய் மற்றும் அடுப்பை பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "உதிரியான சாதம், நறுக்கிய கேரட், பச்சை பட்டாணி மற்றும் பூண்டை தயாராக எடுத்துக்கொள்ளுங்கள்.", start: 13, end: 20 },
+      { key: 'heat', action: 'cook', text: "வாணலியில் சிறிது எண்ணெய் ஊற்றி மிதமாக சூடாக்கவும்.", start: 20, end: 27 },
+      { key: 'aromatics', action: 'add', text: "நறுக்கிய பூண்டு மற்றும் வெங்காயத்தாள் சேர்த்து நறுமணம் வரும் வரை வதக்கவும்.", start: 27, end: 35 },
+      { key: 'veggies', action: 'add', text: "கேரட், பட்டாணி போன்ற காய்கறிகளை வாணலியில் சேர்த்து மொறுமொறுப்பாக வதக்கவும்.", start: 35, end: 43 },
+      { key: 'rice', action: 'add', text: "சாதத்தை சேர்த்து கட்டிகள் இல்லாமல் மெதுவாக கிளறி சுவையாக வதக்கவும்.", start: 43, end: 51 },
+      { key: 'season', action: 'pour', text: "சோயா சாஸ், உப்பு மற்றும் மிளகுத்தூள் தூவி சாதத்துடன் சமமாக கலக்கவும்.", start: 51, end: 58 },
+      { key: 'serve', action: 'serve', text: "சுவையான காய்கறி ஃப்ரைட் ரைஸ் தயார்! கிண்ணத்தில் பரிமாறுங்கள்!", start: 58, end: 66 }
     ]
   },
   'pancakes': {
     aliases: ['pancake', 'pancakes', 'fluffy pancakes'],
     titleEn: 'Fluffy Pancakes',
-    titleTa: 'பான்கேக்',
+    titleTa: 'பான்கேக் (Fluffy Pancakes)',
     ingredientsEn: [
       { id: 'batter', name: 'Pancake Batter', color: '#f4e4a6' },
-      { id: 'syrup', name: 'Maple Syrup', color: '#994d22' }
+      { id: 'butter', name: 'Creamy Butter', color: '#fff176' },
+      { id: 'syrup', name: 'Maple Syrup', color: '#994d22' },
+      { id: 'berries', name: 'Fresh Berries', color: '#e63946' }
     ],
     ingredientsTa: [
       { id: 'batter', name: 'பான்கேக் மாவு', color: '#f4e4a6' },
-      { id: 'syrup', name: 'தேன் மற்றும் வெண்ணெய்', color: '#994d22' }
+      { id: 'butter', name: 'வெண்ணெய்', color: '#fff176' },
+      { id: 'syrup', name: 'தேன் மற்றும் பாகு', color: '#994d22' },
+      { id: 'berries', name: 'பழங்கள்', color: '#e63946' }
     ],
     stepsEn: [
-      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we make sweet Fluffy Pancakes!", start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: "Ask an adult to assist with the hot pan or skillet.", start: 4, end: 8 },
-      { key: 'pour', action: 'pour', text: "Gently ladle the smooth golden batter onto the warm skillet.", start: 8, end: 12 },
-      { key: 'flip', action: 'flip', text: "Watch for tiny bubbles, then flip carefully until golden brown.", start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: "Stack warm pancakes on a plate and drizzle with sweet syrup!", start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we make sweet, fluffy golden Pancakes with Chef Maya!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "Ask an adult to assist with the warm pan and keep little hands safe.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "Whisk our flour, milk, egg, and sugar into a silky, lump-free golden batter.", start: 13, end: 20 },
+      { key: 'melt', action: 'cook', text: "Melt a pat of sweet butter in our skillet until it glistens warmly.", start: 20, end: 27 },
+      { key: 'pour', action: 'pour', text: "Gently ladle a pool of smooth golden batter onto the warm skillet surface.", start: 27, end: 35 },
+      { key: 'bubbles', action: 'cook', text: "Watch for tiny happy bubbles forming on top, showing it is ready to flip.", start: 35, end: 43 },
+      { key: 'flip', action: 'flip', text: "Slide our spatula underneath and flip carefully until both sides are golden brown.", start: 43, end: 51 },
+      { key: 'stack', action: 'serve', text: "Stack warm, fluffy pancakes tall on our favorite serving plate.", start: 51, end: 58 },
+      { key: 'serve', action: 'pour', text: "Drizzle with sweet golden maple syrup and top with fresh berries. Wonderful cooking!", start: 58, end: 66 }
     ],
     stepsTa: [
-      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் சுவையான பான்கேக் செய்வோம்!", start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: "சூடான தவா மற்றும் அடுப்பை பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.", start: 4, end: 8 },
-      { key: 'pour', action: 'pour', text: "பான்கேக் மாவை சூடான தவாவில் மெதுவாக ஊற்றவும்.", start: 8, end: 12 },
-      { key: 'flip', action: 'flip', text: "குமிழிகள் வந்ததும் மெதுவாக மறுபுறம் திருப்பி வேகவைக்கவும்.", start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: "மென்மையான பான்கேக் தயார்! தேன் ஊற்றி மகிழ்ச்சியாக சாப்பிடுங்கள்!", start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் சுவையான பான்கேக் செய்வோம்!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "சூடான தவா மற்றும் அடுப்பை பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "மாவு, பால் மற்றும் சர்க்கரையை கட்டி இல்லாமல் மென்மையாக கலக்கி தயார் செய்யவும்.", start: 13, end: 20 },
+      { key: 'melt', action: 'cook', text: "சூடான தவாவில் சிறிது வெண்ணெய் தடவி உருகவிடவும்.", start: 20, end: 27 },
+      { key: 'pour', action: 'pour', text: "பான்கேக் மாவை சூடான தவாவில் வட்டமாக மெதுவாக ஊற்றவும்.", start: 27, end: 35 },
+      { key: 'bubbles', action: 'cook', text: "மேலே சிறிய குமிழிகள் வந்ததும் மறுபுறம் திருப்ப தயாராகுங்கள்.", start: 35, end: 43 },
+      { key: 'flip', action: 'flip', text: "கரண்டியை அடியில் வைத்து கவனமாக திருப்பி பொன்னிறமாக வேகவைக்கவும்.", start: 43, end: 51 },
+      { key: 'stack', action: 'serve', text: "வெந்த மென்மையான பான்கேக்குகளை தட்டில் அடுக்கவும்.", start: 51, end: 58 },
+      { key: 'serve', action: 'pour', text: "மேலே இனிப்பான தேன் மற்றும் வெண்ணெய் ஊற்றி மகிழ்ச்சியாக சாப்பிடுங்கள்!", start: 58, end: 66 }
     ]
   }
 };
@@ -160,34 +208,64 @@ function cleanRecipeTitle(prompt) {
     .replace(/step by step.*$/i, '')
     .replace(/[.?!]/g, ' ')
     .trim()
-    .slice(0, 40) || 'Delicious Dish';
+    .slice(0, 40) || 'Special Meal';
+}
+
+async function searchMealDbOnline(query) {
+  try {
+    const res = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=' + encodeURIComponent(query));
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.meals?.[0] || null;
+  } catch {
+    return null;
+  }
 }
 
 function getCustomRecipePlan(dishTitle, isTamil) {
   if (isTamil) {
     return {
-      title: `${dishTitle}`,
+      title: `${dishTitle} (செய்முறை)`,
       recipeId: dishTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-      ingredients: [{ id: 'fresh_item', name: dishTitle, color: '#f1b85e' }],
+      ingredients: [
+        { id: 'main_item', name: dishTitle, color: '#f1b85e' },
+        { id: 'veggies', name: 'நறுக்கிய காய்கறிகள்', color: '#27ae60' },
+        { id: 'spices', name: 'நறுமண மசாலா', color: '#e65100' },
+        { id: 'oil', name: 'நெய் மற்றும் எண்ணெய்', color: '#dfb445' }
+      ],
       steps: [
-        { key: 'welcome', action: 'show', text: `வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று நாம் சுவையான ${dishTitle} செய்வோம்!`, start: 0, end: 4 },
-        { key: 'safe', action: 'show', text: 'சூடான பாத்திரங்களையும் அடுப்பையும் பயன்படுத்த பெரியவரின் உதவியை கேளுங்கள்.', start: 4, end: 8 },
-        { key: 'add', action: 'add', text: `தேவையான புதிய பொருட்களை மெதுவாக சமையல் பாத்திரத்தில் சேர்க்கவும்.`, start: 8, end: 12 },
-        { key: 'cook', action: 'cook', text: `நறுமணம் கமழ மெதுவாக கிளறி அழகாக வேகவைக்கவும்.`, start: 12, end: 16 },
-        { key: 'serve', action: 'serve', text: `சுவையான ${dishTitle} தயார்! தட்டில் வைத்து பரிமாறி மகிழுங்கள்!`, start: 16, end: 20 }
+        { key: 'welcome', action: 'show', text: `வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று செஃப் மாயாவுடன் சுவையான ${dishTitle} செய்வோம்!`, start: 0, end: 6 },
+        { key: 'safe', action: 'show', text: 'சூடான பாத்திரங்களையும் அடுப்பையும் பயன்படுத்த எப்போதும் பெரியவர்களின் உதவியை கேளுங்கள்.', start: 6, end: 13 },
+        { key: 'prep', action: 'show', text: `சுவையான ${dishTitle} செய்ய தேவையான அனைத்து புதிய பொருட்களையும் தயாராக வைக்கவும்.`, start: 13, end: 20 },
+        { key: 'heat', action: 'cook', text: `சமையல் பாத்திரத்தை மிதமான தீயில் வைத்து, சிறிது எண்ணெய் அல்லது நெய் ஊற்றி சூடாக்கவும்.`, start: 20, end: 27 },
+        { key: 'aromatics', action: 'add', text: 'நறுக்கிய வெங்காயம் மற்றும் நறுமணப் பொருட்களை சேர்த்து பொன்னிறமாக வதக்கவும்.', start: 27, end: 35 },
+        { key: 'main', action: 'add', text: `முக்கிய சுவைப்பொருட்களை சேர்த்து மரக்கரண்டியால் சுவைகள் ஒன்றுசேருமாறு கிளறவும்.`, start: 35, end: 43 },
+        { key: 'simmer', action: 'cook', text: 'சிறிதளவு தண்ணீர் மற்றும் உப்பு சேர்த்து, மூடி வைத்து மிதமான தீயில் வேகவைக்கவும்.', start: 43, end: 51 },
+        { key: 'garnish', action: 'pour', text: 'புதிய கொத்தமல்லி மற்றும் அலங்கார பொருட்களை மேலே தூவி அலங்கரிக்கவும்.', start: 51, end: 58 },
+        { key: 'serve', action: 'serve', text: `சுடச்சுட தயாரான ${dishTitle} உணவை தட்டில் வைத்து மகிழ்ச்சியாக பரிமாறுங்கள்!`, start: 58, end: 66 }
       ]
     };
   }
+
   return {
     title: dishTitle,
     recipeId: dishTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-    ingredients: [{ id: 'fresh_item', name: dishTitle, color: '#f1b85e' }],
+    ingredients: [
+      { id: 'main_item', name: dishTitle, color: '#f1b85e' },
+      { id: 'veggies', name: 'Fresh Vegetables', color: '#27ae60' },
+      { id: 'spices', name: 'Aromatic Spices', color: '#e65100' },
+      { id: 'oil', name: 'Butter / Oil', color: '#dfb445' }
+    ],
     steps: [
-      { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are making ${dishTitle}!`, start: 0, end: 4 },
-      { key: 'safe', action: 'show', text: 'Wash your hands first, and always ask a grown-up for help around hot cookware.', start: 4, end: 8 },
-      { key: 'add', action: 'add', text: `Gently add our fresh ingredients into the cooking bowl.`, start: 8, end: 12 },
-      { key: 'cook', action: 'cook', text: `Stir and cook gently as delicious aromas fill the room.`, start: 12, end: 16 },
-      { key: 'serve', action: 'serve', text: `Spoon our freshly cooked ${dishTitle} onto the plate. Great job!`, start: 16, end: 20 }
+      { key: 'welcome', action: 'show', text: `Welcome little chefs! Today we are cooking delicious homemade ${dishTitle} with Chef Maya!`, start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: 'Wash your hands clean and always ask a grown-up for help around hot stoves and sharp cookware.', start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: `Gather all our fresh ingredients and seasonings for our delicious ${dishTitle}.`, start: 13, end: 20 },
+      { key: 'heat', action: 'cook', text: 'Warm our cooking pan over medium heat and drizzle with golden oil or butter.', start: 20, end: 27 },
+      { key: 'aromatics', action: 'add', text: 'Add aromatic seasonings and vegetables, sautéing gently with our wooden spoon until fragrant.', start: 27, end: 35 },
+      { key: 'main', action: 'add', text: `Add our main ingredients into the warm pan and stir evenly to coat with spices.`, start: 35, end: 43 },
+      { key: 'simmer', action: 'cook', text: 'Pour in our liquid base, cover with the lid, and let everything simmer gently until tender.', start: 43, end: 51 },
+      { key: 'garnish', action: 'pour', text: 'Garnish the top with fresh green herbs and a touch of savory seasoning.', start: 51, end: 58 },
+      { key: 'serve', action: 'serve', text: `Spoon our finished ${dishTitle} onto a colorful serving plate. Great cooking, little chefs!`, start: 58, end: 66 }
     ]
   };
 }
@@ -278,17 +356,17 @@ export async function handler(event) {
         audioUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${audioKey}`;
       }
     } catch (e) {
-      console.warn('Preview speech generation warning:', e.message);
+      console.warn('Preview speech notice:', e.message);
     }
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        title: isTamil ? `${planData.title} செய்முறை` : planData.title,
+        title: planData.title,
         recipe: planData.recipeId,
         generic: false,
-        source: isTamil ? 'Tamil AI narration' : 'AI recipe plan',
+        source: isTamil ? 'Tamil AI Lesson' : 'AI Recipe Plan',
         steps: planData.steps.map(s => ({ key: s.key, text: s.text, action: s.action })),
         ingredients: planData.ingredients.map(i => i.name),
         audioUrl
@@ -319,10 +397,12 @@ export async function handler(event) {
       planData = getCustomRecipePlan(dishTitle, isTamil);
     }
 
-    const duration = 20;
+    // Dynamic duration based on recipe steps (never fixed 20 sec!)
+    const lastStepEnd = planData.steps[planData.steps.length - 1]?.end || 66;
+    const duration = Math.max(55, Math.min(90, Math.ceil(lastStepEnd)));
 
     // Generate voice audio
-    console.log(`Generating narration for: ${planData.title} in ${selectedVoice}`);
+    console.log(`Generating narration for: ${planData.title} in ${selectedVoice} (duration ~${duration}s)`);
     const fullSpeechText = planData.steps.map(s => s.text).join(' ');
     const audioBuffer = await generateSpeechAudio(fullSpeechText, selectedVoice);
 
@@ -337,9 +417,8 @@ export async function handler(event) {
           ContentType: 'audio/mpeg'
         }));
         audioUrl = `https://${bucketName}.s3.${region}.amazonaws.com/${audioKey}`;
-        console.log('Audio uploaded successfully:', audioUrl);
       } catch (err) {
-        console.warn('Audio upload to S3 failed:', err.message);
+        console.warn('Audio upload warning:', err.message);
       }
     }
 
@@ -359,9 +438,51 @@ export async function handler(event) {
     };
 
     const isPortrait = selectedFormat === '9:16';
-    const width = isPortrait ? 720 : 1280;
-    const height = isPortrait ? 1280 : 720;
-    const fps = 24;
+    const width = isPortrait ? 1080 : 1920;
+    const height = isPortrait ? 1920 : 1080;
+    const fps = 30;
+
+    // Support for independent Python Diffusers server (LTX-Video / Wan2.2)
+    if (process.env.AI_DIFFUSION_WORKER_URL) {
+      try {
+        const s3Key = `videos/ai-diffusers-${Date.now()}-${plan.recipe}.mp4`;
+        const diffRes = await fetch(`${process.env.AI_DIFFUSION_WORKER_URL}/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            recipe: plan.recipe,
+            title: plan.title,
+            prompt: fullSpeechText,
+            voice: selectedVoice,
+            format: selectedFormat,
+            duration,
+            s3_bucket: bucketName,
+            s3_key: s3Key
+          })
+        });
+        if (diffRes.ok) {
+          const diffData = await diffRes.json();
+          return {
+            statusCode: 202,
+            headers,
+            body: JSON.stringify({
+              id: `diffusers:${diffData.jobId}`,
+              recipe: plan.recipe,
+              title: plan.title,
+              format: selectedFormat,
+              voice: selectedVoice,
+              status: 'rendering',
+              progress: 10,
+              message: isTamil
+                ? `செஃப் மாயா Disney/Pixar AI வீடியோவை உருவாக்குகிறார்...`
+                : `Rendering Disney/Pixar 3D animation with Hugging Face Diffusers...`
+            })
+          };
+        }
+      } catch (err) {
+        console.warn('Diffusers worker notice:', err.message);
+      }
+    }
 
     const { renderId } = await renderMediaOnLambda({
       region,
@@ -394,8 +515,8 @@ export async function handler(event) {
         status: 'rendering',
         progress: 5,
         message: isTamil
-          ? `செஃப் மாயா "${planData.title}" வீடியோவை உருவாக்குகிறார்...`
-          : `Chef Maya is creating the cartoon cooking video for ${plan.title}...`
+          ? `செஃப் மாயா "${planData.title}" கார்ட்டூன் வீடியோவை உருவாக்குகிறார்...`
+          : `Chef Maya is animating the cooking video for ${plan.title}...`
       })
     };
   }
@@ -403,6 +524,24 @@ export async function handler(event) {
   // 5. GET /api/jobs/:id
   if (path.includes('/jobs')) {
     const rawId = path.split('/').pop();
+
+    if (rawId.startsWith('diffusers:') && process.env.AI_DIFFUSION_WORKER_URL) {
+      const jobId = rawId.replace('diffusers:', '');
+      try {
+        const workerRes = await fetch(`${process.env.AI_DIFFUSION_WORKER_URL}/jobs/${jobId}`);
+        if (workerRes.ok) {
+          const workerData = await workerRes.json();
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ id: rawId, ...workerData })
+          };
+        }
+      } catch (e) {
+        console.warn('Diffusers job poll notice:', e.message);
+      }
+    }
+
     let bName = bucketName;
     let renderId = rawId;
 
