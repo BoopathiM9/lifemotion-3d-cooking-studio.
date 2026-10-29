@@ -119,6 +119,47 @@ const RECIPE_CATALOG = {
       { key: 'flip', action: 'flip', text: "குமிழிகள் வந்ததும் மெதுவாக மறுபுறம் திருப்பி வேகவைக்கவும்.", start: 12, end: 16 },
       { key: 'serve', action: 'serve', text: "மென்மையான பான்கேக் தயார்! தேன் ஊற்றி மகிழ்ச்சியாக சாப்பிடுங்கள்!", start: 16, end: 20 }
     ]
+  },
+  'sundal': {
+    aliases: ['sundal', 'sandel', 'chana sundal', 'kondakadalai sundal', 'sundal food', 'sandel food', 'சுண்டல்'],
+    titleEn: 'Chana Sundal (Spiced Chickpeas)',
+    titleTa: 'சுவையான சுண்டல் (Healthy Sundal)',
+    ingredientsEn: [
+      { id: 'chickpeas', name: 'Boiled Chickpeas', color: '#f1b85e' },
+      { id: 'mustard', name: 'Mustard & Urad Dal', color: '#2d3748' },
+      { id: 'curryleaves', name: 'Curry Leaves & Hing', color: '#22543d' },
+      { id: 'chillies', name: 'Green Chillies & Ginger', color: '#38a169' },
+      { id: 'coconut', name: 'Fresh Grated Coconut', color: '#ffffff' }
+    ],
+    ingredientsTa: [
+      { id: 'chickpeas', name: 'வேகவைத்த கொண்டைக்கடலை', color: '#f1b85e' },
+      { id: 'mustard', name: 'கடுகு மற்றும் உளுத்தம்பருப்பு', color: '#2d3748' },
+      { id: 'curryleaves', name: 'கறிவேப்பிலை & பெருங்காயம்', color: '#22543d' },
+      { id: 'chillies', name: 'பச்சை மிளகாய் & இஞ்சி', color: '#38a169' },
+      { id: 'coconut', name: 'துருவிய தேங்காய்', color: '#ffffff' }
+    ],
+    stepsEn: [
+      { key: 'welcome', action: 'show', text: "Welcome little chefs! Today we are making healthy, delicious Chana Sundal with Chef Maya!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "Wash your hands clean and always ask a grown-up for help around hot cookware.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "Keep soft boiled chickpeas and freshly grated coconut ready on our kitchen counter.", start: 13, end: 20 },
+      { key: 'saute', action: 'cook', text: "Warm a drizzle of sesame oil in the pan and let mustard seeds and urad dal crackle.", start: 20, end: 28 },
+      { key: 'aromatics', action: 'add', text: "Toss in fresh curry leaves, green chillies, and aromatic asafoetida until fragrant.", start: 27, end: 35 },
+      { key: 'chickpeas', action: 'add', text: "Add our soft boiled chickpeas with a pinch of salt, stirring evenly with our wooden spoon.", start: 35, end: 44 },
+      { key: 'simmer', action: 'cook', text: "Toss gently over medium heat so all the savory flavors coat the warm chickpeas.", start: 44, end: 52 },
+      { key: 'coconut', action: 'pour', text: "Turn off the heat and generously shower fresh grated coconut all over the sundal.", start: 52, end: 59 },
+      { key: 'serve', action: 'serve', text: "Spoon steaming, wholesome Sundal onto our serving plate. Healthy and delicious!", start: 59, end: 66 }
+    ],
+    stepsTa: [
+      { key: 'welcome', action: 'show', text: "வணக்கம் குட்டி சமையல் கலைஞர்களே! இன்று செஃப் மாயாவுடன் சுவையான சத்துமிக்க சுண்டல் செய்வோம்!", start: 0, end: 6 },
+      { key: 'safe', action: 'show', text: "கைகளை நன்றாக கழுவுங்கள். சூடான அடுப்பை பயன்படுத்த பெரியவர்களின் உதவியை நாடுங்கள்.", start: 6, end: 13 },
+      { key: 'prep', action: 'show', text: "ஊறவைத்து வேகவைத்த கொண்டைக்கடலை மற்றும் துருவிய தேங்காயை தயாராக வைக்கவும்.", start: 13, end: 20 },
+      { key: 'saute', action: 'cook', text: "பாத்திரத்தில் சிறிது நல்லெண்ணெய் ஊற்றி, கடுகு, உளுத்தம்பருப்பு சேர்த்து பொரியவிடவும்.", start: 20, end: 28 },
+      { key: 'aromatics', action: 'add', text: "கறிவேப்பிலை, பச்சை மிளகாய் மற்றும் பெருங்காயத்தூள் சேர்த்து நறுமணம் கமழ வதக்கவும்.", start: 27, end: 35 },
+      { key: 'chickpeas', action: 'add', text: "வேகவைத்த கொண்டைக்கடலை மற்றும் தேவையான உப்பு சேர்த்து நன்றாக கிளறி வதக்கவும்.", start: 35, end: 44 },
+      { key: 'simmer', action: 'cook', text: "மிதமான தீயில் 2 நிமிடங்கள் மூடி வைத்து சுவைகள் ஒன்றுசேருமாறு சமைக்கவும்.", start: 44, end: 52 },
+      { key: 'coconut', action: 'pour', text: "அடுப்பை அணைத்துவிட்டு, மேலே தூய துருவிய தேங்காய் தூவி அலங்கரிக்கவும்.", start: 52, end: 59 },
+      { key: 'serve', action: 'serve', text: "சுடச்சுட சத்தான சுவையான சுண்டல் தயார்! தட்டில் வைத்து மகிழ்ச்சியாக சாப்பிடுங்கள்!", start: 59, end: 66 }
+    ]
   }
 };
 

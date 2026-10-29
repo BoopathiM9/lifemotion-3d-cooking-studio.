@@ -1,6 +1,6 @@
 const $=id=>document.getElementById(id);
 let setupReady=false,creating=false,remoteBusy=false,current=null,pollTimer;
-const icons={'chicken-biryani':'🍲','masala-dosa':'🥞',pancakes:'🥞','vegetable-sandwich':'🥪','vegetable-fried-rice':'🍚','tomato-pasta':'🍝',noodles:'🍜',chapati:'🫓','vegetable-soup':'🥣',salad:'🥗'};
+const icons={'chicken-biryani':'🍲','sundal':'🥥','masala-dosa':'🥞',pancakes:'🥞','vegetable-sandwich':'🥪','vegetable-fried-rice':'🍚','tomato-pasta':'🍝',noodles:'🍜',chapati:'🫓','vegetable-soup':'🥣',salad:'🥗'};
 const statusNames={queued:'Queued',narration:'Recording narration',preview:'Making a preview',rendering:'Animating the full film',complete:'Ready to watch',failed:'Needs another try'};
 function node(tag,text,className){const element=document.createElement(tag);if(text!==undefined)element.textContent=text;if(className)element.className=className;return element;}
 const API_BASE = window.location.hostname.includes('amplifyapp.com') ? 'https://k0cdmsjevc.execute-api.us-east-1.amazonaws.com' : '';
@@ -48,7 +48,7 @@ function chooseRecipe(recipe){
  $('create').scrollIntoView({behavior:'smooth'});$('prompt').focus({preventScroll:true});
 }
 function renderRecipes(recipes){
- const priority=['chicken-biryani','vegetable-fried-rice','pancakes','masala-dosa'];
+ const priority=['chicken-biryani','sundal','masala-dosa','vegetable-fried-rice','pancakes'];
  const ordered=[...priority.map(id=>recipes.find(r=>r.id===id)).filter(Boolean),...recipes.filter(r=>!priority.includes(r.id))];
  $('quickRecipes').replaceChildren();
  for(const recipe of ordered){
