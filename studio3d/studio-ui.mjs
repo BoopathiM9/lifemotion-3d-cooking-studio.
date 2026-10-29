@@ -66,26 +66,38 @@ function displayMedia(job){
  const video = $('video');
  const placeholder = $('placeholder');
  const source = job.status === 'complete' ? job.videoUrl : job.previewUrl;
+ 
+ if ($('cinemaHeading')) {
+   $('cinemaHeading').textContent = job.status === 'complete' ? '🎬 Chef Maya Cooking Film (முழு வீடியோ)' : 'Chef Maya 3D Cooking Cinema';
+ }
+
  if (source && video) {
-   video.muted = false;
-   video.volume = 1.0;
    if (video.getAttribute('src') !== source) {
      video.src = source;
      video.load();
-     video.play().catch(() => {});
+     video.muted = false;
+     video.volume = 1.0;
+     const playPromise = video.play();
+     if (playPromise !== undefined) {
+       playPromise.catch(() => {
+         video.muted = true;
+         video.play().catch(() => {});
+       });
+     }
    }
    if (placeholder) placeholder.hidden = true;
    video.hidden = false;
  }
  $('download').hidden = !(job.status === 'complete' && job.videoUrl);
  if (job.videoUrl) {
-   $('download').href = job.videoUrl + '?download=1';
-   $('download').download = `maya-${job.recipe}-${job.format?.replace(':', 'x') || 'video'}.mp4`;
-   $('download').textContent = 'Download video';
+   $('download').href = job.videoUrl;
+   $('download').target = '_blank';
+   $('download').download = `chef-maya-${job.recipe || 'cooking'}.mp4`;
+   $('download').textContent = '📥 Download Full HD MP4';
  }
- $('filmTitle').textContent = job.title || 'Cooking video';
- $('filmDescription').textContent = job.generic ? 'Generic animation generated. Review the recipe steps before using this lesson.' : job.status === 'complete' ? 'Complete MP4 with English narration and subtitles.' : job.previewUrl ? 'Preview ready. The complete video is still rendering.' : job.status === 'failed' ? 'Generation stopped. Follow the message and try again.' : 'Preparing animation, narration, and subtitles.';
- $('filmBadge').textContent = job.generic ? 'Generic animation' : job.status === 'complete' ? 'Ready' : job.previewUrl ? 'Preview ready' : job.status === 'failed' ? 'Stopped' : 'Generating';
+ $('filmTitle').textContent = job.title || 'Cooking Film';
+ $('filmDescription').textContent = job.status === 'complete' ? 'Complete animated cooking film with synchronized voice narration and subtitles.' : job.status === 'failed' ? 'Generation stopped. Please try again.' : 'Animating Maya in the kitchen...';
+ $('filmBadge').textContent = job.status === 'complete' ? '✨ Movie Ready' : job.status === 'failed' ? 'Stopped' : 'Animating';
 }
 function displayJob(job){
  $('progressArea').hidden=false;const failed=job.status==='failed';$('progressArea').classList.toggle('error',failed);$('stages').hidden=failed;$('progress').hidden=failed;
