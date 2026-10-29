@@ -5,7 +5,7 @@ import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts';
 
 const region = process.env.REMOTION_AWS_REGION || process.env.AWS_REGION || 'us-east-1';
 const bucketName = process.env.REMOTION_BUCKET_NAME || 'remotionlambda-useast1-0wt9pieqmh';
-const functionName = process.env.REMOTION_FUNCTION_NAME || 'remotion-render-4-0-539-mem2048mb-disk2048mb-120sec';
+const functionName = process.env.REMOTION_FUNCTION_NAME || 'remotion-render-4-0-539-mem2048mb-disk2048mb-300sec';
 const serveUrl = process.env.REMOTION_SERVE_URL || 'https://remotionlambda-useast1-0wt9pieqmh.s3.us-east-1.amazonaws.com/sites/cooking-studio/index.html';
 
 const s3 = new S3Client({ region });
@@ -538,7 +538,7 @@ export async function handler(event) {
         height,
         durationInFrames: duration * fps
       },
-      concurrency: 3,
+      concurrency: 4,
       codec: 'h264',
       privacy: 'public'
     });
