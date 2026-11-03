@@ -72,3 +72,4 @@ python animation/qa-media.py
 ```
 
 Chromium uses CPU rendering and FFmpeg uses limited CPU threads. Rendering uses a staging MP4 and validates decoding before moving it to the requested final path. Reusing narration avoids network calls or voice changes.
+

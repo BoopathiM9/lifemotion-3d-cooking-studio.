@@ -643,7 +643,7 @@ export async function handler(event) {
       }
     }
 
-    try {
+try {
       const { renderId } = await renderMediaOnLambda({
         region,
         functionName,
@@ -659,6 +659,7 @@ export async function handler(event) {
           durationInFrames: duration * fps
         },
         concurrency: 2,
+        maxRetries: 3,
         codec: 'h264',
         privacy: 'public'
       });

@@ -314,7 +314,8 @@ export default async function handler(req, res) {
         height,
         durationInFrames: duration * fps
       },
-      concurrency: 2,
+        concurrency: 2,
+        maxRetries: 3,
       codec: 'h264',
       privacy: 'public'
     });
