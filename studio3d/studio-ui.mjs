@@ -313,7 +313,7 @@ $('form').addEventListener('submit', async event => {
   if (!promptVal) return;
 
   if (!setupReady) {
-    errorMessage('Video creation is not ready on this computer yet. Please install the required video tools, then restart LifeMotion.');
+    errorMessage('Video creation is not ready on this computer yet. Please install the required video tools, then restart CookMotion.');
     return;
   }
 

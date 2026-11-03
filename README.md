@@ -1,4 +1,4 @@
-# LifeMotion Cooking Studio
+# CookMotion — Generative Recipe-to-Video Platform
 
 The `studio3d/` website creates narrated cartoon cooking films with Chef Maya. It includes 10 guided recipes, recipe-step previews, local setup checks, generation progress and MP4 downloads.
 
