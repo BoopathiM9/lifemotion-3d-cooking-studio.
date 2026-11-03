@@ -763,7 +763,8 @@ try {
           }
           finalUrl = await getSignedUrl(s3, new GetObjectCommand({
             Bucket: bName,
-            Key: outputKey
+            Key: outputKey,
+            ResponseContentType: 'video/mp4'
           }), { expiresIn: 7200 });
         } catch (e) {
           console.warn('Presigned URL fallback notice:', e.message);

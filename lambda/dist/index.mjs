@@ -139952,7 +139952,8 @@ async function handler(event) {
             }
             finalUrl = await (0, import_s3_request_presigner.getSignedUrl)(s3, new import_client_s313.GetObjectCommand({
               Bucket: bName,
-              Key: outputKey
+              Key: outputKey,
+              ResponseContentType: "video/mp4"
             }), { expiresIn: 7200 });
           } catch (e5) {
             console.warn("Presigned URL fallback notice:", e5.message);
