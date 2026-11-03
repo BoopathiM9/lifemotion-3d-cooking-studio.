@@ -100,17 +100,43 @@ const HumanArm = ({ side, angle, bend, skin = '#f4b995', handPose = 'rest', time
           )}
 
           {handPose === 'stir' && (
-            // Human Hand Wrapped Naturally Around Utensil Handle
-            <g transform={`rotate(${Math.sin(time * 4.6) * 14})`}>
+            // Human Hand Wrapped Naturally Around Utensil Handle Extending into Cookware
+            <g transform={`rotate(${Math.sin(time * 4.6) * 12})`}>
               <ellipse cx="0" cy="8" rx="12" ry="10" fill="#e89e7c" />
-              {/* Wooden Spatula Handle Through Hand */}
-              <line x1="-3" y1="-26" x2="3" y2="38" stroke="#8d5b4c" strokeWidth="9" strokeLinecap="round" />
+              {/* Wooden Spatula Handle Through Hand reaching into pot */}
+              <line x1="-2" y1="-32" x2="4" y2="72" stroke="#8d5b4c" strokeWidth="12" strokeLinecap="round" />
+              {/* Spatula angled paddle blade at bottom */}
+              <path d="M-8,64 L16,68 L12,86 L-12,82 Z" fill="#d4a373" stroke="#6f4e37" strokeWidth="2.5" />
               {/* 4 Curled Fingers Around Handle */}
+              {[2, 7, 12, 17].map((fy, i) => (
+                <rect key={i} x="-9" y={fy - 3} width="18" height="5.5" rx="2.5" fill={skin} stroke="#e89e7c" strokeWidth="0.8" />
+              ))}
+              {/* Opposing Thumb Pressing on Handle */}
+              <path d="M-9,2 Q-15,6 -11,14 Q-5,12 -4,6 Z" fill={skin} />
+            </g>
+          )}
+
+          {handPose === 'pour' && (
+            // Hand holding small tilted seasoning bowl over cookware
+            <g transform="rotate(28)">
+              <ellipse cx="0" cy="8" rx="12" ry="10" fill="#e89e7c" />
+              <path d="M-18,-6 Q0,-20 18,-6 L14,16 Q0,26 -14,16 Z" fill="#f8fafc" stroke="#cbd5e1" strokeWidth="2" />
+              <ellipse cx="0" cy="-6" rx="18" ry="7" fill="#fbbf24" />
+              {[0, 6, 12].map((fy, i) => (
+                <rect key={i} x="-14" y={fy} width="12" height="5" rx="2" fill={skin} />
+              ))}
+            </g>
+          )}
+
+          {handPose === 'spoon' && (
+            // Hand holding long serving spoon transferring food to plate
+            <g transform="rotate(18)">
+              <ellipse cx="0" cy="8" rx="12" ry="10" fill="#e89e7c" />
+              <line x1="-2" y1="-28" x2="6" y2="60" stroke="#8d5b4c" strokeWidth="10" strokeLinecap="round" />
+              <ellipse cx="8" cy="68" rx="16" ry="10" fill="#e2e8f0" stroke="#94a3b8" strokeWidth="2" />
               {[2, 7, 12, 17].map((fy, i) => (
                 <rect key={i} x="-8" y={fy - 3} width="16" height="5.5" rx="2.5" fill={skin} stroke="#e89e7c" strokeWidth="0.8" />
               ))}
-              {/* Opposing Thumb Pressing on Handle */}
-              <path d="M-8,2 Q-14,6 -10,14 Q-5,12 -4,6 Z" fill={skin} />
             </g>
           )}
 
@@ -144,136 +170,151 @@ const HumanArm = ({ side, angle, bend, skin = '#f4b995', handPose = 'rest', time
 /**
  * Human Pixar-Style Chef Maya Character
  * Expressive face, blinking eyes, talking mouth sync, dynamic human posture.
+ * Supports split layering: part="body" (behind counter) and part="arms" (over counter).
  */
-const Maya = ({ x, y, scale, action, p, time, speech }) => {
+const Maya = ({ x, y, scale, action, p, time, speech, cookX, cookY, part = 'all' }) => {
   const verb = action.action || 'show';
   const beat = Math.sin(time * 5.4);
   const breath = Math.sin(time * 2.2) * 2.8;
 
   const isStirring = ['stir', 'mix', 'cook', 'boil', 'simmer', 'fry', 'saute'].includes(verb);
+  const isAdding = ['add', 'pour', 'sprinkle', 'layer', 'place'].includes(verb);
+  const isPlating = ['serve', 'plate', 'transfer'].includes(verb);
   const stirSpeed = time * 4.6;
 
   // Organic Human Posture Dynamics
   const bodyLean = isStirring ? Math.sin(stirSpeed) * 2.2 : 0;
   const headBob = isStirring ? Math.sin(stirSpeed) * 2.4 : Math.sin(time * 2.2) * 2;
-  const headTilt = isStirring ? 6 + Math.cos(stirSpeed) * 2.5 : (verb === 'show' ? Math.sin(time * 2.4) * 4 : 0);
+  const headTilt = isStirring ? 5 + Math.cos(stirSpeed) * 2.2 : (isAdding || isPlating ? 6 : (verb === 'show' ? Math.sin(time * 2.4) * 3 : 0));
 
-  let leftAngle = 24, leftBend = 28, leftPose = 'grip';
-  let rightAngle = -26, rightBend = 25, rightPose = 'rest';
+  let leftAngle = 18, leftBend = 20, leftPose = 'grip';
+  let rightAngle = -16, rightBend = -22, rightPose = 'rest';
 
   if (action.key === 'welcome' || verb === 'show') {
     // Cheerful greeting wave
     leftAngle = -68 + Math.sin(time * 5.2) * 14;
     leftBend = -38;
     leftPose = 'wave';
-    rightAngle = 18;
-    rightBend = 24;
+    rightAngle = -16;
+    rightBend = -22;
     rightPose = 'rest';
   } else if (isStirring) {
-    // Left hand holding pot handle with human grip
-    leftAngle = 38 + bodyLean;
-    leftBend = 34;
-    leftPose = 'grip';
-    // Right arm actively stirring in smooth elliptical orbit
-    rightAngle = -46 + Math.cos(stirSpeed) * 16;
-    rightBend = -40 + Math.sin(stirSpeed) * 14;
-    rightPose = 'stir';
-  } else if (['add', 'pour', 'sprinkle', 'layer', 'place'].includes(verb)) {
-    leftAngle = 36;
-    leftBend = 28;
-    leftPose = 'grip';
-    rightAngle = mix(p, -22, -68);
-    rightBend = mix(p, 12, -50);
-    rightPose = 'rest';
-  } else if (['serve', 'plate', 'transfer'].includes(verb)) {
-    leftAngle = 20;
+    // Left hand holding pot handle firmly
+    leftAngle = 18 + bodyLean;
     leftBend = 22;
-    leftPose = 'rest';
-    rightAngle = mix(p, -48, 38);
-    rightBend = mix(p, -38, 28);
+    leftPose = 'grip';
+    // Right arm actively stirring inside the pot in smooth elliptical orbit
+    rightAngle = -22 + Math.cos(stirSpeed) * 9;
+    rightBend = -26 + Math.sin(stirSpeed) * 8;
     rightPose = 'stir';
+  } else if (isAdding) {
+    leftAngle = 18;
+    leftBend = 22;
+    leftPose = 'grip';
+    rightAngle = mix(p, -18, -10);
+    rightBend = mix(p, -30, -18);
+    rightPose = verb === 'pour' ? 'pour' : 'pour';
+  } else if (isPlating) {
+    leftAngle = 14;
+    leftBend = 16;
+    leftPose = 'grip';
+    rightAngle = mix(p, -24, -62);
+    rightBend = mix(p, -24, -46);
+    rightPose = 'spoon';
   }
 
   const blink = (time % 3.6) > 3.42 ? 0.1 : 1;
   const mouth = Math.max(0.1, Math.min(1, speech * 6));
+  const lookDown = isStirring || isAdding || isPlating;
+  const gazeX = lookDown ? 2.5 : 0;
+  const gazeY = lookDown ? 3.5 : 0;
+
+  const renderBody = part === 'all' || part === 'body';
+  const renderArms = part === 'all' || part === 'arms';
 
   return (
     <g transform={`translate(${x} ${y + breath}) scale(${scale})`}>
-      {/* Ground drop shadow */}
-      <ellipse cx="0" cy="74" rx="66" ry="18" fill="rgba(14, 40, 30, 0.18)" />
+      {/* 1. Behind Counter: Torso, Head, Apron (Cleanly masked by counter slab) */}
+      {renderBody && (
+        <g>
+          {/* Chef Jacket Body extending down behind counter */}
+          <g transform={`rotate(${bodyLean})`}>
+            <path d="M-52,-42 Q0,-68 52,-42 L52,140 L-52,140 Z" fill="#ffffff" stroke="#e0ece5" strokeWidth="3" />
+            {/* Apron - Cheerful Mint / Emerald */}
+            <path d="M-34,-38 Q0,-50 34,-38 L34,130 L-34,130 Z" fill="#38a169" />
+            {/* Pocket */}
+            <path d="M-22,14 Q0,24 22,14 L22,50 Q0,58 -22,50 Z" fill="#2f855a" />
+            {/* Apron Straps & Buttons */}
+            <circle cx="-13" cy="-24" r="4" fill="#ffd166" />
+            <circle cx="13" cy="-24" r="4" fill="#ffd166" />
+            {/* Red Chef Neckerchief */}
+            <path d="M-20,-44 L0,-24 20,-44" fill="none" stroke="#e63946" strokeWidth="9" strokeLinecap="round" />
+          </g>
 
-      {/* Human Arms with Contoured Sleeve and Curved Fingers */}
-      <HumanArm side={-1} angle={leftAngle} bend={leftBend} handPose={leftPose} time={time} />
-      <HumanArm side={1} angle={rightAngle} bend={rightBend} handPose={rightPose} time={time} />
+          {/* Head with Natural Nodding & Eye Gazing Toward Food */}
+          <g transform={`translate(0 ${headBob}) rotate(${headTilt})`}>
+            {/* Hair Base */}
+            <ellipse cx="0" cy="-114" rx="70" ry="68" fill="#4a2820" />
+            {/* Cute Pigtails / Buns */}
+            <ellipse cx="-66" cy="-102" rx="28" ry="36" fill="#5c3228" />
+            <ellipse cx="66" cy="-102" rx="28" ry="36" fill="#5c3228" />
+            <circle cx="-62" cy="-98" r="8" fill="#e63946" />
+            <circle cx="62" cy="-98" r="8" fill="#e63946" />
 
-      {/* Chef Jacket Body with Subtle Organic Torso Lean */}
-      <g transform={`rotate(${bodyLean})`}>
-        <path d="M-52,-42 Q0,-68 52,-42 L46,62 Q0,82 -46,62 Z" fill="#ffffff" stroke="#e0ece5" strokeWidth="3" />
-        {/* Apron - Cheerful Mint / Emerald */}
-        <path d="M-34,-38 Q0,-50 34,-38 L30,54 Q0,66 -30,54 Z" fill="#38a169" />
-        {/* Pocket */}
-        <path d="M-22,14 Q0,24 22,14 L22,42 Q0,50 -22,42 Z" fill="#2f855a" />
-        {/* Apron Straps & Buttons */}
-        <circle cx="-13" cy="-24" r="4" fill="#ffd166" />
-        <circle cx="13" cy="-24" r="4" fill="#ffd166" />
-        {/* Red Chef Neckerchief */}
-        <path d="M-20,-44 L0,-24 20,-44" fill="none" stroke="#e63946" strokeWidth="9" strokeLinecap="round" />
-      </g>
+            {/* Face Skin */}
+            <ellipse cx="0" cy="-108" rx="60" ry="58" fill="#f4b995" />
 
-      {/* Head with Natural Nodding & Eye Gazing Toward Food */}
-      <g transform={`translate(0 ${headBob}) rotate(${headTilt})`}>
-        {/* Hair Base */}
-        <ellipse cx="0" cy="-114" rx="70" ry="68" fill="#4a2820" />
-        {/* Cute Pigtails / Buns */}
-        <ellipse cx="-66" cy="-102" rx="28" ry="36" fill="#5c3228" />
-        <ellipse cx="66" cy="-102" rx="28" ry="36" fill="#5c3228" />
-        <circle cx="-62" cy="-98" r="8" fill="#e63946" />
-        <circle cx="62" cy="-98" r="8" fill="#e63946" />
+            {/* Front Hair Bangs */}
+            <path d="M-58,-126 Q-36,-178 0,-154 Q36,-178 58,-126 Q30,-148 0,-138 Q-30,-148 -58,-126Z" fill="#3e1f18" />
 
-        {/* Face Skin */}
-        <ellipse cx="0" cy="-108" rx="60" ry="58" fill="#f4b995" />
+            {/* Big Cartoon Eyes - Gazing at Cookware When Cooking */}
+            <g transform={`translate(${gazeX} ${gazeY})`}>
+              {/* Eye whites */}
+              <ellipse cx="-23" cy="-110" rx="13" ry={17 * blink} fill="#ffffff" stroke="#2d3748" strokeWidth="2" />
+              <ellipse cx="23" cy="-110" rx="13" ry={17 * blink} fill="#ffffff" stroke="#2d3748" strokeWidth="2" />
+              {/* Irises - Bright Emerald Green */}
+              <circle cx={-20} cy={-109} r={9 * blink} fill="#2f855a" />
+              <circle cx={26} cy={-109} r={9 * blink} fill="#2f855a" />
+              {/* Pupils */}
+              <circle cx={-19} cy={-109} r={5 * blink} fill="#1a202c" />
+              <circle cx={27} cy={-109} r={5 * blink} fill="#1a202c" />
+              {/* Shiny Eye Highlights */}
+              <circle cx="-24" cy="-114" r={3 * blink} fill="#ffffff" />
+              <circle cx="22" cy="-114" r={3 * blink} fill="#ffffff" />
+              <circle cx="-18" cy="-105" r={1.6 * blink} fill="#ffffff" />
+              <circle cx="28" cy="-105" r={1.6 * blink} fill="#ffffff" />
+            </g>
 
-        {/* Front Hair Bangs */}
-        <path d="M-58,-126 Q-36,-178 0,-154 Q36,-178 58,-126 Q30,-148 0,-138 Q-30,-148 -58,-126Z" fill="#3e1f18" />
+            {/* Cute Eyebrows */}
+            <path d="M-34,-130 Q-23,-136 -12,-130" fill="none" stroke="#3e1f18" strokeWidth="3.5" strokeLinecap="round" />
+            <path d="M12,-130 Q23,-136 34,-130" fill="none" stroke="#3e1f18" strokeWidth="3.5" strokeLinecap="round" />
 
-        {/* Big Cartoon Eyes - Gazing at Cookware When Cooking */}
-        <g transform={isStirring ? "translate(0 3)" : ""}>
-          {/* Eye whites */}
-          <ellipse cx="-23" cy="-110" rx="13" ry={17 * blink} fill="#ffffff" stroke="#2d3748" strokeWidth="2" />
-          <ellipse cx="23" cy="-110" rx="13" ry={17 * blink} fill="#ffffff" stroke="#2d3748" strokeWidth="2" />
-          {/* Irises - Bright Emerald Green */}
-          <circle cx={isStirring ? -21 : -20} cy={isStirring ? -107 : -109} r={9 * blink} fill="#2f855a" />
-          <circle cx={isStirring ? 25 : 26} cy={isStirring ? -107 : -109} r={9 * blink} fill="#2f855a" />
-          {/* Pupils */}
-          <circle cx={isStirring ? -20 : -19} cy={isStirring ? -107 : -109} r={5 * blink} fill="#1a202c" />
-          <circle cx={isStirring ? 26 : 27} cy={isStirring ? -107 : -109} r={5 * blink} fill="#1a202c" />
-          {/* Shiny Eye Highlights */}
-          <circle cx="-24" cy="-114" r={3 * blink} fill="#ffffff" />
-          <circle cx="22" cy="-114" r={3 * blink} fill="#ffffff" />
-          <circle cx="-18" cy="-105" r={1.6 * blink} fill="#ffffff" />
-          <circle cx="28" cy="-105" r={1.6 * blink} fill="#ffffff" />
+            {/* Rosy Blush Cheeks */}
+            <ellipse cx="-40" cy="-90" rx="12" ry="6" fill="#ff758f" opacity="0.65" />
+            <ellipse cx="40" cy="-90" rx="12" ry="6" fill="#ff758f" opacity="0.65" />
+
+            {/* Cute Smile / Talking Mouth */}
+            <ellipse cx="0" cy="-78" rx={12} ry={4 + mouth * 8} fill="#9b2226" />
+            {mouth > 0.3 && <path d="M-8,-79 Q0,-74 8,-79" stroke="#ffffff" strokeWidth="3" fill="none" />}
+
+            {/* Puffy Chef Hat */}
+            <g transform="translate(0 -168)">
+              <path d="M-52,-6 Q-58,-34 -30,-44 Q-22,-74 5,-54 Q30,-75 42,-46 Q70,-38 55,-6Z" fill="#ffffff" stroke="#e2e8f0" strokeWidth="4" />
+              <rect x="-52" y="-14" width="104" height="24" rx="11" fill="#ffffff" stroke="#cbd5e0" strokeWidth="2" />
+              <circle cx="0" cy="-2" r="7" fill="#ffd166" />
+              <path d="M0,-6 L1.8,-1.5 L6.5,-1.5 L2.7,1.2 L4.2,5.8 L0,3 L-4.2,5.8 L-2.7,1.2 L-6.5,-1.5 L-1.8,-1.5 Z" fill="#e76f51" />
+            </g>
+          </g>
         </g>
+      )}
 
-        {/* Cute Eyebrows */}
-        <path d="M-34,-130 Q-23,-136 -12,-130" fill="none" stroke="#3e1f18" strokeWidth="3.5" strokeLinecap="round" />
-        <path d="M12,-130 Q23,-136 34,-130" fill="none" stroke="#3e1f18" strokeWidth="3.5" strokeLinecap="round" />
-
-        {/* Rosy Blush Cheeks */}
-        <ellipse cx="-40" cy="-90" rx="12" ry="6" fill="#ff758f" opacity="0.65" />
-        <ellipse cx="40" cy="-90" rx="12" ry="6" fill="#ff758f" opacity="0.65" />
-
-        {/* Cute Smile / Talking Mouth */}
-        <ellipse cx="0" cy="-78" rx={12} ry={4 + mouth * 8} fill="#9b2226" />
-        {mouth > 0.3 && <path d="M-8,-79 Q0,-74 8,-79" stroke="#ffffff" strokeWidth="3" fill="none" />}
-
-        {/* Puffy Chef Hat */}
-        <g transform="translate(0 -168)">
-          <path d="M-52,-6 Q-58,-34 -30,-44 Q-22,-74 5,-54 Q30,-75 42,-46 Q70,-38 55,-6Z" fill="#ffffff" stroke="#e2e8f0" strokeWidth="4" />
-          <rect x="-52" y="-14" width="104" height="24" rx="11" fill="#ffffff" stroke="#cbd5e0" strokeWidth="2" />
-          <circle cx="0" cy="-2" r="7" fill="#ffd166" />
-          <path d="M0,-6 L1.8,-1.5 L6.5,-1.5 L2.7,1.2 L4.2,5.8 L0,3 L-4.2,5.8 L-2.7,1.2 L-6.5,-1.5 L-1.8,-1.5 Z" fill="#e76f51" />
+      {/* 2. Reaching Over Counter: Human Arms & Utensils */}
+      {renderArms && (
+        <g>
+          <HumanArm side={-1} angle={leftAngle} bend={leftBend} handPose={leftPose} time={time} />
+          <HumanArm side={1} angle={rightAngle} bend={rightBend} handPose={rightPose} time={time} />
         </g>
-      </g>
+      )}
     </g>
   );
 };
@@ -530,24 +571,15 @@ const CookingAction = ({ plan, x, y, plateX, action, ingredient, p, time, portra
       {/* (a) Smooth Elliptical Orbital Stirring with Spatula */}
       {isCooking && (
         <g transform={`translate(${stirOrbitX} ${stirOrbitY})`}>
-          {/* Wooden Spatula Handle connecting smoothly to Maya's hand */}
-          <line x1={x - 70} y1={y - 130} x2={x + 12} y2={y - 20} stroke="#8d5b4c" strokeWidth="15" strokeLinecap="round" />
-          {/* Spatula Blade Head */}
-          <path d={`M${x - 6},${y - 38} L${x + 28},${y - 18} L${x + 20},${y - 4} L${x - 14},${y - 24} Z`} fill="#d4a373" stroke="#6f4e37" strokeWidth="3" />
-          {/* Sizzle circular sauce trail */}
-          <ellipse cx={x} cy={y - 20} rx="40" ry="14" fill="none" stroke="#fff3b0" strokeWidth="4.5" opacity="0.75" />
+          {/* Sizzle circular sauce trail inside cookware */}
+          <ellipse cx={x} cy={y - 20} rx="38" ry="13" fill="none" stroke="#fff3b0" strokeWidth="4.5" opacity={0.75 + pulse * 0.15} />
         </g>
       )}
 
-      {/* (b) Pouring Jug with Streaming Sauce */}
+      {/* (b) Pouring Stream into Cookware */}
       {verb === 'pour' && (
         <g>
-          <g transform={`translate(${x - 42} ${y - 150}) rotate(${mix(p, 5, 52)})`}>
-            <rect x="-42" y="-36" width="76" height="72" rx="16" fill="#ffb703" stroke="#fb8500" strokeWidth="4" />
-            <path d="M30,-18 L74,-4 L30,12 Z" fill="#ffb703" stroke="#fb8500" strokeWidth="3" />
-            <path d="M-40,-20 Q-68,0 -40,20" fill="none" stroke="#fb8500" strokeWidth="8" strokeLinecap="round" />
-          </g>
-          <path d={`M${x + 12},${y - 110} Q${x + 25},${y - 65} ${x},${y - 28}`} fill="none" stroke="#ffb703" strokeWidth={p > 0.15 && p < 0.92 ? 14 : 0} strokeLinecap="round" />
+          <path d={`M${x - 22},${y - 95} Q${x - 8},${y - 55} ${x},${y - 24}`} fill="none" stroke="#ffb703" strokeWidth={p > 0.15 && p < 0.92 ? 12 : 0} strokeLinecap="round" />
           {p > 0.25 && p < 0.95 && (
             <ellipse cx={x} cy={y - 24} rx="26" ry="10" fill="none" stroke="#fff3b0" strokeWidth="4" opacity={pulse * 0.5 + 0.5} />
           )}
@@ -618,12 +650,15 @@ const Kitchen = ({ width, height, plan, lesson, state, time, speech }) => {
   const portrait = height > width;
   const isTamil = plan.voice?.startsWith('ta-');
 
+  // Realistic Proportional Layout Anchors
   const counter = portrait ? height * 0.68 : height * 0.70;
-  const cookX = portrait ? width * 0.52 : width * 0.60;
-  const plateX = portrait ? width * 0.80 : width * 0.86;
-  const mayaX = portrait ? width * 0.28 : width * 0.32;
-  const mayaY = portrait ? height * 0.44 : height * 0.52;
-  const mayaScale = portrait ? 1.25 : 1.42;
+  const cookX = portrait ? width * 0.50 : width * 0.52;
+  const plateX = portrait ? width * 0.82 : width * 0.84;
+  const bowlX = portrait ? width * 0.16 : width * 0.18;
+  // Position Maya right at the cookware station: her hands directly grip handles and stir the pot
+  const mayaX = portrait ? cookX - 90 : cookX - 110;
+  const mayaY = counter - (portrait ? 88 : 95);
+  const mayaScale = portrait ? 1.25 : 1.35;
 
   const ingredient =
     (plan.ingredients || []).find(item => item.id === state.action.ingredient) ||
@@ -672,21 +707,35 @@ const Kitchen = ({ width, height, plan, lesson, state, time, speech }) => {
         <line x1="-85" y1="0" x2="85" y2="0" stroke="#0284c7" strokeWidth="5" />
       </g>
 
-      {/* 3. Kitchen Countertop Surface */}
+      {/* 3. Human Chef Maya - Body, Apron, and Head (Standing Naturally Behind Counter) */}
+      <Maya
+        x={mayaX}
+        y={mayaY}
+        scale={mayaScale}
+        action={state.action}
+        p={state.p}
+        time={time}
+        speech={speech}
+        cookX={cookX}
+        cookY={counter - 8}
+        part="body"
+      />
+
+      {/* 4. Kitchen Countertop Surface (Cleanly occludes Maya's waist/legs like an authentic island counter) */}
       <g>
         <rect x="0" y={counter} width={width} height={height - counter} fill="#64748b" />
         <rect x="0" y={counter} width={width} height="40" fill="url(#counterSurface)" />
         <rect x="0" y={counter + 40} width={width} height="12" fill="url(#counterLip)" />
       </g>
 
-      {/* 4. Cheerful Ingredient Bowl on Counter */}
-      <g transform={`translate(${width * 0.14} ${counter + 8})`}>
+      {/* 5. Cheerful Ingredient Bowl on Counter */}
+      <g transform={`translate(${bowlX} ${counter + 8})`}>
         <path d="M-60,4 Q-60,38 0,38 Q60,38 60,4 Z" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="4" />
         <ellipse cx="0" cy="4" rx="60" ry="16" fill="#60a5fa" stroke="#1d4ed8" strokeWidth="3" />
         <ellipse cx="0" cy="-2" rx="52" ry="13" fill={ingredient?.color || '#f59e0b'} />
       </g>
 
-      {/* 5. Authentic Cooking Action & Distinct Cookware */}
+      {/* 6. Authentic Cooking Action & Distinct Cookware (Stove, Pot, Food, Plate) */}
       <g filter="url(#softShadow)">
         <CookingAction
           plan={plan}
@@ -702,7 +751,7 @@ const Kitchen = ({ width, height, plan, lesson, state, time, speech }) => {
         />
       </g>
 
-      {/* 6. Human Chef Maya with Natural Arm and Posture */}
+      {/* 7. Chef Maya's Articulated Arms & Utensils (Reaching Over Counter to Grip Handles & Stir Cookware) */}
       <Maya
         x={mayaX}
         y={mayaY}
@@ -713,6 +762,7 @@ const Kitchen = ({ width, height, plan, lesson, state, time, speech }) => {
         speech={speech}
         cookX={cookX}
         cookY={counter - 8}
+        part="arms"
       />
     </svg>
   );
