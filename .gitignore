@@ -9,3 +9,5 @@ backups/
 Thumbs.db
 
 lambda-dist/
+.remotion*
+

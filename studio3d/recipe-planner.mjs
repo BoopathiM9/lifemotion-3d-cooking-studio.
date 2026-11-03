@@ -182,6 +182,7 @@ export async function matchLocalRecipe(prompt = '') {
     { id: 'masala-dosa', pattern: /\b(dosa|masala dosa)\b/i },
     { id: 'pancakes', pattern: /\b(pancake|pancakes|crepe)\b/i },
     { id: 'vegetable-sandwich', pattern: /\b(sandwich|sandwiches|veggie sandwich)\b/i },
+    { id: 'vegetable-biryani', pattern: /\b(veg biryani|vegetable biryani|veggie biryani)\b/i },
     { id: 'chicken-biryani', pattern: /\b(biryani|biriyani|chicken biryani)\b/i },
     { id: 'vegetable-fried-rice', pattern: /\b(fried rice|fried-rice)\b/i },
     { id: 'tomato-pasta', pattern: /\b(pasta|spaghetti|macaroni)\b/i },

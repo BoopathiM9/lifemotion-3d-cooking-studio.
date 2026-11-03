@@ -1,0 +1,82 @@
+{
+  "title": "Vegetable Biryani",
+  "recipeId": "vegetable-biryani",
+  "genericVisualization": false,
+  "primaryEquipment": "pot",
+  "utensil": "spoon",
+  "isColdDish": false,
+  "equipment": ["pot", "bowl", "spoon", "plate"],
+  "ingredients": [
+    { "id": "rice", "name": "Basmati Rice", "category": "grain", "state": "long-grain", "color": "#fffbeb", "quantity": "2 cups" },
+    { "id": "veggies", "name": "Carrots, Peas & Potatoes", "category": "vegetable", "state": "diced", "color": "#22c55e", "quantity": "2 cups" },
+    { "id": "onion", "name": "Sliced Onions", "category": "vegetable", "state": "sliced", "color": "#be185d", "quantity": "2 medium" },
+    { "id": "spices", "name": "Biryani Spices & Saffron", "category": "spice", "state": "ground", "color": "#b45309", "quantity": "2 tablespoons" },
+    { "id": "oil", "name": "Pure Ghee & Oil", "category": "oil", "state": "liquid", "color": "#facc15", "quantity": "3 tablespoons" }
+  ],
+  "steps": [
+    {
+      "key": "welcome",
+      "action": "welcome",
+      "target": "maya",
+      "text": "Hi, little chefs! I'm Maya. Today, we're making colourful Vegetable Biryani!"
+    },
+    {
+      "key": "safe",
+      "action": "safe",
+      "target": "pot",
+      "text": "First, wash your hands clean. Ask a grown-up to help around the warm stove and deep pots."
+    },
+    {
+      "key": "prep",
+      "action": "prep",
+      "target": "bowl",
+      "text": "Get your aromatic basmati rice, crunchy carrots, tender green peas, and spices ready!"
+    },
+    {
+      "key": "wash_rice",
+      "action": "wash",
+      "target": "bowl",
+      "ingredient": "rice",
+      "text": "Rinse our basmati rice in cool water and let it soak gently."
+    },
+    {
+      "key": "fry_onions",
+      "action": "fry",
+      "target": "pot",
+      "ingredient": "onion",
+      "text": "Heat golden ghee in our handi pot. Fry sliced onions until sweet and caramelized."
+    },
+    {
+      "key": "saute_veggies",
+      "action": "cook",
+      "target": "pot",
+      "ingredient": "veggies",
+      "text": "Tumble in diced carrots and sweet green peas with warm biryani spices."
+    },
+    {
+      "key": "layer_rice",
+      "action": "layer",
+      "target": "pot",
+      "ingredient": "rice",
+      "text": "Gently layer our drained basmati rice right over the spiced vegetables."
+    },
+    {
+      "key": "cover_dum",
+      "action": "cover",
+      "target": "pot",
+      "text": "Cover the pot tightly with the lid so the rice steams tender and fluffy."
+    },
+    {
+      "key": "serve",
+      "action": "serve",
+      "target": "plate",
+      "text": "Spoon vibrant Vegetable Biryani onto our serving plate. Look at all the beautiful colours!"
+    },
+    {
+      "key": "ending",
+      "action": "ending",
+      "target": "maya",
+      "text": "Great job, little chefs! Enjoy your delicious Vegetable Biryani!"
+    }
+  ]
+}

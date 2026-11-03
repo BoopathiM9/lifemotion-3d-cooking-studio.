@@ -60,6 +60,8 @@
               <label for="voice" class="input-label">Narration Voice</label>
               <div class="select-wrapper">
                 <select id="voice" name="voice">
+                  <option value="en-IN-NeerjaExpressiveNeural" selected>Neerja · Expressive &amp; Clear (Indian English)</option>
+                  <option value="en-IN-NeerjaNeural">Neerja · Warm Storyteller (Indian English)</option>
                   <option value="en-US-JennyNeural">Jenny · Warm &amp; Friendly (English)</option>
                   <option value="en-US-AriaNeural">Aria · Bright &amp; Cheerful (English)</option>
                   <option value="ta-IN-PallaviNeural">Pallavi · இயற்கை தமிழ் குரல் (Tamil)</option>
@@ -78,13 +80,53 @@
           </div>
 
           <div class="form-actions">
+            <button id="previewPlan" class="secondary-button" type="button">
+              <span>📋</span> Preview steps
+            </button>
             <button id="generate" class="primary-button" type="submit">
               <span id="generateText">Generate Cooking Film</span>
               <span class="btn-arrow" aria-hidden="true">→</span>
             </button>
           </div>
-          <p id="formHint" class="form-hint">Type any dish name. Chef Maya automatically structures ingredients, voice narration, and 3D visual steps.</p>
+          <p id="formHint" class="form-hint">Type any dish name (e.g. Chicken Biryani, Dosa, Sushi, Pizza, Pasta). AI creates structured ingredients and scenes.</p>
         </form>
+
+        <!-- RECIPE & STORYBOARD PREVIEW PANEL -->
+        <section id="planPanel" class="plan-panel" hidden>
+          <div class="subheading-row">
+            <h3 id="planTitle">Recipe Plan</h3>
+            <span id="planSourceBadge" class="source-pill">Verified Recipe</span>
+          </div>
+
+          <div id="assetWarningBox" class="asset-warning-box" hidden>
+            <span class="warning-icon">⚠️</span>
+            <span id="assetWarningText">Note: Some visual assets will use illustrated cartoon approximations.</span>
+          </div>
+
+          <div class="preview-subheading">
+            <strong>Ingredients &amp; Quantities</strong>
+          </div>
+          <div id="ingredientsChips" class="ingredients-chip-grid"></div>
+
+          <div class="preview-subheading">
+            <strong>Cooking Steps</strong>
+          </div>
+          <ol id="planSteps"></ol>
+
+          <div id="editRecipeBox" class="edit-recipe-box" hidden>
+            <label for="recipeEditorInput" class="input-label">Edit Recipe JSON or Instructions:</label>
+            <textarea id="recipeEditorInput" rows="6"></textarea>
+          </div>
+
+          <div class="approval-bar">
+            <button id="editRecipeBtn" class="secondary-button" type="button">
+              <span>✏️</span> Edit Recipe
+            </button>
+            <button id="confirmGenerateBtn" class="primary-button" type="button">
+              <span>🎬</span> Approve &amp; Generate 3D Video →
+            </button>
+          </div>
+        </section>
 
         <!-- PROGRESS SECTION -->
         <section id="progressArea" class="progress-area" aria-live="polite" hidden>

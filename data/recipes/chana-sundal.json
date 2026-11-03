@@ -1,0 +1,79 @@
+{
+  "title": "Chana Sundal",
+  "recipeId": "chana-sundal",
+  "aliases": ["sundal", "chana sundal", "sandel", "kondakadalai", "chickpea sundal"],
+  "genericVisualization": false,
+  "primaryEquipment": "pan",
+  "utensil": "spoon",
+  "isColdDish": false,
+  "equipment": ["pan", "bowl", "spoon", "plate"],
+  "ingredients": [
+    { "id": "chickpeas", "name": "Cooked Chickpeas", "category": "legume", "state": "cooked", "color": "#f59e0b" },
+    { "id": "coconut", "name": "Grated Coconut", "category": "vegetable", "state": "shredded", "color": "#ffffff" },
+    { "id": "mustard_dal", "name": "Mustard Seeds & Urad Dal", "category": "spice", "state": "solid", "color": "#1f2937" },
+    { "id": "aromatics", "name": "Curry Leaves & Hing", "category": "spice", "state": "fresh", "color": "#16a34a" },
+    { "id": "oil", "name": "Cooking Oil", "category": "liquid", "state": "liquid", "color": "#facc15" }
+  ],
+  "steps": [
+    {
+      "key": "welcome",
+      "action": "welcome",
+      "target": "plate",
+      "text": "Hi, little chefs! I'm Maya. Today, we're making tasty Chana Sundal!"
+    },
+    {
+      "key": "safe",
+      "action": "safe",
+      "target": "pan",
+      "text": "First, wash your hands. Ask a grown-up to handle the hot stove."
+    },
+    {
+      "key": "prep",
+      "action": "prep",
+      "target": "bowl",
+      "text": "Get your cooked chickpeas, grated coconut, and spices ready!"
+    },
+    {
+      "key": "heat",
+      "action": "heat",
+      "target": "pan",
+      "text": "Heat a little oil. Add mustard seeds and urad dal. Listen for the crackle!"
+    },
+    {
+      "key": "flavour",
+      "action": "flavour",
+      "target": "pan",
+      "text": "Add curry leaves, a little green chilli, and a pinch of asafoetida."
+    },
+    {
+      "key": "add_chickpeas",
+      "action": "add_chickpeas",
+      "target": "pan",
+      "text": "Now add the cooked chickpeas and a pinch of salt. Stir gently."
+    },
+    {
+      "key": "mix",
+      "action": "mix",
+      "target": "pan",
+      "text": "Mix everything over medium heat so the chickpeas soak up the flavour."
+    },
+    {
+      "key": "coconut",
+      "action": "coconut",
+      "target": "pan",
+      "text": "Turn off the stove. Sprinkle in freshly grated coconut and mix."
+    },
+    {
+      "key": "serve",
+      "action": "serve",
+      "target": "plate",
+      "text": "Scoop the sundal onto a plate. Look how yummy it is!"
+    },
+    {
+      "key": "ending",
+      "action": "ending",
+      "target": "maya",
+      "text": "Great job, little chefs! Enjoy your delicious sundal!"
+    }
+  ]
+}

@@ -52,7 +52,7 @@ try {
     audioCodec: 'aac',
     pixelFormat: 'yuv420p',
     crf: 20,
-    concurrency: 1,
+    concurrency: Number(args.concurrency || 2),
     overwrite: true,
     outputLocation: visual,
     inputProps,

@@ -7,21 +7,71 @@
   "isColdDish": false,
   "equipment": ["pot", "bowl", "spoon", "plate"],
   "ingredients": [
-    { "id": "rice", "name": "Basmati Rice", "category": "grain", "state": "uncooked", "color": "#fbfbf0" },
-    { "id": "chicken", "name": "Chicken Pieces", "category": "protein", "state": "pieces", "color": "#d69a68" },
-    { "id": "onion", "name": "Golden Onions", "category": "vegetable", "state": "sliced", "color": "#b57c3d" },
-    { "id": "spices", "name": "Aromatic Spices", "category": "spice", "state": "ground", "color": "#c4672f" },
-    { "id": "oil", "name": "Ghee and Oil", "category": "liquid", "state": "liquid", "color": "#dfb445" }
+    { "id": "chicken", "name": "Chicken Pieces", "category": "poultry", "state": "pieces", "color": "#d97706", "quantity": "500g" },
+    { "id": "rice", "name": "Basmati Rice", "category": "grain", "state": "long-grain", "color": "#fffbeb", "quantity": "2 cups" },
+    { "id": "onion", "name": "Golden Onions", "category": "vegetable", "state": "sliced", "color": "#be185d", "quantity": "2 medium" },
+    { "id": "spices", "name": "Aromatic Spices", "category": "spice", "state": "ground", "color": "#b45309", "quantity": "2 tablespoons" },
+    { "id": "oil", "name": "Ghee and Oil", "category": "oil", "state": "liquid", "color": "#facc15", "quantity": "3 tablespoons" }
   ],
   "steps": [
-    { "key": "welcome", "action": "show", "target": "pot", "text": "Hello, little chefs! I'm Chef Maya. Today we are cooking fragrant chicken biryani!" },
-    { "key": "safe", "action": "show", "target": "pot", "text": "Wash your hands first. Remember that hot stoves and deep pots must be handled by a grown-up." },
-    { "key": "ingredients", "action": "show", "ingredient": "rice", "target": "bowl", "text": "Look at our fragrant basmati rice, tender chicken pieces, sliced onions, and golden spices." },
-    { "key": "saute_onions", "action": "add", "ingredient": "onion", "source": "bowl", "target": "pot", "text": "Add the sliced onions into our warm cooking pot and saute until golden brown." },
-    { "key": "add_chicken", "action": "add", "ingredient": "chicken", "source": "bowl", "target": "pot", "text": "Carefully add the chicken pieces with the warm aromatic spices into the pot." },
-    { "key": "mix_chicken", "action": "mix", "ingredient": "chicken", "target": "pot", "text": "Stir everything together so the spices coat all the chicken with wonderful flavor." },
-    { "key": "layer_rice", "action": "layer", "ingredient": "rice", "source": "bowl", "target": "pot", "text": "Gently layer the long grain basmati rice right over our spiced chicken." },
-    { "key": "cook_biryani", "action": "cook", "ingredient": "rice", "target": "pot", "text": "Cover the pot and let the biryani steam gently until the rice is fluffy and tender." },
-    { "key": "serve", "action": "serve", "source": "pot", "target": "plate", "text": "Spoon the steaming chicken biryani onto our serving plate. It smells incredible!" }
+    {
+      "key": "welcome",
+      "action": "welcome",
+      "target": "maya",
+      "text": "Hello, little chefs! I'm Chef Maya. Today we are cooking fragrant chicken biryani!"
+    },
+    {
+      "key": "safe",
+      "action": "safe",
+      "target": "pot",
+      "text": "Wash your hands thoroughly with soap. Hot stoves and raw chicken must always be handled by a grown-up."
+    },
+    {
+      "key": "ingredients",
+      "action": "prep",
+      "target": "bowl",
+      "text": "Look at our fragrant basmati rice, tender chicken pieces, sliced onions, and golden spices."
+    },
+    {
+      "key": "fry_onions",
+      "action": "fry",
+      "target": "pot",
+      "ingredient": "onion",
+      "text": "Heat golden ghee in our deep cooking pot and fry sliced onions until golden brown."
+    },
+    {
+      "key": "marinate_chicken",
+      "action": "marinate",
+      "target": "bowl",
+      "ingredient": "chicken",
+      "text": "Mix tender chicken pieces with rich aromatic spices so every piece is coated."
+    },
+    {
+      "key": "cook_chicken",
+      "action": "cook",
+      "target": "pot",
+      "ingredient": "chicken",
+      "text": "Carefully add the spiced chicken pieces into the hot pot and cook gently until sizzling."
+    },
+    {
+      "key": "layer_rice",
+      "action": "layer",
+      "target": "pot",
+      "ingredient": "rice",
+      "text": "Gently layer our drained basmati rice right over the cooked chicken and scatter fresh mint."
+    },
+    {
+      "key": "cover_dum",
+      "action": "cover",
+      "target": "pot",
+      "ingredient": "rice",
+      "text": "Cover the pot tightly with the lid. Let the biryani steam on low heat so the rice cooks fluffy."
+    },
+    {
+      "key": "serve",
+      "action": "serve",
+      "target": "plate",
+      "text": "Spoon the steaming chicken biryani onto our serving plate. It smells incredible!"
+    }
   ]
 }

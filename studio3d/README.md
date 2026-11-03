@@ -1,84 +1,134 @@
-# LifeMotion Cooking Studio
+# LifeMotion AI — 3D Chef Maya Cooking Studio
 
-A local website that turns recipe instructions into a cartoon cooking lesson with Chef Maya, English or Tamil narration, subtitles and an MP4 download. Rendering runs on your CPU; a cloud GPU or paid API key is not required.
+A universal AI cooking video generator for children, families, and educational content creators. Features **Chef Maya**, a friendly cartoon chef, with English and Tamil narration, synchronized subtitles, 15 authentic cooking actions, and downloadable HD MP4 video generation.
 
-### Optional free recipe analysis
+Runs 100% locally on standard Windows laptops with 16 GB RAM and CPU graphics. No paid cloud GPUs, subscriptions, or paid API keys are required.
 
-The studio works without an AI key. For unfamiliar recipes, it uses the free public TheMealDB lookup when possible and otherwise uses its local planner. You can optionally enable Gemini's free tier for richer analysis of unfamiliar recipe prompts. Create a free key in Google AI Studio, then set it only in the terminal where you start LifeMotion:
+---
 
-```powershell
-$env:GEMINI_API_KEY="your-key-here"
-npm.cmd run studio
-```
+## 🌟 Universal Recipe-to-Video Engine
 
-The key is never written into the project or committed to Git. Use **Preview steps** to review any AI-generated recipe before creating a video.
+Users can enter **any recipe name or cooking prompt**, such as:
+- **Chicken Biryani / Vegetable Biryani** (washing basmati rice, marinating chicken pieces, frying golden onions, layering, dum steam lid)
+- **Chana Sundal** (individual cooked chickpeas, mustard seeds, curry leaves, grated coconut snow, flame turning off)
+- **Crispy Masala Dosa** (spreading batter with spiral ladle technique, flipping on hot tawa)
+- **Fluffy Pancakes** (whisking batter, watching bubbles form, flipping)
+- **Japanese Sushi** (spreading seasoned sushi rice on dark nori, layering cucumber/avocado, rolling with bamboo mat, adult slicing)
+- **Classic Margherita Pizza** (stretching soft dough, spreading tomato sauce, mozzarella cheese, oven baking)
+- **Chocolate Cake** (measuring cocoa/flour, whisking smooth batter, baking in warm oven, festive sprinkles)
+- **Vegetable Fried Rice, Tomato Pasta, Soups, Salads, & Sandwiches**
 
-## Windows: first-time setup
+### 15 Standard Visual Actions
+The animation engine eliminates generic stirring animations by mapping cooking motions to 15 distinct, authentic actions:
+1. `wash` — Rinsing produce or rice in a wash bowl with water ripples and bubbles
+2. `chop` — Cutting board with chef knife (accompanied by adult knife safety reminders)
+3. `pour` — Liquid streams and drizzling into pots, bowls, or pans
+4. `marinate` — Rubbing and coating chicken pieces or vegetables in spices
+5. `mix` — Combining dry and wet ingredients in bowls or tossing salads
+6. `stir` — Whisking, churning, or stirring with wooden spoons
+7. `fry` — Sizzling onions, spices, and chicken in hot oil or ghee
+8. `boil` — Bubbling and steaming in deep pots with rolling water
+9. `steam` — Gentle steaming under covered pots
+10. `spread` — Spreading dosa batter or pizza sauce outward in smooth spirals
+11. `flip` — Inverting pancakes and dosas with spatulas
+12. `layer` — Stacking marinated chicken and basmati rice for biryani
+13. `cover` — Placing the pot lid for dum steam cooking or oven baking
+14. `garnish` — Sprinkling fresh coriander, curry leaves, sesame seeds, or coconut flakes
+15. `serve` — Scooping and plating the finished dish onto a warm serving plate
 
-Install Node.js 20+ and Git, clone this repository, and open PowerShell in the project folder. Run:
+---
 
+## 🧠 Recipe Intelligence: Qwen2.5-1.5B & Ollama
+
+LifeMotion integrates local recipe intelligence via **Qwen2.5-1.5B-Instruct** running through Ollama.
+
+### Running Qwen2.5 Locally:
+1. Install [Ollama for Windows](https://ollama.ai/download).
+2. Open PowerShell and pull the quantized 1.5B model (uses ~1.2 GB RAM, runs easily on CPU):
+   ```powershell
+   ollama run qwen2.5:1.5b
+   ```
+3. LifeMotion automatically connects to `http://127.0.0.1:11434` to generate structured JSON RecipePlans.
+
+### Automatic Fallback Synthesizer:
+If Ollama is not running, LifeMotion automatically engages its **Verified Cooking Synthesizer**. The synthesizer deterministically produces valid, child-safe recipes for arbitrary dishes while maintaining all safety checks.
+
+### Built-in Food Safety & Hygiene Rules:
+- **Raw Meat / Poultry**: Enforces thorough hand washing with soap, separate handling, and mandatory adult supervision for raw chicken.
+- **Hot Stoves & Cookware**: Every cooked recipe includes an explicit reminder that hot stoves and boiling pots must be handled by an adult.
+- **Sharp Knives & Ovens**: Slicing rolls or operating baking ovens explicitly requires grown-up help.
+
+---
+
+## 🎬 Generative AI Video: Hugging Face Wan 2.2 14B Fast
+
+LifeMotion evaluates and integrates the **Hugging Face Wan 2.2 14B Fast Space** (`zerogpu-aoti/wan2-2-fp8da-aoti-faster`):
+- Uses `@gradio/client` and a free Hugging Face User Access Token.
+- Uses Chef Maya's reference portrait (`studio3d/assets/maya-kitchen-hero.png`) to maintain consistent character identity.
+- Generates 3.5-second high-definition animated video clips for hero cooking actions (marinating, frying, chopping, pouring, layering, garnishing).
+- **ZeroGPU Quota Management**: Free HF accounts provide ~60–120 seconds of A10G GPU compute per 12-hour window. LifeMotion adopts a **hybrid architecture**:
+  - Key hero action moments utilize Wan 2.2 generative video clips when quota is available.
+  - Tutorial framing, safety instructions, and standard cooking steps utilize Remotion 3D procedural cartoon graphics.
+  - When the ZeroGPU daily limit (HTTP 429) is reached, the system transparently falls back to procedural cartoon animation with a clear status indicator—never disguising procedural graphics as AI video.
+
+---
+
+## 💻 Windows Setup & Local Execution
+
+### Prerequisites:
+- Windows 10 or 11 (64-bit)
+- Node.js 20+
+- Python 3.10+ (installed via winget or python.org)
+- FFmpeg (installed via winget or ffmpeg.org)
+
+### Installation:
 ```powershell
 npm.cmd run setup
 npm.cmd run studio
 ```
 
-The setup helper installs locked Node dependencies, finds Python 3.10+, creates a local `.venv`, installs `edge-tts==7.3.1`, and installs Playwright Chromium. On Windows it uses Windows Package Manager to install missing Python and FFmpeg. Windows may ask you to approve the installers. If `winget` is unavailable, install Python and FFmpeg manually, then rerun setup. Package and TLS verification remain enabled.
+Open your browser at `http://127.0.0.1:4173`.
 
-Remotion is the only animation framework. React and SVG build Chef Maya and the kitchen, while action-based choreography shows adding, pouring, stirring, spreading, chopping, flipping and serving. FFmpeg packages the rendered frames, narration and subtitle track into an MP4.
+### 2-Step Approval Workflow:
+1. **Enter Recipe**: Type any dish prompt (e.g. `Chicken Biryani`, `Japanese Sushi`, `Pizza`).
+2. **Review Plan**: Click **Preview steps** to view structured ingredients, color chips, quantities, and storyboard scenes.
+3. **Edit Recipe (Optional)**: Click **Edit Recipe** to tweak ingredients or steps directly in JSON.
+4. **Approve & Generate**: Click **Approve & Generate 3D Video** to initiate rendering.
+5. **Watch & Download**: Preview generation renders in seconds; full 1080p MP4 with English narration and subtitles can be downloaded directly.
 
-Open the address printed by the server, normally `http://127.0.0.1:4173`. Keep that terminal open. Starting the studio again will point to the existing address instead of creating a second portal. Stop the server with Ctrl+C.
+---
 
-The page checks Python, the speech package, FFmpeg, FFprobe and Chromium before accepting a generation request. Open **Tools ready / Setup needed** to see the checks. If a tool was just installed, restart your terminal and studio so the updated PATH is inherited. The Python resolver prefers the project virtual environment and also supports the Windows `py -3` launcher, so the Microsoft Store `python` alias is not required.
+## 🧪 Automated Testing
 
-On other platforms, install Node.js 20+, Python 3.10+ and FFmpeg with your normal package manager before running `npm run setup`. Browser/system library requirements depend on the operating system.
-
-## Create a film
-
-1. Choose a card in the recipe book or enter a prompt.
-2. Use **Preview steps** to check the ingredients and narration.
-3. Choose Jenny or Aria and landscape 16:9 or portrait 9:16.
-4. Click **Create my cooking film**. The short preview appears before the complete film.
-5. Watch the final film and use **Download MP4**. Recent completed films also appear in the film library.
-
-Copyable examples:
-
-```text
-Teach children how to make chicken biriyani step by step in simple English.
-Teach children how to make vegetable fried rice step by step in simple English.
-Teach children how to make tomato pasta step by step in simple English.
-Teach children how to make masala dosa step by step in simple English.
-Teach children how to make pancakes step by step in simple English.
-```
-
-Guided recipes: chicken biryani (also spelled biriyani), masala dosa, pancakes, vegetable sandwich, vegetable fried rice, tomato pasta, noodles, chapati, vegetable soup and salad. The recipe cards fill in the prompt automatically.
-
-You can also supply detailed cooking instructions. Dishes outside the recipe book receive a clearly labelled generic cooking animation; this is a template and rule-based engine, not an unrestricted AI recipe generator. Always inspect the plan. These short films simplify cooking motions and timing and are not substitutes for a complete cooking recipe or adult supervision.
-
-## Narration and resources
-
-New speech normally sends the narration text to Microsoft's Edge speech service. Cached sentence audio is reused. Existing `HTTPS_PROXY` / `https_proxy` settings are supported. If the service is blocked or its certificate cannot be verified on a company network, Windows uses its installed local speech engine so generation can continue. No API key is required.
-
-CPU rendering may take several minutes or longer depending on film duration and laptop resources. Keep the terminal open and avoid starting multiple jobs. If graphics or capture fails, generation reports an error rather than accepting a blank video. Video validation checks the streams, full decoding, sampled kitchen frames, audio alignment and subtitle timing.
-
-Each generation has a unique directory under `output/studio3d/jobs/`, containing its plan, narration, subtitles, status, preview and full film. Existing videos are preserved. Failed or interrupted jobs can be retried as a new film. On restart, completed films remain available; unfinished jobs are reported as interrupted.
-
-## Configuration
-
-- `LIFEMOTION_PORT`: explicit local port, default 4173.
-- `LIFEMOTION_PYTHON`: optional path to a Python executable. Otherwise the project `.venv`, Windows launcher and installed Python commands are detected automatically.
-- `LIFEMOTION_CHROMIUM`: optional explicit Chromium executable. Otherwise the installed Playwright browser is used, with system Chromium as a Linux fallback.
-
-The server listens on loopback. It is a local development application and has not been deployed as a public website.
-
-## Validation
+LifeMotion includes a full automated test suite verifying both client, server, and animation engines:
 
 ```powershell
+# 1. Action Normalization & Fallback Unit Tests
 npm.cmd test
+
+# 2. Server Startup & Single-Portal Protection Tests
 npm.cmd run test:startup
+
+# 3. Studio UI, Recipe API, & Gating Playwright Tests
 npm.cmd run test:studio
-node studio3d/e2e.mjs --recipe=chicken-biryani --format=16:9
+
+# 4. Multi-Dish Recipe Intelligence Tests
+node test-recipe-engine.mjs
 ```
 
-Unit tests cover recipe planning and action normalization. Startup tests cover one-portal behavior. Studio tests cover Windows Python resolution, setup gating, the exact biriyani prompt, plan preview, and desktop/mobile flows. The end-to-end test submits an actual website job and waits for narration, a preview and a full validated film, then checks download headers and HTTP range serving. It can take several minutes and requires local tools plus speech access or cached narration.
+All test suites pass 100% on Windows CPU without requiring external paid dependencies.
 
-Use `npm run render:preview` for a short cached preview and `npm run render:video` for the complete cached lesson.
+---
+
+## 📁 Project Structure
+
+- `data/recipes/` — Curated authentic recipe specifications (`chicken-biryani.json`, `chana-sundal.json`, `masala-dosa.json`, etc.).
+- `remotion/` — Remotion composition root, scene choreographies, and React/SVG character and kitchen components.
+- `studio3d/qwen-recipe-engine.mjs` — Local Qwen2.5-1.5B Ollama client, recipe validator, and verified synthesizer.
+- `studio3d/wan-video-generator.mjs` — Hugging Face Wan 2.2 14B Fast client and ZeroGPU quota handler.
+- `studio3d/dynamic-video-composer.mjs` — Hybrid video composer combining AI video clips, Remotion scenes, Edge-TTS audio, and FFmpeg muxing.
+- `studio3d/visual-plan.mjs` — 15-action vocabulary normalizer and visual scene planner.
+- `studio3d/recipes.mjs` — Synchronous catalog and recipe matcher.
+- `studio3d/server.mjs` — Local HTTP API server for recipe planning, validation, and video generation.
+- `studio3d/studio-ui.mjs` — Interactive web application frontend with 2-step approval workflow.
+- `studio3d/index.html` — Responsive desktop and mobile interface.

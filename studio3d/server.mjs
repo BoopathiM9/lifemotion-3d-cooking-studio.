@@ -4,7 +4,8 @@ import {join} from 'node:path';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {createStaticServer,root} from './host.mjs';
-import {recipes,voices,storyboard} from './recipes.mjs';
+import {recipes,voices,storyboard,matchRecipeSync} from './recipes.mjs';
+import {generateRecipe} from './qwen-recipe-engine.mjs';
 import {inspectRuntime,publicRuntime,generationFailure} from './runtime.mjs';
 import {analyzeWithBedrock,analyzeWithGemini,enrichWithFreeRecipe,translateActionsToTamil,translateActionsWithFreeService,translateActionsWithLocalTamil} from './free-recipe-lookup.mjs';
 
@@ -64,26 +65,57 @@ export async function createStudioServer({runtimeInspector=inspectRuntime}={}){
     if(req.headers.origin&&req.headers.origin!==`http://${req.headers.host}`){json(403,{error:'Use the local studio page to create videos.'});return;}
     let body='';for await(const chunk of req){body+=chunk;if(Buffer.byteLength(body)>8192){json(413,{error:'Your recipe is too long. Use up to 2000 characters.'});return;}}
     if(url.pathname==='/api/generate'&&busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
-    let input,plan,source='local';try{input=JSON.parse(body);plan=storyboard(input);const hasBedrockKey=Boolean(process.env.AWS_ACCESS_KEY_ID?.trim() || process.env.BEDROCK_ENABLED === 'true' || process.env.AWS_PROFILE);
-     if(hasBedrockKey&&typeof input.prompt==='string'&&!input.prompt.trim().startsWith('{')){
-      const bedrockRecipe=await analyzeWithBedrock(input.prompt);
-      if(bedrockRecipe){try{plan=storyboard({...input,prompt:bedrockRecipe});source='Studio Plan';}catch{}}
+    let input,plan,source='local',recipeMeta={};
+     try {
+       input=JSON.parse(body);
+       if(input.recipe && typeof input.recipe === 'object'){
+         plan = storyboard({...input, prompt: input.recipe});
+         source = 'User Approved Plan';
+       } else if (typeof input.prompt === 'string') {
+         const localMatch = matchRecipeSync(input.prompt);
+         if (localMatch) {
+           plan = storyboard(input);
+           source = 'Curated Recipe';
+         } else {
+           plan = storyboard(input);
+           if (!plan.genericVisualization) {
+             const gen = await generateRecipe(input.prompt);
+             recipeMeta = gen;
+             source = gen.source || 'Local AI Engine';
+             plan = storyboard({...input, prompt: gen.recipe});
+           }
+         }
+       } else {
+         plan = storyboard(input);
+       }
+       if(input.voice==='ta-IN-PallaviNeural'){
+         const tamil=await translateActionsToTamil(plan.actions)||await translateActionsWithFreeService(plan.actions)||translateActionsWithLocalTamil(plan.actions,plan.title);
+         plan.actions.forEach((action,index)=>{action.text=tamil[index];action.sentences=[tamil[index]];});
+         if(!plan.title.includes('(')&&!plan.title.includes('செய்முறை')){
+           plan.title=`${plan.title} (செய்முறை)`;
+         }
+         source=source==='local'?'Tamil narration':source;
+       }
+     }catch(error){json(400,{error:error instanceof SyntaxError?'The recipe request could not be read. Please try again.':error.message});return;}
+     if(url.pathname==='/api/plan'){
+       const warnings = recipeMeta.recipe?.missingAssetWarnings || (plan.genericVisualization ? ['Some ingredients will use illustrated cartoon approximations'] : []);
+       json(200,{
+         title:plan.title,
+         recipe:plan.recipe,
+         generic:plan.genericVisualization,
+         source,
+         note: recipeMeta.note,
+         warnings,
+         isFullySupported: !plan.genericVisualization && warnings.length === 0,
+         limitations:plan.genericVisualization?'Generic cooking visualization. Add more recipe details to customize your video.':null,
+         steps:plan.actions.map(a=>({key:a.key,text:a.text,action:a.action,target:a.target||'pot'})),
+         ingredients:plan.ingredients.map(i=>i.name),
+         ingredientDetails:plan.ingredients.map(i=>({name: i.name, quantity: i.quantity || '1 portion', category: i.category, color: i.color})),
+         rawRecipe: recipeMeta.recipe || plan
+       });
+       return;
      }
-     if(plan.genericVisualization){
-      const enriched=await enrichWithFreeRecipe(input.prompt);
-      if(enriched){try{plan=storyboard({...input,prompt:enriched});source='MealDB Recipe';}catch{source='local';}}
-     }
-     if(input.voice==='ta-IN-PallaviNeural'){
-      const tamil=await translateActionsToTamil(plan.actions)||await translateActionsWithFreeService(plan.actions)||translateActionsWithLocalTamil(plan.actions,plan.title);
-      plan.actions.forEach((action,index)=>{action.text=tamil[index];action.sentences=[tamil[index]];});
-      if(!plan.title.includes('(')&&!plan.title.includes('செய்முறை')){
-        plan.title=`${plan.title} (செய்முறை)`;
-      }
-      source=source==='local'?'Tamil narration':source;
-     }
-    }catch(error){json(400,{error:error instanceof SyntaxError?'The recipe request could not be read. Please try again.':error.message});return;}
-    if(url.pathname==='/api/plan'){json(200,{title:plan.title,recipe:plan.recipe,generic:plan.genericVisualization,source,limitations:plan.genericVisualization?'Generic cooking visualization. Add more recipe details to customize your video.':null,steps:plan.actions.map(a=>({key:a.key,text:a.text,action:a.action})),ingredients:plan.ingredients.map(i=>i.name)});return;}
-    if(busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
+     if(busy){json(409,{error:'A film is already being created. Please wait for it to finish.'});return;}
     const runtime=setup();
     if(!runtime.ready){json(503,{error:'Finish the setup checks before creating a film.',setup:publicRuntime(runtime)});return;}
     busy=true;

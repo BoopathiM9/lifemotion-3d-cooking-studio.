@@ -21,6 +21,8 @@ const ROOT = resolve(__dirname, '..');
 const DATA_DIR = join(ROOT, 'data', 'recipes');
 
 export const voices = [
+  'en-IN-NeerjaExpressiveNeural',
+  'en-IN-NeerjaNeural',
   'en-US-JennyNeural',
   'en-US-AriaNeural',
   'ta-IN-PallaviNeural'
@@ -62,9 +64,11 @@ export function matchRecipeSync(prompt = '') {
   const lower = prompt.toLowerCase();
 
   const aliases = [
+    { id: 'chana-sundal', pattern: /\b(sundal|chana sundal|sandel|kondakadalai|chickpea sundal)\b/i },
     { id: 'masala-dosa', pattern: /\b(dosa|masala dosa)\b/i },
     { id: 'pancakes', pattern: /\b(pancake|pancakes|crepe)\b/i },
     { id: 'vegetable-sandwich', pattern: /\b(sandwich|sandwiches|veggie sandwich)\b/i },
+    { id: 'vegetable-biryani', pattern: /\b(veg biryani|vegetable biryani|veggie biryani)\b/i },
     { id: 'chicken-biryani', pattern: /\b(biryani|biriyani|chicken biryani)\b/i },
     { id: 'vegetable-fried-rice', pattern: /\b(fried rice|fried-rice)\b/i },
     { id: 'tomato-pasta', pattern: /\b(pasta|spaghetti|macaroni)\b/i },

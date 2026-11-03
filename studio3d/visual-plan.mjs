@@ -7,17 +7,18 @@ import { extractSentences } from './recipe-planner.mjs';
 
 /**
  * Standard Visual Action Vocabulary.
+ * Covers all 15 authentic cooking actions plus pedagogical framing steps.
  */
 export const VISUAL_ACTIONS = [
-  'show', 'pick', 'place', 'add', 'pour', 'sprinkle', 'spread',
-  'stir', 'mix', 'toss', 'boil', 'simmer', 'fry', 'saute', 'cook',
-  'flip', 'layer', 'cover', 'uncover', 'chop', 'slice', 'knead',
-  'roll', 'shape', 'transfer', 'plate', 'serve', 'wait'
+  'welcome', 'safe', 'prep', 'ending',
+  'wash', 'chop', 'pour', 'marinate', 'mix', 'stir', 'fry',
+  'boil', 'steam', 'spread', 'flip', 'layer', 'cover', 'garnish', 'serve',
+  'show', 'pick', 'place', 'add', 'sprinkle', 'toss', 'simmer', 'saute',
+  'cook', 'slice', 'knead', 'roll', 'shape', 'transfer', 'plate', 'wait'
 ];
 
 /**
  * Normalizes any natural language action verb to the closest standard action.
- * Unknown actions map gracefully to the closest generic cooking action, never to hardcoded dosa.
  * @param {string} rawVerb
  * @returns {string} Normalized action verb
  */
@@ -28,38 +29,42 @@ export function normalizeActionVerb(rawVerb = '') {
     return v;
   }
 
-  // Synonyms & verb mappings
-  if (['display', 'present', 'look', 'greet', 'welcome'].includes(v)) return 'show';
+  // Framing steps
+  if (['greet', 'welcome', 'hello', 'intro'].includes(v)) return 'welcome';
+  if (['safety', 'wash hands', 'clean', 'hygiene', 'safe'].includes(v)) return 'safe';
+  if (['prep', 'prepare', 'ready', 'ingredients'].includes(v)) return 'prep';
+  if (['ending', 'conclusion', 'celebrate', 'cheer'].includes(v)) return 'ending';
+
+  // Specific synonyms
   if (['take', 'lift', 'grab', 'hold'].includes(v)) return 'pick';
-  if (['put into', 'drop into', 'put', 'drop', 'set', 'insert'].includes(v)) return 'add';
-  if (['tip', 'tumble', 'dump'].includes(v)) return 'add';
+  if (['put into', 'drop into', 'put', 'drop', 'set', 'insert', 'tip', 'tumble', 'dump'].includes(v)) return 'add';
+  if (['rinse', 'wash', 'clean produce', 'wash rice'].includes(v)) return 'wash';
+  if (['cut', 'dice', 'mince', 'slice', 'chop'].includes(v)) return 'chop';
   if (['pour', 'stream', 'drizzle', 'splash', 'flow'].includes(v)) return 'pour';
-  if (['dust', 'season', 'scatter', 'garnish'].includes(v)) return 'sprinkle';
-  if (['smear', 'flatten', 'smooth'].includes(v)) return 'spread';
-  if (['whisk', 'beat', 'swirl', 'churn'].includes(v)) return 'stir';
+  if (['marinate', 'rub spices', 'coat', 'season chicken'].includes(v)) return 'marinate';
   if (['stir together', 'combine', 'mix well', 'blend', 'fold-in', 'merge'].includes(v)) return 'mix';
+  if (['whisk', 'beat', 'swirl', 'churn', 'stir'].includes(v)) return 'stir';
   if (['shake', 'toss-up'].includes(v)) return 'toss';
-  if (['bubble', 'scald', 'poach'].includes(v)) return 'boil';
-  if (['braise', 'stew', 'gentle-cook'].includes(v)) return 'simmer';
   if (['deep-fry', 'crisp'].includes(v)) return 'fry';
-  if (['pan-fry', 'sear', 'brown'].includes(v)) return 'saute';
-  if (['heat', 'warm', 'roast', 'bake'].includes(v)) return 'cook';
-  if (['turn', 'reverse', 'invert'].includes(v)) return 'flip';
-  if (['stack', 'tier', 'arrange'].includes(v)) return 'layer';
-  if (['lid', 'cap', 'close'].includes(v)) return 'cover';
-  if (['open', 'reveal'].includes(v)) return 'uncover';
-  if (['cut', 'dice', 'mince'].includes(v)) return 'chop';
-  if (['carve', 'shave'].includes(v)) return 'slice';
+  if (['pan-fry', 'sear', 'brown', 'saute'].includes(v)) return 'saute';
+  if (['bubble', 'scald', 'poach', 'boil'].includes(v)) return 'boil';
+  if (['braise', 'stew', 'gentle-cook', 'simmer'].includes(v)) return 'simmer';
+  if (['steam', 'dum'].includes(v)) return 'steam';
+  if (['smear', 'flatten', 'smooth', 'spread'].includes(v)) return 'spread';
+  if (['turn', 'reverse', 'invert', 'flip'].includes(v)) return 'flip';
+  if (['stack', 'tier', 'arrange', 'layer'].includes(v)) return 'layer';
+  if (['lid', 'cap', 'close', 'cover'].includes(v)) return 'cover';
+  if (['dust', 'season', 'scatter', 'garnish', 'sprinkle'].includes(v)) return 'sprinkle';
   if (['press', 'massage', 'work'].includes(v)) return 'knead';
   if (['flatten-dough', 'pin'].includes(v)) return 'roll';
   if (['form', 'mold', 'ball'].includes(v)) return 'shape';
   if (['move', 'shift'].includes(v)) return 'transfer';
   if (['dish', 'dish-out'].includes(v)) return 'plate';
-  if (['present-dish', 'enjoy', 'finish', 'transfer to plate', 'place on plate', 'transfer to serving dish'].includes(v)) return 'serve';
+  if (['present-dish', 'enjoy', 'finish', 'transfer to plate', 'place on plate', 'transfer to serving dish', 'serve'].includes(v)) return 'serve';
   if (v.includes('to plate') || v.includes('serving dish')) return 'serve';
   if (['rest', 'cool', 'pause'].includes(v)) return 'wait';
 
-  // Graceful fallback to neutral cooking action
+  // Generic fallback
   return 'cook';
 }
 

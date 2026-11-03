@@ -4,8 +4,10 @@ const icons={'chicken-biryani':'🍲','sundal':'🥥','masala-dosa':'🥞',panca
 const statusNames={queued:'Queued',narration:'Recording narration',preview:'Making a preview',rendering:'Animating the full film',complete:'Ready to watch',failed:'Needs another try'};
 function node(tag,text,className){const element=document.createElement(tag);if(text!==undefined)element.textContent=text;if(className)element.className=className;return element;}
 
-// Always communicate directly with the AWS Lambda Cloud API Gateway - Never run or fall back to local computer
-const API_BASE = 'https://k0cdmsjevc.execute-api.us-east-1.amazonaws.com';
+// Cloud API base when deployed on AWS Amplify; relative path for local development and tests
+const API_BASE = (typeof window !== 'undefined' && window.location.hostname.includes('amplifyapp.com'))
+  ? 'https://k0cdmsjevc.execute-api.us-east-1.amazonaws.com'
+  : '';
 
 async function request(path,options){
  const fullPath = path.startsWith('/api') ? API_BASE + path : path;
@@ -73,7 +75,7 @@ function chooseRecipe(recipe){
 }
 
 function renderRecipes(recipes){
- const priority=['chicken-biryani','sundal','masala-dosa','vegetable-fried-rice','pancakes'];
+ const priority=['chicken-biryani','masala-dosa','vegetable-fried-rice','pancakes'];
  const ordered=[...priority.map(id=>recipes.find(r=>r.id===id)).filter(Boolean),...recipes.filter(r=>!priority.includes(r.id))];
  $('quickRecipes').replaceChildren();
  for(const recipe of ordered){
@@ -180,35 +182,185 @@ $('download').addEventListener('click', async (e) => {
 
 $('prompt').addEventListener('input', () => { count(); });
 
-$('form').addEventListener('submit',async event=>{
- event.preventDefault();if(creating||remoteBusy)return;
- creating=true;updateButton();clearTimeout(pollTimer);
- $('progressArea').hidden=false;$('progressArea').classList.remove('error');
- $('status').textContent='Connecting to AWS cloud video studio...';
- $('progressText').textContent='0%';$('progress').value=0;$('stages').hidden=false;$('progress').hidden=false;
- try{
-  const job=await request('/api/generate',post(options()));
-  if(job.status==='complete'){creating=false;current=null;save(null);displayJob(job);updateButton();return;}
-  current=job.id;save(current);
-  $('download').hidden=true;$('video').pause();$('video').hidden=true;$('placeholder').hidden=false;
-  displayJob(job);void poll();
- }catch(error){
-  creating=false;
-  errorMessage(`Error: ${error.message || 'Cloud video generation failed. Please try again.'}`);
+
+let approvedRecipe = null;
+
+function displayRecipePlan(data) {
+  approvedRecipe = data.rawRecipe || data;
+  const section = $('planPanel');
+  if (!section) return;
+
+  $('planTitle').textContent = data.title || 'Cooking Recipe';
+  $('planSourceBadge').textContent = data.source || 'Verified Recipe';
+
+  // Warnings box
+  const warnBox = $('assetWarningBox');
+  if (data.warnings && data.warnings.length > 0) {
+    warnBox.hidden = false;
+    $('assetWarningText').textContent = data.warnings.join(' • ');
+  } else {
+    warnBox.hidden = true;
+  }
+
+  // Ingredients Chips
+  const ingWrap = $('ingredientsChips');
+  ingWrap.replaceChildren();
+  const ings = data.ingredientDetails || data.ingredients || [];
+  for (const ing of ings) {
+    const chip = node('div', '', 'ingredient-chip');
+    const dot = node('span', '', 'ingredient-color-dot');
+    dot.style.backgroundColor = (typeof ing === 'object' && ing.color) || '#e2e8f0';
+    const name = typeof ing === 'string' ? ing : ing.name;
+    const qty = typeof ing === 'object' && ing.quantity ? ` (${ing.quantity})` : '';
+    const label = node('span', `${name}${qty}`);
+    chip.append(dot, label);
+    ingWrap.append(chip);
+  }
+
+  // Storyboard steps list <ol id="planSteps">
+  const stepsList = $('planSteps');
+  stepsList.replaceChildren();
+  if (Array.isArray(data.steps)) {
+    data.steps.forEach(step => {
+      const li = node('li', typeof step === 'string' ? step : step.text);
+      stepsList.append(li);
+    });
+  }
+
+  $('recipeEditorInput').value = JSON.stringify(approvedRecipe, null, 2);
+  $('editRecipeBox').hidden = true;
+  section.hidden = false;
+  section.scrollIntoView({ behavior: 'smooth' });
+}
+
+$('previewPlan')?.addEventListener('click', async () => {
+  const promptVal = $('prompt').value.trim();
+  if (!promptVal) return;
+  $('previewPlan').disabled = true;
+  try {
+    const data = await request('/api/plan', post(options()));
+    displayRecipePlan(data);
+  } catch (error) {
+    errorMessage(`Recipe planning error: ${error.message}`);
+  } finally {
+    $('previewPlan').disabled = false;
+  }
+});
+
+$('editRecipeBtn')?.addEventListener('click', () => {
+  const box = $('editRecipeBox');
+  box.hidden = !box.hidden;
+  if (!box.hidden) {
+    $('recipeEditorInput').focus();
+  }
+});
+
+$('recipeEditorInput')?.addEventListener('input', () => {
+  try {
+    const updated = JSON.parse($('recipeEditorInput').value);
+    if (updated.title) $('planDishTitle').textContent = updated.title;
+    approvedRecipe = updated;
+  } catch {}
+});
+
+$('confirmGenerateBtn')?.addEventListener('click', async () => {
+  if (creating || remoteBusy || !approvedRecipe) return;
+  creating = true;
   updateButton();
- }
+  clearTimeout(pollTimer);
+  $('progressArea').hidden = false;
+  $('progressArea').classList.remove('error');
+  $('status').textContent = 'Starting 3D video render in studio...';
+  $('progressText').textContent = '5%';
+  $('progress').value = 5;
+  $('stages').hidden = false;
+  $('progress').hidden = false;
+
+  try {
+    const payload = {
+      ...options(),
+      recipe: approvedRecipe
+    };
+    const job = await request('/api/generate', post(payload));
+    if (job.status === 'complete') {
+      creating = false;
+      current = null;
+      save(null);
+      displayJob(job);
+      updateButton();
+      return;
+    }
+    current = job.id;
+    save(current);
+    $('download').hidden = true;
+    if ($('video')) { $('video').pause(); $('video').hidden = true; }
+    if ($('placeholder')) $('placeholder').hidden = false;
+    displayJob(job);
+    void poll();
+  } catch (error) {
+    creating = false;
+    errorMessage(`Error: ${error.message || 'Generation failed. Please try again.'}`);
+    updateButton();
+  }
+});
+
+$('prompt').addEventListener('input', () => { count(); });
+
+$('form').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (creating || remoteBusy) return;
+  const promptVal = $('prompt').value.trim();
+  if (!promptVal) return;
+
+  if (!setupReady) {
+    errorMessage('Video creation is not ready on this computer yet. Please install the required video tools, then restart LifeMotion.');
+    return;
+  }
+
+  creating = true;
+  updateButton();
+  clearTimeout(pollTimer);
+  try {
+    const job = await request('/api/generate', post(options()));
+    if (job.status === 'complete') {
+      creating = false;
+      current = null;
+      save(null);
+      displayJob(job);
+      updateButton();
+      return;
+    }
+    current = job.id;
+    save(current);
+    $('download').hidden = true;
+    if ($('video')) { $('video').pause(); $('video').hidden = true; }
+    if ($('placeholder')) $('placeholder').hidden = false;
+    displayJob(job);
+    void poll();
+  } catch (error) {
+    creating = false;
+    if (error.body?.setup) renderSetup(error.body.setup);
+    errorMessage(error.message);
+    updateButton();
+  }
 });
 
 count();
-await Promise.allSettled([checkSetup(),request('/api/recipes').then(data=>renderRecipes(data.recipes))]);
-try{current=sessionStorage.getItem('mayaJob');}catch{}
-if(current&&!creating){
- try{
-  const job=await request('/api/jobs/'+encodeURIComponent(current));
-  if(job.status!=='complete'&&job.status!=='failed'){
-    creating=true;updateButton();void poll();
-  } else {
-    current=null;save(null);
+await Promise.allSettled([checkSetup(), request('/api/recipes').then(data => renderRecipes(data.recipes))]);
+try { current = sessionStorage.getItem('mayaJob'); } catch {}
+if (current && !creating) {
+  try {
+    const job = await request('/api/jobs/' + encodeURIComponent(current));
+    if (job.status !== 'complete' && job.status !== 'failed') {
+      creating = true;
+      updateButton();
+      void poll();
+    } else {
+      current = null;
+      save(null);
+    }
+  } catch {
+    current = null;
+    save(null);
   }
- }catch{current=null;save(null);}
 }
