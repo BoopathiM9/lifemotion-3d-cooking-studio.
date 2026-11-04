@@ -3,318 +3,148 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="CookMotion - Generative Recipe-to-Video Platform. Create charming, narrated 3D cooking films with Chef Maya.">
-  <title>CookMotion — Generative Recipe-to-Video Platform</title>
+  <meta name="description" content="CookMotion - Turn your ideas into AI cooking videos.">
+  <title>CookMotion — Turn your ideas into AI cooking videos.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/studio3d/studio.css">
 </head>
 <body>
-  <!-- NAVIGATION BAR -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="brand" href="#create" aria-label="CookMotion home">
-        <div class="brand-mark" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
-            <line x1="6" y1="17" x2="18" y2="17"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <strong>CookMotion</strong>
-          <small>AI Recipe-to-Video Studio</small>
-        </div>
-      </a>
-      <div class="topbar-right">
-        <span class="badge-free">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-          100% Free &amp; Local
-        </span>
-        <span class="badge-edition">
-          <span class="badge-live-dot" aria-hidden="true"></span>
-          Chef Maya 3D Engine
-        </span>
+  <div class="app-layout">
+    <!-- SECTION 1: HEADER -->
+    <header class="app-header" id="create">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🍳</span>
+        <h1>CookMotion</h1>
       </div>
-    </div>
-  </header>
+      <p class="subtitle">Turn your ideas into AI cooking videos.</p>
+    </header>
 
-  <main>
-    <!-- PAGE HEADING & HERO -->
-    <section class="page-heading" id="create">
-      <div class="heading-content">
-        <div class="hero-badge">
-          <span class="badge-sparkle" aria-hidden="true">✨</span>
-          <span>GENERATIVE RECIPE-TO-VIDEO STUDIO</span>
-        </div>
-        <h1>Turn Your Recipe Into a 3D Cooking Film</h1>
-        <p class="hero-subtitle">Enter any recipe—from Chicken Biryani to Japanese Sushi. Chef Maya automatically creates structured ingredients, step-by-step animations, voice narration, and synchronized subtitles.</p>
-        <div class="feature-tags">
-          <span class="tag-pill">🎙️ Edge-TTS Studio Voice</span>
-          <span class="tag-pill">🎬 Remotion 2.5D Maya</span>
-          <span class="tag-pill">⚡ Local Ollama Qwen2.5</span>
-          <span class="tag-pill">📥 Instant HD MP4</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- TWO-COLUMN WORKSPACE -->
-    <section class="workspace" aria-label="Video creator">
-      <!-- LEFT COLUMN: FORM & RECIPE STUDIO -->
-      <article class="panel form-panel">
-        <div class="panel-heading">
-          <div class="panel-title-group">
-            <span class="step-label">Step 1 · Recipe Studio</span>
-            <h2>What should Maya cook today?</h2>
-          </div>
-          <span class="studio-status-pill">
-            <span class="pill-dot" aria-hidden="true"></span>
-            Studio Ready
-          </span>
-        </div>
-
+    <main class="main-container">
+      <!-- SECTION 2: TEXT-TO-VIDEO INPUT -->
+      <section class="generator-input-section" aria-label="Text to video input">
         <form id="form" onsubmit="return false;">
-          <label for="prompt" class="input-label">
-            <span>Describe your recipe or cooking prompt</span>
-            <span class="input-hint">Natural language dish or instructions</span>
-          </label>
-          <div class="textarea-wrap">
-            <textarea id="prompt" name="prompt" maxlength="2000" required placeholder="Example: Teach children how to make delicious Chicken Biryani step by step with Chef Maya in simple English..."></textarea>
-            <div class="textarea-footer">
-              <span class="textarea-tip">💡 Tip: Try Chicken Biryani, Dosa, Sushi, Pancakes, or Pasta</span>
-              <span id="charCount">0 / 2,000</span>
-            </div>
-          </div>
-
-          <div class="quick-header">
-            <span class="quick-title">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
-              Quick Recipe Templates
-            </span>
-            <span class="quick-subtitle">Click to auto-fill curated lesson</span>
-          </div>
-          <div id="quickRecipes" class="quick-recipes" aria-label="Popular recipe templates"></div>
-
-          <div class="field-grid">
-            <div class="field-item">
-              <label for="voice" class="input-label">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
-                Narration Voice
-              </label>
-              <div class="select-wrapper">
-                <select id="voice" name="voice">
-                  <option value="en-IN-NeerjaExpressiveNeural" selected>Neerja · Expressive &amp; Clear (Indian English)</option>
-                  <option value="en-IN-NeerjaNeural">Neerja · Warm Storyteller (Indian English)</option>
-                  <option value="en-US-JennyNeural">Jenny · Warm &amp; Friendly (English)</option>
-                  <option value="en-US-AriaNeural">Aria · Bright &amp; Cheerful (English)</option>
-                  <option value="ta-IN-PallaviNeural">Pallavi · இயற்கை தமிழ் குரல் (Tamil)</option>
-                </select>
-                <span class="select-arrow" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </span>
-              </div>
-            </div>
-            <div class="field-item">
-              <label for="format" class="input-label">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect width="18" height="18" x="3" y="3" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-                Video Aspect Ratio
-              </label>
-              <div class="select-wrapper">
-                <select id="format" name="format">
-                  <option value="16:9">Landscape · 16:9 (YouTube &amp; Desktop)</option>
-                  <option value="9:16">Portrait · 9:16 (Shorts &amp; Mobile)</option>
-                </select>
-                <span class="select-arrow" aria-hidden="true">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                </span>
+          <div class="input-card">
+            <textarea id="prompt" name="prompt" maxlength="2000" required placeholder="Describe the cooking video you want..."></textarea>
+            
+            <div class="input-bottom-bar">
+              <span id="charCount" class="char-count">0 / 2,000</span>
+              <div class="input-buttons">
+                <button id="previewPlan" class="secondary-btn" type="button">
+                  <span>📋</span> Preview Steps
+                </button>
+                <button id="generate" class="primary-generate-btn" type="submit">
+                  <span id="generateText">Generate Video</span>
+                  <span class="btn-arrow" aria-hidden="true">→</span>
+                </button>
               </div>
             </div>
           </div>
 
-          <div class="form-actions">
-            <button id="previewPlan" class="secondary-button" type="button">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M9 12h6"/><path d="M9 16h6"/></svg>
-              <span>Preview Recipe Steps</span>
-            </button>
-            <button id="generate" class="primary-button" type="submit">
-              <span id="generateText">Generate Cooking Film</span>
-              <span class="btn-arrow" aria-hidden="true">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-              </span>
-            </button>
+          <!-- Example Prompts / Recipe Suggestions -->
+          <div class="examples-row">
+            <span class="examples-title">Examples:</span>
+            <div id="quickRecipes" class="quick-recipes" aria-label="Popular recipe templates"></div>
           </div>
-          <p id="formHint" class="form-hint">Type any dish name (e.g. Chicken Biryani, Dosa, Sushi, Pizza, Pasta). AI creates structured ingredients and scenes.</p>
+
+          <!-- Hidden default parameters for voice & format compatibility -->
+          <div class="hidden-config" style="display: none;" aria-hidden="true">
+            <select id="voice" name="voice">
+              <option value="en-IN-NeerjaExpressiveNeural" selected>Neerja · Expressive (English)</option>
+              <option value="en-US-JennyNeural">Jenny · Friendly (English)</option>
+              <option value="ta-IN-PallaviNeural">Pallavi (Tamil)</option>
+            </select>
+            <select id="format" name="format">
+              <option value="16:9" selected>16:9</option>
+              <option value="9:16">9:16</option>
+            </select>
+          </div>
+          <p id="formHint" class="form-hint" style="display: none;">Type any dish name. Chef Maya prepares ingredients, narration, and 3D steps.</p>
         </form>
 
-        <!-- RECIPE & STORYBOARD PREVIEW PANEL -->
+        <!-- Storyboard Preview (revealed if user clicks Preview Steps) -->
         <section id="planPanel" class="plan-panel" hidden>
-          <div class="subheading-row">
-            <div class="plan-header-title">
-              <span class="plan-badge-icon">📋</span>
+          <div class="plan-header">
+            <div class="plan-title-wrap">
+              <span class="plan-icon">📋</span>
               <h3 id="planTitle">Recipe Plan</h3>
             </div>
-            <span id="planSourceBadge" class="source-pill">Verified Recipe</span>
+            <span id="planSourceBadge" class="source-badge">Verified</span>
           </div>
 
-          <div id="assetWarningBox" class="asset-warning-box" hidden>
-            <span class="warning-icon">⚠️</span>
-            <span id="assetWarningText">Note: Some visual assets will use illustrated cartoon approximations.</span>
+          <div id="assetWarningBox" class="warning-banner" hidden>
+            <span>⚠️</span>
+            <span id="assetWarningText">Note: Some visual assets will use illustrated approximations.</span>
           </div>
 
-          <div class="preview-subheading">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8c.9 0 1.8-.7 2-1.6l1.6-7.4"/><path d="m4.5 15.5 15-4.5"/></svg>
-            <strong>Ingredients &amp; Quantities</strong>
-          </div>
-          <div id="ingredientsChips" class="ingredients-chip-grid"></div>
+          <div id="ingredientsChips" class="ingredients-list"></div>
+          <ol id="planSteps" class="steps-list"></ol>
 
-          <div class="preview-subheading">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg>
-            <strong>Storyboard &amp; Cooking Steps</strong>
-          </div>
-          <ol id="planSteps" class="plan-steps-list"></ol>
-
-          <div id="editRecipeBox" class="edit-recipe-box" hidden>
-            <label for="recipeEditorInput" class="input-label">Edit Recipe JSON or Instructions:</label>
-            <textarea id="recipeEditorInput" rows="6"></textarea>
+          <div id="editRecipeBox" class="edit-box" hidden>
+            <textarea id="recipeEditorInput" rows="5"></textarea>
           </div>
 
-          <div class="approval-bar">
-            <button id="editRecipeBtn" class="secondary-button" type="button">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-              <span>Edit Recipe</span>
-            </button>
-            <button id="confirmGenerateBtn" class="primary-button" type="button">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              <span>Approve &amp; Generate 3D Video →</span>
-            </button>
+          <div class="plan-footer-actions">
+            <button id="editRecipeBtn" class="small-btn" type="button">Edit</button>
+            <button id="confirmGenerateBtn" class="primary-generate-btn" type="button">Approve &amp; Generate Video →</button>
           </div>
         </section>
+      </section>
 
-        <!-- PROGRESS SECTION -->
-        <section id="progressArea" class="progress-area" aria-live="polite" hidden>
-          <div class="progress-copy">
-            <div class="progress-status-wrap">
-              <span class="pulse-indicator"></span>
-              <strong id="status">Preparing your video</strong>
+      <!-- SECTION 3: VIDEO OUTPUT -->
+      <section class="video-output-section" aria-label="Video output">
+        <!-- Generation Progress Indicator -->
+        <div id="progressArea" class="progress-card" aria-live="polite" hidden>
+          <div class="progress-top">
+            <div class="status-wrap">
+              <span class="pulsing-dot" aria-hidden="true"></span>
+              <strong id="status">Creating your video...</strong>
             </div>
             <span id="progressText">0%</span>
           </div>
           <progress id="progress" value="0" max="100">0%</progress>
-          <ol id="stages" class="stages">
-            <li data-stage="recipe">
-              <span class="stage-step-num">1</span>
-              <span class="stage-step-label">Prepare recipe</span>
-            </li>
-            <li data-stage="narration">
-              <span class="stage-step-num">2</span>
-              <span class="stage-step-label">Record narration</span>
-            </li>
-            <li data-stage="render">
-              <span class="stage-step-num">3</span>
-              <span class="stage-step-label">Render animation</span>
-            </li>
-            <li data-stage="export">
-              <span class="stage-step-num">4</span>
-              <span class="stage-step-label">Export video</span>
-            </li>
+          <ol id="stages" class="stages-indicator">
+            <li data-stage="recipe">Recipe</li>
+            <li data-stage="narration">Voice</li>
+            <li data-stage="render">Animate</li>
+            <li data-stage="export">Export</li>
           </ol>
-        </section>
-      </article>
-
-      <!-- RIGHT COLUMN: CINEMA STAGE & VIDEO PREVIEW -->
-      <article class="panel preview-panel">
-        <div class="panel-heading">
-          <div class="panel-title-group">
-            <span class="step-label">Step 2 · Cinema Stage</span>
-            <h2 id="cinemaHeading">Chef Maya 3D Cooking Cinema</h2>
-          </div>
-          <span id="filmBadge" class="panel-tag">Ready</span>
         </div>
 
-        <div class="preview-stage-container">
-          <div class="preview-stage">
+        <!-- Large Video Player Screen -->
+        <div class="video-card">
+          <div class="video-stage">
             <div id="placeholder" class="placeholder">
-              <img src="/studio3d/assets/maya-kitchen-hero.png" alt="Maya, the animated cooking guide, in her bright kitchen">
-              <div class="play-indicator" aria-hidden="true">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+              <img src="/studio3d/assets/maya-kitchen-hero.png" alt="Chef Maya in the kitchen">
+              <div class="play-btn" aria-hidden="true">▶</div>
+              <div class="placeholder-text">
+                <h3 id="cinemaHeading">Your AI Cooking Video Will Play Here</h3>
+                <p>Describe your recipe above and click Generate Video.</p>
               </div>
-              <h3>Your 3D Cooking Film Will Play Here</h3>
-              <p>Generate a video or preview steps to watch Chef Maya cook in high definition.</p>
             </div>
             <video id="video" controls playsinline hidden></video>
           </div>
-        </div>
 
-        <div class="output-row">
-          <div class="output-details">
-            <span class="step-label">Video Output</span>
-            <h3 id="filmTitle">No video generated yet</h3>
-            <p id="filmDescription">High-Definition MP4 with studio voice narration and timed subtitles</p>
+          <!-- Video Controls & Download Row -->
+          <div class="video-footer">
+            <div class="video-info">
+              <h3 id="filmTitle">No video generated yet</h3>
+              <p id="filmDescription">High-Definition MP4 with studio voice narration and timed subtitles</p>
+              <span id="filmBadge" style="display: none;">Ready</span>
+            </div>
+            <a id="download" class="download-button" href="#" download hidden>
+              <span>📥</span> Download Video
+            </a>
           </div>
-          <a id="download" class="download-button" href="#" download hidden>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Download Film MP4</span>
-          </a>
         </div>
+      </section>
+    </main>
 
-        <!-- VIDEO SPECS CARD -->
-        <div class="specs-grid">
-          <div class="spec-card">
-            <span class="spec-icon">🎞️</span>
-            <div>
-              <strong>1080p Full HD</strong>
-              <small>H.264 Video Encoding</small>
-            </div>
-          </div>
-          <div class="spec-card">
-            <span class="spec-icon">🎙️</span>
-            <div>
-              <strong>Studio Audio</strong>
-              <small>Edge-TTS AAC 48kHz</small>
-            </div>
-          </div>
-          <div class="spec-card">
-            <span class="spec-icon">💬</span>
-            <div>
-              <strong>Word Subtitles</strong>
-              <small>Synchronized Captions</small>
-            </div>
-          </div>
-          <div class="spec-card">
-            <span class="spec-icon">⚡</span>
-            <div>
-              <strong>100% Local</strong>
-              <small>No Cloud API Cost</small>
-            </div>
-          </div>
-        </div>
-      </article>
-    </section>
-  </main>
-
-  <!-- SAAS FOOTER -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <span class="footer-logo-icon">🍳</span>
-          <strong>CookMotion</strong>
-        </div>
-        <p>Generative Recipe-to-Video Platform. Turning cooking prompts into structured animations for learners and families worldwide.</p>
-      </div>
-      <div class="footer-meta">
-        <div class="tech-stack-row">
-          <span class="tech-pill">React + Remotion</span>
-          <span class="tech-pill">Ollama Qwen2.5</span>
-          <span class="tech-pill">Edge-TTS</span>
-          <span class="tech-pill">FFmpeg</span>
-        </div>
-        <div class="footer-copy">
-          <span>© 2026 CookMotion. All rights reserved. Free &amp; Open Architecture.</span>
-        </div>
-      </div>
-    </div>
-  </footer>
+    <footer class="app-footer">
+      <span>CookMotion · AI-Powered Video Generator</span>
+    </footer>
+  </div>
 
   <script type="module" src="/studio3d/studio-ui.mjs"></script>
 </body>

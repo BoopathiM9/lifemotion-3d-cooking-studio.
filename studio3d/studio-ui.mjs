@@ -86,7 +86,7 @@ function chooseRecipe(recipe){
  if ($('filmBadge')) $('filmBadge').textContent = 'Waiting';
  if ($('progressArea')) $('progressArea').hidden = true;
  document.querySelectorAll('.recipe-chip').forEach(button=>button.classList.toggle('active',button.dataset.recipe===recipe.id));
- $('create').scrollIntoView({behavior:'smooth'});$('prompt').focus({preventScroll:true});
+ $('create').scrollIntoView();$('prompt').focus({preventScroll:true});
 }
 
 function renderRecipes(recipes){
@@ -291,7 +291,6 @@ function displayRecipePlan(data) {
   $('recipeEditorInput').value = JSON.stringify(approvedRecipe, null, 2);
   $('editRecipeBox').hidden = true;
   section.hidden = false;
-  section.scrollIntoView({ behavior: 'smooth' });
 }
 
 $('previewPlan')?.addEventListener('click', async () => {
