@@ -139278,6 +139278,8 @@ var RECIPES = [
   { id: "salad", name: "Fresh Salad" }
 ];
 var VOICES = [
+  "en-IN-NeerjaExpressiveNeural",
+  "en-IN-NeerjaNeural",
   "en-US-JennyNeural",
   "en-US-AriaNeural",
   "ta-IN-PallaviNeural"
@@ -139442,15 +139444,15 @@ var RECIPE_CATALOG = {
     ]
   },
   "sundal": {
-    aliases: ["sundal", "sandel", "chana sundal", "kondakadalai sundal", "sundal food", "sandel food", "\u0B9A\u0BC1\u0BA3\u0BCD\u0B9F\u0BB2\u0BCD"],
-    titleEn: "Chana Sundal (Spiced Chickpeas)",
+    aliases: ["sundal", "sandel", "chana sundal", "kondakadalai sundal", "sundal food", "sandel food", "chickpea sundal", "\u0B9A\u0BC1\u0BA3\u0BCD\u0B9F\u0BB2\u0BCD"],
+    titleEn: "Chana Sundal",
     titleTa: "\u0B9A\u0BC1\u0BB5\u0BC8\u0BAF\u0BBE\u0BA9 \u0B9A\u0BC1\u0BA3\u0BCD\u0B9F\u0BB2\u0BCD (Healthy Sundal)",
     ingredientsEn: [
-      { id: "chickpeas", name: "Boiled Chickpeas", color: "#f1b85e" },
-      { id: "mustard", name: "Mustard & Urad Dal", color: "#2d3748" },
-      { id: "curryleaves", name: "Curry Leaves & Hing", color: "#22543d" },
-      { id: "chillies", name: "Green Chillies & Ginger", color: "#38a169" },
-      { id: "coconut", name: "Fresh Grated Coconut", color: "#ffffff" }
+      { id: "chickpeas", name: "Cooked Chickpeas", color: "#f59e0b" },
+      { id: "coconut", name: "Grated Coconut", color: "#ffffff" },
+      { id: "mustard", name: "Mustard Seeds & Urad Dal", color: "#1f2937" },
+      { id: "curryleaves", name: "Curry Leaves & Hing", color: "#16a34a" },
+      { id: "oil", name: "Cooking Oil", color: "#facc15" }
     ],
     ingredientsTa: [
       { id: "chickpeas", name: "\u0BB5\u0BC7\u0B95\u0BB5\u0BC8\u0BA4\u0BCD\u0BA4 \u0B95\u0BCA\u0BA3\u0BCD\u0B9F\u0BC8\u0B95\u0BCD\u0B95\u0B9F\u0BB2\u0BC8", color: "#f1b85e" },
@@ -139460,15 +139462,16 @@ var RECIPE_CATALOG = {
       { id: "coconut", name: "\u0BA4\u0BC1\u0BB0\u0BC1\u0BB5\u0BBF\u0BAF \u0BA4\u0BC7\u0B99\u0BCD\u0B95\u0BBE\u0BAF\u0BCD", color: "#ffffff" }
     ],
     stepsEn: [
-      { key: "welcome", action: "show", text: "Welcome little chefs! Today we are making healthy, delicious Chana Sundal with Chef Maya!", start: 0, end: 6 },
-      { key: "safe", action: "show", text: "Wash your hands clean and always ask a grown-up for help around hot cookware.", start: 6, end: 13 },
-      { key: "prep", action: "show", text: "Keep soft boiled chickpeas and freshly grated coconut ready on our kitchen counter.", start: 13, end: 20 },
-      { key: "saute", action: "cook", text: "Warm a drizzle of sesame oil in the pan and let mustard seeds and urad dal crackle.", start: 20, end: 28 },
-      { key: "aromatics", action: "add", text: "Toss in fresh curry leaves, green chillies, and aromatic asafoetida until fragrant.", start: 27, end: 35 },
-      { key: "chickpeas", action: "add", text: "Add our soft boiled chickpeas with a pinch of salt, stirring evenly with our wooden spoon.", start: 35, end: 44 },
-      { key: "simmer", action: "cook", text: "Toss gently over medium heat so all the savory flavors coat the warm chickpeas.", start: 44, end: 52 },
-      { key: "coconut", action: "pour", text: "Turn off the heat and generously shower fresh grated coconut all over the sundal.", start: 52, end: 59 },
-      { key: "serve", action: "serve", text: "Spoon steaming, wholesome Sundal onto our serving plate. Healthy and delicious!", start: 59, end: 66 }
+      { key: "welcome", action: "show", text: "Hi, little chefs! I'm Maya. Today, we're making tasty Chana Sundal!", start: 0, end: 5 },
+      { key: "safe", action: "show", text: "First, wash your hands. Ask a grown-up to handle the hot stove.", start: 5, end: 11 },
+      { key: "prep", action: "show", text: "Get your cooked chickpeas, grated coconut, and spices ready!", start: 11, end: 17 },
+      { key: "heat", action: "cook", text: "Heat a little oil. Add mustard seeds and urad dal. Listen for the crackle!", start: 17, end: 24 },
+      { key: "flavour", action: "add", text: "Add curry leaves, a little green chilli, and a pinch of asafoetida.", start: 24, end: 31 },
+      { key: "add_chickpeas", action: "add", text: "Now add the cooked chickpeas and a pinch of salt. Stir gently.", start: 31, end: 39 },
+      { key: "mix", action: "cook", text: "Mix everything over medium heat so the chickpeas soak up the flavour.", start: 39, end: 46 },
+      { key: "coconut", action: "pour", text: "Turn off the stove. Sprinkle in freshly grated coconut and mix.", start: 46, end: 54 },
+      { key: "serve", action: "serve", text: "Scoop the sundal onto a plate. Look how yummy it is!", start: 54, end: 61 },
+      { key: "ending", action: "show", text: "Great job, little chefs! Enjoy your delicious sundal!", start: 61, end: 66 }
     ],
     stepsTa: [
       { key: "welcome", action: "show", text: "\u0BB5\u0BA3\u0B95\u0BCD\u0B95\u0BAE\u0BCD \u0B95\u0BC1\u0B9F\u0BCD\u0B9F\u0BBF \u0B9A\u0BAE\u0BC8\u0BAF\u0BB2\u0BCD \u0B95\u0BB2\u0BC8\u0B9E\u0BB0\u0BCD\u0B95\u0BB3\u0BC7! \u0B87\u0BA9\u0BCD\u0BB1\u0BC1 \u0B9A\u0BC6\u0B83\u0BAA\u0BCD \u0BAE\u0BBE\u0BAF\u0BBE\u0BB5\u0BC1\u0B9F\u0BA9\u0BCD \u0B9A\u0BC1\u0BB5\u0BC8\u0BAF\u0BBE\u0BA9 \u0B9A\u0BA4\u0BCD\u0BA4\u0BC1\u0BAE\u0BBF\u0B95\u0BCD\u0B95 \u0B9A\u0BC1\u0BA3\u0BCD\u0B9F\u0BB2\u0BCD \u0B9A\u0BC6\u0BAF\u0BCD\u0BB5\u0BCB\u0BAE\u0BCD!", start: 0, end: 6 },
@@ -139768,9 +139771,9 @@ async function handler(event) {
         captions: planData.steps.map((s2) => ({ start: s2.start, end: s2.end, text: s2.text }))
       };
       const isPortrait = selectedFormat === "9:16";
-      const width = isPortrait ? 1080 : 1920;
-      const height = isPortrait ? 1920 : 1080;
-      const fps = 30;
+      const width = isPortrait ? 720 : 1280;
+      const height = isPortrait ? 1280 : 720;
+      const fps = 24;
       if (process.env.MODAL_ENDPOINT) {
         try {
           const s3Key = `videos/modal-${Date.now()}-${plan.recipe}.mp4`;
@@ -139859,7 +139862,7 @@ async function handler(event) {
             height,
             durationInFrames: duration * fps
           },
-          concurrency: 2,
+          framesPerLambda: 100,
           maxRetries: 3,
           codec: "h264",
           privacy: "public"
@@ -139940,12 +139943,13 @@ async function handler(event) {
             if (progress.outputFile) {
               try {
                 const parsed = new URL(progress.outputFile);
-                let pathPart = parsed.pathname.replace(/^\/+/, "");
-                if (pathPart.startsWith(bName + "/")) {
-                  pathPart = pathPart.slice(bName.length + 1);
-                }
-                if (pathPart.endsWith(".mp4")) {
-                  outputKey = pathPart;
+                const pathPart = parsed.pathname.replace(/^\/+/, "");
+                const marker = `renders/${renderId}/`;
+                const idx = pathPart.indexOf(marker);
+                if (idx !== -1) {
+                  outputKey = pathPart.slice(idx);
+                } else if (pathPart.endsWith(".mp4") && !pathPart.includes("/")) {
+                  outputKey = `renders/${renderId}/${pathPart}`;
                 }
               } catch {
               }

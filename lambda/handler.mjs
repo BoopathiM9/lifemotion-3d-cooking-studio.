@@ -561,9 +561,9 @@ export async function handler(event) {
     };
 
     const isPortrait = selectedFormat === '9:16';
-    const width = isPortrait ? 1080 : 1920;
-    const height = isPortrait ? 1920 : 1080;
-    const fps = 30;
+    const width = isPortrait ? 720 : 1280;
+    const height = isPortrait ? 1280 : 720;
+    const fps = 24;
 
     // Serverless GPU Engine (Modal.com / Fal.ai)
     if (process.env.MODAL_ENDPOINT) {
@@ -661,7 +661,7 @@ try {
           height,
           durationInFrames: duration * fps
         },
-        concurrency: 2,
+        framesPerLambda: 100,
         maxRetries: 3,
         codec: 'h264',
         privacy: 'public'
