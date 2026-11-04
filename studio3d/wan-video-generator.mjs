@@ -1,5 +1,5 @@
 /**
- * LifeMotion AI - Wan 2.2 14B Fast Video Generation Client
+ * CookMotion - Wan 2.2 14B Fast Video Generation Client
  * Connects to Hugging Face Space: zerogpu-aoti/wan2-2-fp8da-aoti-faster
  * Generates short AI animated cooking clips from Chef Maya reference image.
  */
@@ -15,6 +15,19 @@ const DEFAULT_REF_IMAGE = path.join(ROOT, 'studio3d', 'assets', 'maya-kitchen-he
 const CLIPS_DIR = path.join(ROOT, 'output', 'wan_clips');
 
 export const WAN_SPACE_ID = 'zerogpu-aoti/wan2-2-fp8da-aoti-faster';
+
+// Circuit breaker to prevent repeated failing requests when quota is exhausted or offline
+let wanCircuitBreakerTripped = false;
+let wanCircuitBreakerReason = null;
+
+export function resetWanCircuitBreaker() {
+  wanCircuitBreakerTripped = false;
+  wanCircuitBreakerReason = null;
+}
+
+export function isWanCircuitBreakerTripped() {
+  return wanCircuitBreakerTripped;
+}
 
 /**
  * Loads Hugging Face token from environment or .env file.
@@ -37,6 +50,14 @@ export function getHfToken() {
  * @returns {Promise<{ ok: boolean, status: string, message: string }>}
  */
 export async function evaluateWanSpace() {
+  if (wanCircuitBreakerTripped) {
+    return {
+      ok: false,
+      status: 'CIRCUIT_OPEN',
+      message: wanCircuitBreakerReason || 'Wan 2.2 Space is resting after quota limit.'
+    };
+  }
+
   const token = getHfToken();
   try {
     const client = await Client.connect(WAN_SPACE_ID, {
@@ -74,6 +95,14 @@ export async function generateWanCookingClip({
   duration = 3.5,
   steps = 6
 }) {
+  if (wanCircuitBreakerTripped) {
+    return {
+      success: false,
+      reason: wanCircuitBreakerReason || 'Hugging Face Wan 2.2 is resting after quota/network limits',
+      fallbackRequired: true
+    };
+  }
+
   const token = getHfToken();
   if (!fs.existsSync(imagePath)) {
     return {
@@ -88,7 +117,7 @@ export async function generateWanCookingClip({
     fs.mkdirSync(CLIPS_DIR, { recursive: true });
   }
 
-  // Refine prompt for consistent Disney/Pixar cartoon style and child-friendly aesthetic
+  // Refine prompt for consistent cartoon style and child-friendly aesthetic
   const fullPrompt = `${actionPrompt}, 3D cartoon style, cheerful girl chef Maya, colorful cozy kitchen, soft warm volumetric lighting, gentle natural movement, high quality animation, 30fps`;
   const negativePrompt = 'ugly, distorted, blurry, extra limbs, photorealistic, dark, terrifying, glitchy, static, text watermark';
 
@@ -138,11 +167,20 @@ export async function generateWanCookingClip({
       isAiGenerated: true
     };
   } catch (err) {
-    console.warn(`[Wan 2.2] Generation skipped/failed for "${stepKey}": ${err.message}`);
+    console.warn(`[Wan 2.2] Generation notice for "${stepKey}": ${err.message}`);
     const isQuotaExceeded = err.message.includes('429') || err.message.toLowerCase().includes('quota') || err.message.toLowerCase().includes('rate limit');
+    const isNetworkError = err.message.includes('fetch failed') || err.message.includes('ECONNREFUSED') || err.message.includes('ETIMEDOUT');
+
+    if (isQuotaExceeded || isNetworkError) {
+      wanCircuitBreakerTripped = true;
+      wanCircuitBreakerReason = isQuotaExceeded
+        ? 'Hugging Face ZeroGPU daily quota reached for today. Switching to full Remotion animation.'
+        : `Hugging Face connection unavailable (${err.message}). Switching to full Remotion animation.`;
+    }
+
     return {
       success: false,
-      reason: isQuotaExceeded ? 'Hugging Face ZeroGPU daily quota reached for today' : err.message,
+      reason: wanCircuitBreakerReason || err.message,
       fallbackRequired: true
     };
   }

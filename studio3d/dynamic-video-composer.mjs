@@ -1,5 +1,5 @@
 /**
- * LifeMotion AI - Dynamic Video Composer
+ * CookMotion - Dynamic Video Composer
  * Combines Generative AI Video clips (Wan 2.2 14B Fast), procedural 3D Remotion scenes,
  * Edge TTS neural narration, and synchronized subtitles using FFmpeg.
  */
@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
-import { generateWanCookingClip } from './wan-video-generator.mjs';
+import { generateWanCookingClip, isWanCircuitBreakerTripped } from './wan-video-generator.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -55,7 +55,7 @@ export async function planSceneVisuals(recipe, { enableAiVideo = true, maxAiClip
     let clipPath = null;
     let videoType = 'procedural-3d';
 
-    if (enableAiVideo && isHero && aiClipsCount < maxAiClips) {
+    if (enableAiVideo && isHero && aiClipsCount < maxAiClips && !isWanCircuitBreakerTripped()) {
       console.log(`[DynamicComposer] Attempting Wan 2.2 AI video for Step ${i + 1} (${step.action})...`);
       try {
         const result = await generateWanCookingClip({

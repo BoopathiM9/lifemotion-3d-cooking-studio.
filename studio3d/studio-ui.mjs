@@ -1,7 +1,22 @@
 const $=id=>document.getElementById(id);
 let setupReady=true,creating=false,remoteBusy=false,current=null,pollTimer;
 const icons={'chicken-biryani':'🍲','sundal':'🥥','masala-dosa':'🥞',pancakes:'🥞','vegetable-sandwich':'🥪','vegetable-fried-rice':'🍚','tomato-pasta':'🍝',noodles:'🍜',chapati:'🫓','vegetable-soup':'🥣',salad:'🥗'};
-const statusNames={queued:'Queued',narration:'Recording narration',preview:'Making a preview',rendering:'Animating the full film',complete:'Ready to watch',failed:'Needs another try'};
+const statusNames={
+  queued:'Queued',
+  PENDING:'Queued',
+  narration:'Recording narration',
+  VOICE_GENERATION:'Recording narration',
+  preview:'Creating preview',
+  ANIMATION_GENERATION:'Creating preview',
+  rendering:'Rendering full film',
+  VIDEO_RENDERING:'Rendering full film',
+  FINAL_VALIDATION:'Validating final video',
+  complete:'Ready to watch',
+  COMPLETED:'Ready to watch',
+  failed:'Needs another try',
+  FAILED:'Needs another try'
+};
+
 function node(tag,text,className){const element=document.createElement(tag);if(text!==undefined)element.textContent=text;if(className)element.className=className;return element;}
 
 // Cloud API base when deployed on AWS Amplify; relative path for local development and tests
@@ -15,11 +30,11 @@ async function request(path,options){
  try {
   response = await fetch(fullPath, options);
  } catch(netErr) {
-  throw Error(`Could not connect to Cloud Studio (${netErr.message || 'Network error'}). Please check your internet connection.`);
+  throw Error(`Could not connect to Studio backend (${netErr.message || 'Network error'}). Check that CookMotion server is running.`);
  }
  let body;
- try{body=await response.json();}catch{throw Error('The cloud studio returned an invalid response. Please try again.');}
- if(!response.ok){const error=Error(body.error||body.message||`Cloud request failed with status ${response.status}`);error.body=body;error.status=response.status;throw error;}
+ try{body=await response.json();}catch{throw Error('The studio returned an invalid response. Please try again.');}
+ if(!response.ok){const error=Error(body.error||body.message||`Request failed with status ${response.status}`);error.body=body;error.status=response.status;throw error;}
  return body;
 }
 
@@ -30,7 +45,7 @@ const save=id=>{try{id?sessionStorage.setItem('mayaJob',id):sessionStorage.remov
 function updateButton(){
  $('generate').disabled=creating||remoteBusy||!$('prompt').value.trim();
  $('generateText').textContent=creating?'Generating video…':remoteBusy?'Generation in progress':'Generate video';
- $('formHint').textContent=creating?'Your video is being created in the cloud. You can keep this page open.':remoteBusy?'A video is already being generated. Please wait for it to finish.':'Type any recipe or dish name. Chef Maya prepares the ingredients, narration, and 3D steps.';
+ $('formHint').textContent=creating?'Your video is being created. You can keep this page open.':remoteBusy?'A video is already being generated. Please wait for it to finish.':'Type any recipe or dish name. Chef Maya prepares the ingredients, narration, and 3D steps.';
 }
 
 function count(){ $('charCount').textContent=`${$('prompt').value.length} / 2000`;updateButton();}
@@ -79,7 +94,14 @@ function renderRecipes(recipes){
  const ordered=[...priority.map(id=>recipes.find(r=>r.id===id)).filter(Boolean),...recipes.filter(r=>!priority.includes(r.id))];
  $('quickRecipes').replaceChildren();
  for(const recipe of ordered){
-  if(priority.includes(recipe.id)){const button=node('button',recipe.name.replace('Vegetable ','Veg '),'recipe-chip');button.type='button';button.dataset.recipe=recipe.id;button.setAttribute('aria-label',`Use ${recipe.name} recipe`);button.addEventListener('click',()=>chooseRecipe(recipe));$('quickRecipes').append(button);}
+  if(priority.includes(recipe.id)){
+    const button=node('button',recipe.name.replace('Vegetable ','Veg '),'recipe-chip');
+    button.type='button';
+    button.dataset.recipe=recipe.id;
+    button.setAttribute('aria-label',`Use ${recipe.name} recipe`);
+    button.addEventListener('click',()=>chooseRecipe(recipe));
+    $('quickRecipes').append(button);
+  }
  }
 }
 
@@ -93,10 +115,12 @@ function restoreControls(job){
 function displayMedia(job){
  const video = $('video');
  const placeholder = $('placeholder');
- const source = job.status === 'complete' ? job.videoUrl : job.previewUrl;
+ const isComplete = job.status === 'complete' || job.status === 'COMPLETED';
+ const isFailed = job.status === 'failed' || job.status === 'FAILED';
+ const source = isComplete ? job.videoUrl : job.previewUrl;
  
  if ($('cinemaHeading')) {
-   $('cinemaHeading').textContent = job.status === 'complete' ? '🎬 Chef Maya Cooking Film (முழு வீடியோ)' : 'Chef Maya 3D Cooking Cinema';
+   $('cinemaHeading').textContent = isComplete ? '🎬 Chef Maya Cooking Film (முழு வீடியோ)' : 'Chef Maya 3D Cooking Cinema';
  }
 
  if (source && video) {
@@ -116,23 +140,52 @@ function displayMedia(job){
    if (placeholder) placeholder.hidden = true;
    video.hidden = false;
  }
- $('download').hidden = !(job.status === 'complete' && job.videoUrl);
+ $('download').hidden = !(isComplete && job.videoUrl);
  if (job.videoUrl) {
    $('download').dataset.url = job.videoUrl;
    $('download').href = job.videoUrl;
-   $('download').download = `chef-maya-${job.recipe || 'cooking'}.mp4`;
+   $('download').download = `cookmotion-${job.recipe || 'cooking'}.mp4`;
    $('download').textContent = '📥 Download Full HD MP4';
  }
  $('filmTitle').textContent = job.title || 'Cooking Film';
- $('filmDescription').textContent = job.status === 'complete' ? 'Complete animated cooking film with synchronized voice narration and subtitles.' : job.status === 'failed' ? 'Generation stopped. Please try again.' : 'Animating Maya in the kitchen...';
- $('filmBadge').textContent = job.status === 'complete' ? '✨ Movie Ready' : job.status === 'failed' ? 'Stopped' : 'Animating';
+ $('filmDescription').textContent = isComplete
+   ? 'Complete animated cooking film with synchronized voice narration and subtitles.'
+   : isFailed
+   ? 'Generation stopped. Please try again.'
+   : 'Animating Maya in the kitchen...';
+ $('filmBadge').textContent = isComplete ? '✨ Movie Ready' : isFailed ? 'Stopped' : 'Animating';
 }
 
 function displayJob(job){
- $('progressArea').hidden=false;const failed=job.status==='failed';$('progressArea').classList.toggle('error',failed);$('stages').hidden=failed;$('progress').hidden=failed;
- $('status').textContent=job.message||statusNames[job.status]||'Preparing your film';$('progressText').textContent=`${Math.round(job.progress||0)}%`;$('progress').value=job.progress||0;
- const stages=['narration','preview','rendering','complete'],index=stages.indexOf(job.status);
- document.querySelectorAll('[data-stage]').forEach(item=>{const step=stages.indexOf(item.dataset.stage);item.classList.toggle('current',step===index);item.classList.toggle('done',step<index);});
+ $('progressArea').hidden=false;
+ const failed = job.status === 'failed' || job.status === 'FAILED';
+ const isComplete = job.status === 'complete' || job.status === 'COMPLETED';
+ $('progressArea').classList.toggle('error',failed);
+ $('stages').hidden=failed;
+ $('progress').hidden=failed;
+
+ $('status').textContent = job.message || statusNames[job.status] || statusNames[job.stage] || 'Preparing your film';
+ $('progressText').textContent = `${Math.round(job.progress||0)}%`;
+ $('progress').value = job.progress||0;
+
+ // Sync with <ol id="stages"> in index.html: ['recipe', 'narration', 'render', 'export']
+ let activeStageIndex = 0;
+ const stage = (job.stage || job.status || job.legacyStatus || '').toUpperCase();
+ if (stage.includes('RECIPE') || stage.includes('STORYBOARD') || stage.includes('QUEUED') || stage.includes('PENDING')) {
+   activeStageIndex = 0;
+ } else if (stage.includes('VOICE') || stage.includes('NARRATION')) {
+   activeStageIndex = 1;
+ } else if (stage.includes('ANIMATION') || stage.includes('RENDER') || stage.includes('PREVIEW')) {
+   activeStageIndex = 2;
+ } else if (stage.includes('FINAL') || stage.includes('COMPLETE') || stage.includes('EXPORT')) {
+   activeStageIndex = 3;
+ }
+
+ document.querySelectorAll('#stages li').forEach((item, idx) => {
+   item.classList.toggle('current', idx === activeStageIndex && !failed && !isComplete);
+   item.classList.toggle('done', idx < activeStageIndex || (idx === 3 && isComplete));
+ });
+
  displayMedia(job);
 }
 
@@ -140,16 +193,18 @@ async function poll(){
  clearTimeout(pollTimer);if(!current)return;let repeat=true;
  try{
   const job=await request('/api/jobs/'+encodeURIComponent(current));displayJob(job);
-  if(job.status==='failed'){
+  if(job.status==='failed' || job.status==='FAILED'){
     repeat=false;creating=false;remoteBusy=false;save(null);current=null;
-    errorMessage(`Video rendering stopped: ${job.message || 'Generation failed on cloud service'}`);
+    errorMessage(`Video rendering stopped: ${job.message || 'Generation failed on studio server'}`);
     updateButton();
     return;
   }
-  if(job.status==='complete'){repeat=false;creating=false;remoteBusy=false;save(null);current=null;updateButton();}
+  if(job.status==='complete' || job.status==='COMPLETED'){
+    repeat=false;creating=false;remoteBusy=false;save(null);current=null;updateButton();
+  }
  }catch(error){
   if(error.status===404){repeat=false;creating=false;current=null;save(null);errorMessage('Your video session was not found. Please click Generate video to start.');updateButton();}
-  else $('status').textContent=`Checking cloud render progress... (${error.message || 'reconnecting'})`;
+  else $('status').textContent=`Checking render progress... (${error.message || 'reconnecting'})`;
  }finally{if(repeat&&current)pollTimer=setTimeout(poll,2500);}
 }
 
@@ -167,7 +222,7 @@ $('download').addEventListener('click', async (e) => {
   const blobUrl = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = blobUrl;
-  a.download = $('download').download || 'chef-maya-cooking-film.mp4';
+  a.download = $('download').download || 'cookmotion-cooking-film.mp4';
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -182,7 +237,6 @@ $('download').addEventListener('click', async (e) => {
 
 $('prompt').addEventListener('input', () => { count(); });
 
-
 let approvedRecipe = null;
 
 function displayRecipePlan(data) {
@@ -195,9 +249,16 @@ function displayRecipePlan(data) {
 
   // Warnings box
   const warnBox = $('assetWarningBox');
-  if (data.warnings && data.warnings.length > 0) {
+  const allWarnings = [...(data.warnings || [])];
+  if (data.ollamaStatus && !data.ollamaStatus.available) {
+    allWarnings.push('Local Ollama offline: Used CookMotion verified cooking curriculum');
+  } else if (data.ollamaStatus && data.ollamaStatus.available && !data.ollamaStatus.modelInstalled) {
+    allWarnings.push(`Qwen model missing: run 'ollama run ${data.ollamaStatus.models?.[0] || 'qwen2.5:1.5b'}'`);
+  }
+
+  if (allWarnings.length > 0) {
     warnBox.hidden = false;
-    $('assetWarningText').textContent = data.warnings.join(' • ');
+    $('assetWarningText').textContent = allWarnings.join(' • ');
   } else {
     warnBox.hidden = true;
   }
@@ -282,7 +343,7 @@ $('confirmGenerateBtn')?.addEventListener('click', async () => {
       recipe: approvedRecipe
     };
     const job = await request('/api/generate', post(payload));
-    if (job.status === 'complete') {
+    if (job.status === 'complete' || job.status === 'COMPLETED') {
       creating = false;
       current = null;
       save(null);
@@ -322,7 +383,7 @@ $('form').addEventListener('submit', async event => {
   clearTimeout(pollTimer);
   try {
     const job = await request('/api/generate', post(options()));
-    if (job.status === 'complete') {
+    if (job.status === 'complete' || job.status === 'COMPLETED') {
       creating = false;
       current = null;
       save(null);
@@ -351,7 +412,7 @@ try { current = sessionStorage.getItem('mayaJob'); } catch {}
 if (current && !creating) {
   try {
     const job = await request('/api/jobs/' + encodeURIComponent(current));
-    if (job.status !== 'complete' && job.status !== 'failed') {
+    if (job.status !== 'complete' && job.status !== 'COMPLETED' && job.status !== 'failed' && job.status !== 'FAILED') {
       creating = true;
       updateButton();
       void poll();

@@ -1,5 +1,5 @@
 /**
- * LifeMotion AI - Qwen2.5-1.5B-Instruct & Dynamic Recipe Planning Engine
+ * CookMotion - Qwen2.5-1.5B-Instruct & Dynamic Recipe Planning Engine
  * Supports local Ollama deployment (http://127.0.0.1:11434) with CPU-compatible quantization.
  * Automatically validates food safety rules, adult supervision reminders, and schema integrity.
  * Preserves the 10 curated recipes as verified examples and rock-solid fallbacks.
@@ -17,7 +17,7 @@ const CACHE_DIR = path.join(ROOT, 'output', 'recipes-cache');
 export const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://127.0.0.1:11434';
 export const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:1.5b';
 
-// 15 Reusable cooking actions required by LifeMotion dynamic scene engine
+// 15 Reusable cooking actions required by CookMotion dynamic scene engine
 export const SUPPORTED_ACTIONS = [
   'wash',
   'chop',
@@ -81,21 +81,61 @@ export const KNOWN_VISUAL_ASSETS = [
 ];
 
 /**
- * Checks if Ollama service is reachable.
+ * Checks if Ollama service is reachable and whether the target model is installed.
+ * @returns {Promise<{ available: boolean, modelInstalled: boolean, models: string[], error: string|null }>}
  */
 export async function isOllamaAvailable() {
   try {
-    const res = await fetch(`${OLLAMA_HOST}/api/tags`, { signal: AbortSignal.timeout(1200) });
-    if (!res.ok) return false;
+    const res = await fetch(`${OLLAMA_HOST}/api/tags`, { signal: AbortSignal.timeout(2000) });
+    if (!res.ok) {
+      return { available: false, modelInstalled: false, models: [], error: `Ollama returned HTTP ${res.status}` };
+    }
     const data = await res.json();
-    return Array.isArray(data?.models);
-  } catch {
-    return false;
+    const models = Array.isArray(data?.models) ? data.models.map(m => m.name || m.model || '') : [];
+    const targetModel = OLLAMA_MODEL.toLowerCase();
+    const modelInstalled = models.some(m => m.toLowerCase().includes(targetModel) || m.toLowerCase().startsWith('qwen2.5'));
+    return {
+      available: true,
+      modelInstalled,
+      models,
+      error: modelInstalled ? null : `Model "${OLLAMA_MODEL}" is not yet downloaded in Ollama. Run: ollama run ${OLLAMA_MODEL}`
+    };
+  } catch (err) {
+    return {
+      available: false,
+      modelInstalled: false,
+      models: [],
+      error: `Ollama service is not running on ${OLLAMA_HOST} (${err.message}). To enable local AI: install Ollama and run 'ollama run ${OLLAMA_MODEL}'`
+    };
   }
 }
 
 /**
- * Normalizes an action verb to one of the 15 standard LifeMotion actions.
+ * Robustly parses and extracts JSON from raw LLM output text,
+ * stripping markdown code fences or conversational wrappers.
+ * @param {string} rawText
+ * @returns {Object|null}
+ */
+export function parseRecipeJsonText(rawText) {
+  if (!rawText || typeof rawText !== 'string') return null;
+  let cleaned = rawText.trim();
+  // Strip markdown code fences if present: ```json ... ``` or ``` ... ```
+  cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  // Extract outermost { ... }
+  const firstBrace = cleaned.indexOf('{');
+  const lastBrace = cleaned.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+  }
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Normalizes an action verb to one of the 15 standard CookMotion actions.
  */
 export function normalizeAction(action) {
   if (!action) return 'stir';
@@ -174,7 +214,6 @@ export function validateRecipeJSON(recipe) {
 
     // Enforce food safety verification
     if (isPoultry && (!hasMeatSafety || !hasAdultSupervision)) {
-      // Automatically inject child-friendly food safety reminder in safety step
       const safeStep = recipe.steps.find(s => s.action === 'safe' || s.key === 'safe');
       if (safeStep) {
         safeStep.text = "First, wash your hands thoroughly with soap. Always ask a grown-up to handle the hot stove and raw chicken.";
@@ -206,7 +245,7 @@ export function validateRecipeJSON(recipe) {
  * Generates structured recipe JSON using Qwen2.5-1.5B via Ollama or verified fallback.
  * 
  * @param {string} prompt - User dish request
- * @returns {Promise<{ ok: boolean, recipe: Object, source: string, note?: string }>}
+ * @returns {Promise<{ ok: boolean, recipe: Object, source: string, note?: string, ollamaStatus?: Object }>}
  */
 export async function generateRecipe(prompt) {
   const cleanPrompt = String(prompt || '').trim();
@@ -239,12 +278,14 @@ export async function generateRecipe(prompt) {
     }
   }
 
-  // 3. Attempt Ollama Qwen2.5-1.5B-Instruct generation if Ollama is running
-  const ollamaOnline = await isOllamaAvailable();
-  if (ollamaOnline) {
-    try {
-      console.log(`[Ollama] Querying Qwen2.5-1.5B on ${OLLAMA_HOST} for "${cleanPrompt}"...`);
-      const systemPrompt = `You are an expert children's culinary animation director for LifeMotion AI.
+  // 3. Attempt Ollama Qwen2.5-1.5B-Instruct generation if Ollama is running and model is available
+  const ollamaCheck = await isOllamaAvailable();
+  if (ollamaCheck.available && ollamaCheck.modelInstalled) {
+    const maxRetries = 2;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        console.log(`[Ollama] Querying Qwen2.5-1.5B (Attempt ${attempt}/${maxRetries}) on ${OLLAMA_HOST} for "${cleanPrompt}"...`);
+        const systemPrompt = `You are an expert children's culinary animation director for CookMotion.
 Output ONLY a single valid raw JSON object with NO markdown formatting, NO backticks, and NO conversational text.
 
 Schema:
@@ -270,42 +311,53 @@ Rules:
 - For poultry/chicken: include thorough cooking and clean hands safety.
 - Actions must strictly use the allowed verbs: wash, chop, pour, marinate, mix, stir, fry, boil, steam, spread, flip, layer, cover, garnish, serve.`;
 
-      const response = await fetch(`${OLLAMA_HOST}/api/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: OLLAMA_MODEL,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: `Create a child-friendly cooking lesson with realistic steps for: ${cleanPrompt}` }
-          ],
-          format: 'json',
-          stream: false,
-          options: {
-            temperature: 0.2,
-            top_p: 0.9
-          }
-        }),
-        signal: AbortSignal.timeout(18000)
-      });
+        const response = await fetch(`${OLLAMA_HOST}/api/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: OLLAMA_MODEL,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: `Create a child-friendly cooking lesson with realistic steps for: ${cleanPrompt}` }
+            ],
+            format: 'json',
+            stream: false,
+            options: {
+              temperature: 0.2,
+              top_p: 0.9
+            }
+          }),
+          signal: AbortSignal.timeout(20000)
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        const content = data?.message?.content || '';
-        const parsed = JSON.parse(content);
-        const validation = validateRecipeJSON(parsed);
-        if (validation.valid) {
-          fs.writeFileSync(cacheFile, JSON.stringify(validation.recipe, null, 2), 'utf8');
-          console.log(`[Ollama Qwen2.5] Successfully generated and validated recipe for "${cleanPrompt}"`);
-          return { ok: true, recipe: validation.recipe, source: `ollama-${OLLAMA_MODEL}` };
+        if (response.ok) {
+          const data = await response.json();
+          const content = data?.message?.content || '';
+          const parsed = parseRecipeJsonText(content);
+          if (parsed) {
+            const validation = validateRecipeJSON(parsed);
+            if (validation.valid) {
+              fs.writeFileSync(cacheFile, JSON.stringify(validation.recipe, null, 2), 'utf8');
+              console.log(`[Ollama Qwen2.5] Successfully generated and validated recipe for "${cleanPrompt}"`);
+              return {
+                ok: true,
+                recipe: validation.recipe,
+                source: `ollama-${OLLAMA_MODEL}`,
+                ollamaStatus: ollamaCheck
+              };
+            }
+          }
+        }
+      } catch (err) {
+        console.warn(`[Ollama] Attempt ${attempt} notice: ${err.message}`);
+        if (attempt < maxRetries) {
+          await new Promise(r => setTimeout(r, 600));
         }
       }
-    } catch (err) {
-      console.warn(`[Ollama] Generation notice: ${err.message}. Using dynamic verified fallback.`);
     }
   }
 
-  // 4. Dynamic Verified Recipe Synthesizer (Zero-crash fallback)
+  // 4. Dynamic Verified Recipe Synthesizer (Transparent fallback)
   console.log(`[RecipeEngine] Synthesizing verified recipe for "${cleanPrompt}"`);
   const synthesized = buildSynthesizedRecipe(cleanPrompt);
   const validation = validateRecipeJSON(synthesized);
@@ -313,7 +365,8 @@ Rules:
     ok: true,
     recipe: validation.recipe || synthesized,
     source: 'verified-synthesizer',
-    note: ollamaOnline ? 'Generated using verified curriculum.' : 'Ollama not detected; using verified local cooking synthesizer.'
+    note: ollamaCheck.error || 'Generated using CookMotion verified cooking curriculum.',
+    ollamaStatus: ollamaCheck
   };
 }
 

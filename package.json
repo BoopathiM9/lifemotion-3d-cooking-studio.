@@ -11,9 +11,10 @@
     "render:preview": "node --max-old-space-size=512 studio3d/render.mjs",
     "render:video": "node --max-old-space-size=512 studio3d/render.mjs --full",
     "test:unit": "node studio3d/unit-tests.mjs",
+    "test:resilience": "node --test studio3d/resilience-test.mjs",
     "test:startup": "node --test studio3d/startup-test.mjs",
     "test:studio": "node --test studio3d/studio-test.mjs",
-    "test": "node studio3d/unit-tests.mjs"
+    "test": "node studio3d/unit-tests.mjs && node --test studio3d/resilience-test.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.1159.0",
