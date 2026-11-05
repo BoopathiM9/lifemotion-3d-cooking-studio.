@@ -1,5 +1,5 @@
 const $=id=>document.getElementById(id);
-let setupReady=true,creating=false,remoteBusy=false,current=null,pollTimer;
+let setupReady=true,creating=false,remoteBusy=false,current=null,pollTimer,isSubmitting=false;
 const icons={'chicken-biryani':'🍲','sundal':'🥥','masala-dosa':'🥞',pancakes:'🥞','vegetable-sandwich':'🥪','vegetable-fried-rice':'🍚','tomato-pasta':'🍝',noodles:'🍜',chapati:'🫓','vegetable-soup':'🥣',salad:'🥗'};
 const statusNames={
   queued:'Queued',
@@ -73,7 +73,7 @@ async function checkSetup(refresh=false){
 }
 
 function chooseRecipe(recipe){
- if(creating)return;
+ if(creating || remoteBusy || isSubmitting)return;
  const isTamil = $('voice').value === 'ta-IN-PallaviNeural';
  $('prompt').value = isTamil ? recipe.name : `Teach children how to make ${recipe.name.toLowerCase()} step by step in simple English.`;
  count();
@@ -89,7 +89,12 @@ function chooseRecipe(recipe){
  $('create').scrollIntoView();$('prompt').focus({preventScroll:true});
 }
 
-function renderRecipes(recipes){
+function renderRecipes(data){
+ const recipes = Array.isArray(data) ? data : (data.recipes || []);
+ if (data && typeof data === 'object' && data.busy !== undefined) {
+   remoteBusy = Boolean(data.busy);
+   updateButton();
+ }
  const priority=['chicken-biryani','masala-dosa','vegetable-fried-rice','pancakes'];
  const ordered=[...priority.map(id=>recipes.find(r=>r.id===id)).filter(Boolean),...recipes.filter(r=>!priority.includes(r.id))];
  $('quickRecipes').replaceChildren();
@@ -323,8 +328,56 @@ $('recipeEditorInput')?.addEventListener('input', () => {
   } catch {}
 });
 
+function handleQueueWaiting(payload) {
+  $('progressArea').hidden = false;
+  $('progressArea').classList.remove('error');
+  $('status').textContent = 'Your video is waiting in the rendering queue. Please wait...';
+  $('progressText').textContent = 'In queue';
+  $('progress').value = 5;
+  $('stages').hidden = false;
+  $('progress').hidden = false;
+  remoteBusy = true;
+  updateButton();
+  setTimeout(async () => {
+    if (creating) {
+      try {
+        const job = await request('/api/generate', post(payload));
+        remoteBusy = false;
+        if (job.status === 'complete' || job.status === 'COMPLETED') {
+          creating = false;
+          isSubmitting = false;
+          current = null;
+          save(null);
+          displayJob(job);
+          updateButton();
+          return;
+        }
+        current = job.id;
+        save(current);
+        $('download').hidden = true;
+        if ($('video')) { $('video').pause(); $('video').hidden = true; }
+        if ($('placeholder')) $('placeholder').hidden = false;
+        displayJob(job);
+        isSubmitting = false;
+        void poll();
+      } catch (err) {
+        if (err.status === 429 || err.body?.busy || err.message?.includes('queue')) {
+          handleQueueWaiting(payload);
+        } else {
+          creating = false;
+          isSubmitting = false;
+          remoteBusy = false;
+          errorMessage(err.message);
+          updateButton();
+        }
+      }
+    }
+  }, 4000);
+}
+
 $('confirmGenerateBtn')?.addEventListener('click', async () => {
-  if (creating || remoteBusy || !approvedRecipe) return;
+  if (creating || remoteBusy || isSubmitting || !approvedRecipe) return;
+  isSubmitting = true;
   creating = true;
   updateButton();
   clearTimeout(pollTimer);
@@ -336,14 +389,15 @@ $('confirmGenerateBtn')?.addEventListener('click', async () => {
   $('stages').hidden = false;
   $('progress').hidden = false;
 
+  const payload = {
+    ...options(),
+    recipe: approvedRecipe
+  };
   try {
-    const payload = {
-      ...options(),
-      recipe: approvedRecipe
-    };
     const job = await request('/api/generate', post(payload));
     if (job.status === 'complete' || job.status === 'COMPLETED') {
       creating = false;
+      isSubmitting = false;
       current = null;
       save(null);
       displayJob(job);
@@ -356,9 +410,15 @@ $('confirmGenerateBtn')?.addEventListener('click', async () => {
     if ($('video')) { $('video').pause(); $('video').hidden = true; }
     if ($('placeholder')) $('placeholder').hidden = false;
     displayJob(job);
+    isSubmitting = false;
     void poll();
   } catch (error) {
+    if (error.status === 429 || error.body?.busy || error.message?.includes('queue')) {
+      handleQueueWaiting(payload);
+      return;
+    }
     creating = false;
+    isSubmitting = false;
     errorMessage(`Error: ${error.message || 'Generation failed. Please try again.'}`);
     updateButton();
   }
@@ -368,7 +428,7 @@ $('prompt').addEventListener('input', () => { count(); });
 
 $('form').addEventListener('submit', async event => {
   event.preventDefault();
-  if (creating || remoteBusy) return;
+  if (creating || remoteBusy || isSubmitting) return;
   const promptVal = $('prompt').value.trim();
   if (!promptVal) return;
 
@@ -377,13 +437,16 @@ $('form').addEventListener('submit', async event => {
     return;
   }
 
+  isSubmitting = true;
   creating = true;
   updateButton();
   clearTimeout(pollTimer);
+  const payload = options();
   try {
-    const job = await request('/api/generate', post(options()));
+    const job = await request('/api/generate', post(payload));
     if (job.status === 'complete' || job.status === 'COMPLETED') {
       creating = false;
+      isSubmitting = false;
       current = null;
       save(null);
       displayJob(job);
@@ -396,9 +459,15 @@ $('form').addEventListener('submit', async event => {
     if ($('video')) { $('video').pause(); $('video').hidden = true; }
     if ($('placeholder')) $('placeholder').hidden = false;
     displayJob(job);
+    isSubmitting = false;
     void poll();
   } catch (error) {
+    if (error.status === 429 || error.body?.busy || error.message?.includes('queue')) {
+      handleQueueWaiting(payload);
+      return;
+    }
     creating = false;
+    isSubmitting = false;
     if (error.body?.setup) renderSetup(error.body.setup);
     errorMessage(error.message);
     updateButton();
@@ -406,7 +475,7 @@ $('form').addEventListener('submit', async event => {
 });
 
 count();
-await Promise.allSettled([checkSetup(), request('/api/recipes').then(data => renderRecipes(data.recipes))]);
+await Promise.allSettled([checkSetup(), request('/api/recipes').then(data => renderRecipes(data))]);
 try { current = sessionStorage.getItem('mayaJob'); } catch {}
 if (current && !creating) {
   try {

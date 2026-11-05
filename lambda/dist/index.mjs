@@ -139261,7 +139261,7 @@ function validatePrivacy(privacy, allowPrivate) {
 var import_msedge_tts = __toESM(require_dist2(), 1);
 var region = process.env.REMOTION_AWS_REGION || process.env.AWS_REGION || "us-east-1";
 var bucketName = process.env.REMOTION_BUCKET_NAME || "remotionlambda-useast1-0wt9pieqmh";
-var functionName = process.env.REMOTION_FUNCTION_NAME || "remotion-render-4-0-539-mem2048mb-disk2048mb-300sec";
+var functionName = process.env.REMOTION_FUNCTION_NAME || "remotion-render-4-0-539-mem2048mb-disk2048mb-120sec";
 var serveUrl = process.env.REMOTION_SERVE_URL || "https://remotionlambda-useast1-0wt9pieqmh.s3.us-east-1.amazonaws.com/sites/cooking-studio/index.html";
 var s3 = new import_client_s313.S3Client({ region });
 var RECIPES = [
@@ -139635,6 +139635,65 @@ async function generateSpeechAudio(text, voice) {
     return null;
   }
 }
+async function getActiveRenderLock() {
+  try {
+    const res = await s3.send(new import_client_s313.GetObjectCommand({
+      Bucket: bucketName,
+      Key: "state/active-render.json"
+    }));
+    const bodyStr = await res.Body.transformToString();
+    const data = JSON.parse(bodyStr);
+    if (!data.renderId || data.done) return null;
+    if (Date.now() - (data.timestamp || 0) > 3e5) {
+      return null;
+    }
+    try {
+      const progress = await getRenderProgress({
+        renderId: data.renderId,
+        bucketName: data.bucketName || bucketName,
+        functionName,
+        region
+      });
+      if (progress.done || progress.fatalErrorEncountered) {
+        return null;
+      }
+    } catch {
+      if (Date.now() - (data.timestamp || 0) > 12e4) return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
+async function setActiveRenderLock(renderId, recipeTitle) {
+  try {
+    await s3.send(new import_client_s313.PutObjectCommand({
+      Bucket: bucketName,
+      Key: "state/active-render.json",
+      Body: JSON.stringify({
+        renderId,
+        title: recipeTitle,
+        timestamp: Date.now(),
+        bucketName,
+        done: false
+      }),
+      ContentType: "application/json"
+    }));
+  } catch (err) {
+    console.warn("Could not set render lock:", err.message);
+  }
+}
+async function clearActiveRenderLock() {
+  try {
+    await s3.send(new import_client_s313.PutObjectCommand({
+      Bucket: bucketName,
+      Key: "state/active-render.json",
+      Body: JSON.stringify({ done: true, timestamp: 0 }),
+      ContentType: "application/json"
+    }));
+  } catch {
+  }
+}
 async function handler(event) {
   const headers = {
     "Content-Type": "application/json",
@@ -139656,10 +139715,17 @@ async function handler(event) {
       };
     }
     if (path.endsWith("/recipes") || path.endsWith("/recipes/")) {
+      const activeLock = await getActiveRenderLock();
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify({ recipes: RECIPES, voices: VOICES, formats: ["16:9", "9:16"], busy: false })
+        body: JSON.stringify({
+          recipes: RECIPES,
+          voices: VOICES,
+          formats: ["16:9", "9:16"],
+          busy: Boolean(activeLock),
+          activeMessage: activeLock ? "Your video is waiting in the rendering queue. Please wait..." : null
+        })
       };
     }
     if (path.endsWith("/plan") && method === "POST") {
@@ -139715,6 +139781,19 @@ async function handler(event) {
       };
     }
     if (path.endsWith("/generate") && method === "POST") {
+      const activeLock = await getActiveRenderLock();
+      if (activeLock) {
+        return {
+          statusCode: 429,
+          headers,
+          body: JSON.stringify({
+            busy: true,
+            status: "busy",
+            activeRenderId: activeLock.renderId,
+            message: "Your video is waiting in the rendering queue. Please wait..."
+          })
+        };
+      }
       let body = {};
       try {
         body = JSON.parse(event.body || "{}");
@@ -139848,25 +139927,41 @@ async function handler(event) {
         }
       }
       try {
-        const { renderId } = await renderMediaOnLambda({
-          region,
-          functionName,
-          serveUrl,
-          composition: "LifeMotionCooking",
-          inputProps: {
-            plan,
-            lesson,
-            audioFile: audioUrl,
-            fps,
-            width,
-            height,
-            durationInFrames: duration * fps
-          },
-          framesPerLambda: 100,
-          maxRetries: 3,
-          codec: "h264",
-          privacy: "public"
-        });
+        let renderResult = null;
+        for (let attempt = 1; attempt <= 3; attempt++) {
+          try {
+            renderResult = await renderMediaOnLambda({
+              region,
+              functionName,
+              serveUrl,
+              composition: "LifeMotionCooking",
+              inputProps: {
+                plan,
+                lesson,
+                audioFile: audioUrl,
+                fps,
+                width,
+                height,
+                durationInFrames: duration * fps
+              },
+              concurrency: 4,
+              maxRetries: 1,
+              codec: "h264",
+              privacy: "public"
+            });
+            break;
+          } catch (launchErr) {
+            const isRateLimit = launchErr.message?.includes("Rate Exceeded") || launchErr.message?.includes("TooManyRequests") || launchErr.message?.includes("Concurrency limit");
+            if (isRateLimit && attempt < 3) {
+              console.warn(`Render launch rate-limited (attempt ${attempt}/3). Backing off with jitter...`);
+              await new Promise((r5) => setTimeout(r5, attempt * 2500 + Math.random() * 1e3));
+            } else {
+              throw launchErr;
+            }
+          }
+        }
+        const { renderId } = renderResult;
+        await setActiveRenderLock(renderId, planData.title);
         return {
           statusCode: 202,
           headers,
@@ -139883,6 +139978,18 @@ async function handler(event) {
         };
       } catch (renderError) {
         console.error("Lambda render launch error:", renderError);
+        const isRateLimit = renderError.message?.includes("Rate Exceeded") || renderError.message?.includes("Concurrency limit");
+        if (isRateLimit) {
+          return {
+            statusCode: 429,
+            headers,
+            body: JSON.stringify({
+              busy: true,
+              status: "busy",
+              message: "Your video is waiting in the rendering queue. Please wait..."
+            })
+          };
+        }
         return {
           statusCode: 500,
           headers,
@@ -139925,6 +140032,7 @@ async function handler(event) {
           region
         });
         if (progress.fatalErrorEncountered) {
+          await clearActiveRenderLock();
           return {
             statusCode: 200,
             headers,
@@ -139937,6 +140045,7 @@ async function handler(event) {
           };
         }
         if (progress.done) {
+          await clearActiveRenderLock();
           let finalUrl = progress.outputFile;
           try {
             let outputKey = `renders/${renderId}/out.mp4`;
