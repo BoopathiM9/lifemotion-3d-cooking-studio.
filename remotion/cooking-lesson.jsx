@@ -1468,6 +1468,58 @@ const Kitchen = ({ width, height, plan, lesson, state, time, speech }) => {
 };
 
 /**
+ * Smart Subtitle Synchronization & Natural Phrasing
+ * - Splits long sentences into clean, timed phrases proportional to speaking duration
+ * - Enforces maximum 2 lines per subtitle view
+ * - Synchronizes with active speech timing across the step duration
+ */
+function getActiveSubtitle(captions, time) {
+  if (!captions || !Array.isArray(captions) || captions.length === 0) return '';
+  const current = captions.find(item => time >= item.start && time < item.end);
+  if (!current || !current.text) return '';
+
+  const fullText = String(current.text).trim();
+  if (!fullText) return '';
+
+  // Short sentences (<= 48 characters) fit comfortably in 1 line
+  if (fullText.length <= 48) {
+    return fullText;
+  }
+
+  const duration = Math.max(0.4, current.end - current.start);
+  const elapsed = time - current.start;
+
+  // Split on punctuation (, . ! ? ;) if both halves are substantive
+  const punctMatch = fullText.match(/^(.{14,}[,;!?.])\s+(.{14,})$/);
+  let part1 = '';
+  let part2 = '';
+
+  if (punctMatch) {
+    part1 = punctMatch[1].trim();
+    part2 = punctMatch[2].trim();
+  } else {
+    // Split near the midpoint at a natural word boundary
+    const mid = Math.floor(fullText.length / 2);
+    let splitIdx = fullText.lastIndexOf(' ', mid);
+    if (splitIdx === -1 || splitIdx < 14) {
+      splitIdx = fullText.indexOf(' ', mid);
+    }
+    if (splitIdx > 12 && splitIdx < fullText.length - 12) {
+      part1 = fullText.slice(0, splitIdx).trim();
+      part2 = fullText.slice(splitIdx + 1).trim();
+    } else {
+      return fullText;
+    }
+  }
+
+  // Weight duration by character length of each chunk
+  const ratio = Math.max(0.32, Math.min(0.68, part1.length / (part1.length + part2.length)));
+  const splitTimestamp = duration * ratio;
+
+  return elapsed < splitTimestamp ? part1 : part2;
+}
+
+/**
  * Main Remotion Cooking Lesson Composition
  */
 export const CookingLesson = ({ plan, lesson, audioFile }) => {
@@ -1478,7 +1530,7 @@ export const CookingLesson = ({ plan, lesson, audioFile }) => {
 
   const state = activeState(plan, lesson, time);
   const speech = lesson.envelope?.[Math.floor(time / 0.02)] || 0;
-  const caption = (lesson.captions || []).find(item => time >= item.start && time < item.end)?.text || '';
+  const subtitle = getActiveSubtitle(lesson.captions, time);
 
   const entrance = spring({
     frame: Math.max(0, frame - Math.round(state.timeline.start * fps)),
@@ -1569,33 +1621,47 @@ export const CookingLesson = ({ plan, lesson, audioFile }) => {
         </div>
       </div>
 
-      {/* 3. Steve AI Style Subtitle Pill Bar (Bottom Center) */}
-      {caption && (
+      {/* 3. Professional Bottom Safe Area Subtitles */}
+      {subtitle && (
         <div
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: height > width ? '9%' : '6%',
+            bottom: height > width ? 38 : 22,
             transform: 'translateX(-50%)',
-            maxWidth: '86%',
-            padding: '15px 28px',
-            borderRadius: 24,
-            background: 'rgba(15, 38, 30, 0.92)',
-            border: '2px solid #ffd166',
-            boxShadow: '0 14px 36px rgba(0, 0, 0, 0.35)',
+            maxWidth: height > width ? '84%' : '72%',
+            width: 'max-content',
+            padding: '7px 18px',
+            borderRadius: 10,
+            background: 'rgba(12, 18, 28, 0.78)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.35)',
             color: '#ffffff',
-            fontSize: Math.max(24, Math.min(38, width / 28)),
-            fontWeight: 800,
+            fontSize: height > width
+              ? Math.max(16, Math.min(22, Math.round(width * 0.026)))
+              : Math.max(16, Math.min(20, Math.round(width * 0.0155))),
+            fontWeight: 600,
             textAlign: 'center',
-            lineHeight: 1.35
+            lineHeight: 1.35,
+            letterSpacing: '0.2px',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.5)',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            pointerEvents: 'none',
+            zIndex: 10
           }}
         >
-          {caption}
+          {subtitle}
         </div>
       )}
 
       {/* 4. Bottom Video Progress Line */}
-      <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 10, background: 'rgba(255, 255, 255, 0.5)' }}>
+      <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 6, background: 'rgba(0, 0, 0, 0.25)' }}>
         <div
           style={{
             height: '100%',
